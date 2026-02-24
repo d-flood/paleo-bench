@@ -324,8 +324,10 @@
 					</svg>
 				</button>
 				<h1 class="hidden text-sm font-semibold tracking-[0.2em] text-stone-600 sm:block dark:text-white/70">COMPARISON VIEW</h1>
-				<a href={base || '/'} class="text-xs transition-colors hover:opacity-80"
-					style="color: var(--accent-primary);"
+				<a
+					href={base || '/'}
+					class="group flex items-center gap-1 rounded-full border border-[var(--accent-primary)] px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:brightness-95 hover:shadow-md"
+					style="background: var(--accent-primary); box-shadow: 0 10px 28px -20px var(--accent-primary);"
 					>Back to dashboard</a
 				>
 			</div>

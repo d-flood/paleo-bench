@@ -257,7 +257,8 @@
 					>
 					<a
 						href={`${base}/compare`}
-						class="group flex items-center gap-2 rounded-full border border-[var(--border-card)] px-5 py-2.5 text-sm font-medium text-stone-600 transition-all hover:border-[var(--accent-primary)] hover:text-stone-900 dark:text-white/80 dark:hover:text-white"
+						class="group flex items-center gap-2 rounded-full border border-[var(--accent-primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:brightness-95 hover:shadow-md"
+						style="background: var(--accent-primary); box-shadow: 0 10px 28px -20px var(--accent-primary);"
 					>
 						Open comparison viewer
 						<span
