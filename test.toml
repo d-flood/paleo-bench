@@ -1,0 +1,24 @@
+[bench]
+name = "Test Run"
+output = "results.json"
+max_concurrency = 2
+
+[prompts]
+system = "You are an expert at reading handwritten text."
+user = "Transcribe the handwritten text in this image exactly as written. Output only the transcription, nothing else."
+
+[[models]]
+id = "anthropic/claude-sonnet-4-20250514"
+label = "sonnet-no-thinking"
+
+[[models]]
+id = "anthropic/claude-sonnet-4-20250514"
+label = "sonnet-thinking-16k"
+thinking = { type = "enabled", budget_tokens = 16000 }
+
+[[groups]]
+name = "Test Group"
+
+[[groups.samples]]
+image = "https://example.org/iiif/test_sample1/info.json"
+ground_truth = "data/test/sample1.txt"

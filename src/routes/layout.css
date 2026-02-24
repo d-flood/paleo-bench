@@ -1,0 +1,63 @@
+/* Shared interface fonts */
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import 'triiiceratops/style.css';
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@variant dark (&:where(.dark, .dark *));
+
+/* Theme CSS variables — used only where Tailwind classes can't reach (SVG attrs, inline styles) */
+:root {
+	--bg-page: #f5f3ef;
+	--bg-surface: #ffffff;
+	--border-card: #e0ddd6;
+	--border-subtle: #eae7e0;
+	--accent-primary: #3b6b8a;
+	--accent-secondary: #a0522d;
+	--accent-tertiary: #4a7c59;
+	--svg-text: #2c2a26;
+	--svg-text-muted: #5c5850;
+	--svg-text-ghost: #9a9488;
+	--svg-text-dim: #ccc7be;
+	--svg-grid: rgba(44, 42, 38, 0.06);
+	--svg-chart-bg: rgba(255, 255, 255, 0.70);
+	--svg-ref-line: rgba(59, 107, 138, 0.18);
+	--svg-bar-start: rgba(59, 107, 138, 0.06);
+	--svg-dot-stroke: rgba(44, 42, 38, 0.20);
+	--svg-hit-hover: rgba(59, 107, 138, 0.06);
+	--gauge-track: rgba(44, 42, 38, 0.08);
+	--diff-replace-bg: rgba(217, 119, 6, 0.18);
+	--diff-replace-text: #92400e;
+	--diff-insert-bg: rgba(5, 150, 105, 0.14);
+	--diff-insert-text: #065f46;
+	--diff-delete-bg: rgba(225, 29, 72, 0.14);
+	--diff-delete-text: #9f1239;
+}
+
+.dark {
+	--bg-page: #1a1a1f;
+	--bg-surface: #242429;
+	--border-card: #2e2e33;
+	--border-subtle: #38383f;
+	--accent-primary: #6bb8d6;
+	--accent-secondary: #d4956b;
+	--accent-tertiary: #7cb88a;
+	--svg-text: rgba(255, 255, 255, 0.95);
+	--svg-text-muted: rgba(255, 255, 255, 0.70);
+	--svg-text-ghost: rgba(255, 255, 255, 0.30);
+	--svg-text-dim: rgba(255, 255, 255, 0.15);
+	--svg-grid: rgba(255, 255, 255, 0.05);
+	--svg-chart-bg: rgba(255, 255, 255, 0.02);
+	--svg-ref-line: rgba(107, 184, 214, 0.15);
+	--svg-bar-start: rgba(107, 184, 214, 0.08);
+	--svg-dot-stroke: rgba(255, 255, 255, 0.20);
+	--svg-hit-hover: rgba(107, 184, 214, 0.06);
+	--gauge-track: rgba(255, 255, 255, 0.06);
+	--diff-replace-bg: rgba(245, 158, 11, 0.20);
+	--diff-replace-text: #fde68a;
+	--diff-insert-bg: rgba(52, 211, 153, 0.18);
+	--diff-insert-text: #6ee7b7;
+	--diff-delete-bg: rgba(244, 63, 94, 0.18);
+	--diff-delete-text: #fecdd3;
+}

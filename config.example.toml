@@ -1,0 +1,41 @@
+[bench]
+name = "Paleo Benchmark Run"
+output = "static/results.json"
+max_concurrency = 5
+
+[prompts]
+system = "You are an expert at reading handwritten text."
+user = "Transcribe the handwritten text in this image exactly as written. Output only the transcription, nothing else."
+
+[[models]]
+id = "anthropic/claude-sonnet-4-20250514"
+label = "sonnet-no-thinking"
+
+[[models]]
+id = "anthropic/claude-sonnet-4-20250514"
+label = "sonnet-thinking-16k"
+thinking = { type = "enabled", budget_tokens = 16000 }
+
+[[models]]
+id = "openai/gpt-4o"
+
+[[groups]]
+name = "Byzantine Greek"
+
+[[groups.samples]]
+label = "GA 01, Rom 1:1-11"
+image = "https://example.org/iiif/byzantine_sample1/info.json"
+ground_truth = "data/byzantine/sample1.txt"
+
+[[groups.samples]]
+label = "GA 02, Rom 1:12-25"
+image = "https://example.org/iiif/byzantine_sample2/info.json"
+ground_truth = "data/byzantine/sample2.txt"
+
+[[groups]]
+name = "Greek Papyri"
+
+[[groups.samples]]
+label = "P46, Rom 1:1-15"
+image = "https://example.org/iiif/papyri_sample1/info.json"
+ground_truth = "data/papyri/sample1.txt"
