@@ -33,4 +33,3 @@ uv run python -m paleo_bench --config config.toml --recompute-comparisons
 ```
 
 This recalculates per-row metrics plus model/group summaries from existing `static/results.json`.
-
