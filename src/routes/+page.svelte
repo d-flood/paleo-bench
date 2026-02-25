@@ -2,7 +2,7 @@
   import { pct, cost, duration, formatDate, comma, normalizeInverted } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-  import { page } from '$app/state';
+  import { base } from '$app/paths';
   import type { ModelSummary, SiteSummaryData } from '$lib/types';
   import type { PageData } from './$types';
   import TextAa from 'phosphor-svelte/lib/TextAa';
@@ -36,7 +36,7 @@
   const pageTitle = 'Paleo Bench | HTR Model Leaderboard';
   const pageDescription =
     'Compare handwritten Greek text recognition performance across LLM vision models with ranking, CER/WER quality, latency, and cost metrics.';
-  const socialImage = `${page.url.origin}/paleo-bench.png`;
+  const socialImage = `${base}/paleo-bench.png`;
   const configuredModels = siteSummary.benchmark.config.models.map((m) => m.label);
 
   const modelRows: ModelRow[] = configuredModels.map((label) => {
@@ -249,7 +249,7 @@
             >{formatDate(siteSummary.benchmark.timestamp)}</span
           >
           <a
-            href={`${page.url.origin}/compare`}
+            href={`${base}/compare`}
             class="group flex items-center gap-2 rounded-full border border-[var(--accent-primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:brightness-95"
             style="background: var(--accent-primary); box-shadow: 0 10px 28px -20px var(--accent-primary);"
           >

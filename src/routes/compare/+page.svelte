@@ -1,5 +1,14 @@
 <script lang="ts">
-  import { pct, cost, duration, formatDate, comma, stripDiacritics, simpleDiff, normalizeInverted } from '$lib/utils';
+  import {
+    pct,
+    cost,
+    duration,
+    formatDate,
+    comma,
+    stripDiacritics,
+    simpleDiff,
+    normalizeInverted
+  } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import { buildManifest } from '$lib/iiif';
   import { browser } from '$app/environment';
@@ -260,7 +269,8 @@
   // Per-sample min/max for cost and latency (used for mobile gauge normalization)
   let sampleCostRange = $derived.by(() => {
     if (!activeSample) return { min: 0, max: 1 };
-    let min = Infinity, max = -Infinity;
+    let min = Infinity,
+      max = -Infinity;
     for (const model of activeSample.availableModels) {
       const r = activeSample.resultsByModel[model];
       if (r?.response_metadata?.cost != null) {
@@ -275,7 +285,8 @@
 
   let sampleLatencyRange = $derived.by(() => {
     if (!activeSample) return { min: 0, max: 1 };
-    let min = Infinity, max = -Infinity;
+    let min = Infinity,
+      max = -Infinity;
     for (const model of activeSample.availableModels) {
       const r = activeSample.resultsByModel[model];
       if (r?.response_metadata?.latency_seconds != null) {
@@ -292,8 +303,16 @@
     if (!result?.metrics) return { quality: 0, cost: 0, latency: 0 };
     return {
       quality: Math.max(0, 1 - result.metrics.cer),
-      cost: normalizeInverted(result.response_metadata.cost, sampleCostRange.min, sampleCostRange.max),
-      latency: normalizeInverted(result.response_metadata.latency_seconds, sampleLatencyRange.min, sampleLatencyRange.max)
+      cost: normalizeInverted(
+        result.response_metadata.cost,
+        sampleCostRange.min,
+        sampleCostRange.max
+      ),
+      latency: normalizeInverted(
+        result.response_metadata.latency_seconds,
+        sampleLatencyRange.min,
+        sampleLatencyRange.max
+      )
     };
   }
 
@@ -692,9 +711,23 @@
                       onclick={() => (mobileModelDropdownOpen = !mobileModelDropdownOpen)}
                       class="flex w-full cursor-pointer items-center gap-1.5 rounded-full border border-[var(--border-card)] bg-[var(--bg-surface)] px-2.5 py-1"
                     >
-                      <span class="min-w-0 flex-1 truncate font-mono text-[10px] text-stone-700 dark:text-white/85">{selectedModel}</span>
-                      <svg class="h-3 w-3 shrink-0 text-stone-500 transition-transform dark:text-white/50" class:rotate-180={mobileModelDropdownOpen} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      <span
+                        class="min-w-0 flex-1 truncate font-mono text-[10px] text-stone-700 dark:text-white/85"
+                        >{selectedModel}</span
+                      >
+                      <svg
+                        class="h-3 w-3 shrink-0 text-stone-500 transition-transform dark:text-white/50"
+                        class:rotate-180={mobileModelDropdownOpen}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 9l-7 7-7-7"
+                        />
                       </svg>
                     </button>
 
@@ -707,24 +740,55 @@
                         onclick={() => (mobileModelDropdownOpen = false)}
                         aria-label="Close model dropdown"
                       ></button>
-                      <div class="absolute right-0 top-full z-50 mt-1 max-h-64 w-72 overflow-y-auto rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] shadow-lg">
+                      <div
+                        class="absolute top-full right-0 z-50 mt-1 max-h-64 w-72 overflow-y-auto rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] shadow-lg"
+                      >
                         {#each activeSample.availableModels as model}
                           {@const result = activeSample.resultsByModel[model]}
                           {@const gauges = mobileGauges(result)}
                           {@const isActive = selectedModel === model}
                           <button
                             type="button"
-                            onclick={() => { selectedModel = model; mobileModelDropdownOpen = false; }}
+                            onclick={() => {
+                              selectedModel = model;
+                              mobileModelDropdownOpen = false;
+                            }}
                             class="flex w-full cursor-pointer items-center gap-2 border-l-2 px-3 py-2 text-left transition-colors hover:bg-stone-50 dark:hover:bg-[#2c2c31]"
-                            style:border-left-color={isActive ? 'var(--accent-secondary)' : 'transparent'}
-                            style:background={isActive ? 'color-mix(in srgb, var(--accent-secondary) 10%, transparent)' : 'transparent'}
+                            style:border-left-color={isActive
+                              ? 'var(--accent-secondary)'
+                              : 'transparent'}
+                            style:background={isActive
+                              ? 'color-mix(in srgb, var(--accent-secondary) 10%, transparent)'
+                              : 'transparent'}
                           >
-                            <span class="min-w-0 flex-1 truncate font-mono text-[10px] {isActive ? 'text-stone-800 dark:text-white/90' : 'text-stone-700 dark:text-white/60'}">
+                            <span
+                              class="min-w-0 flex-1 truncate font-mono text-[10px] {isActive
+                                ? 'text-stone-800 dark:text-white/90'
+                                : 'text-stone-700 dark:text-white/60'}"
+                            >
                               {model}
                             </span>
-                            <CircularGauge value={gauges.quality} label="" color="var(--accent-primary)" size={24} icon={mobileGaugeIcons.quality} />
-                            <CircularGauge value={gauges.cost} label="" color="var(--accent-secondary)" size={24} icon={mobileGaugeIcons.cost} />
-                            <CircularGauge value={gauges.latency} label="" color="var(--accent-tertiary)" size={24} icon={mobileGaugeIcons.latency} />
+                            <CircularGauge
+                              value={gauges.quality}
+                              label=""
+                              color="var(--accent-primary)"
+                              size={24}
+                              icon={mobileGaugeIcons.quality}
+                            />
+                            <CircularGauge
+                              value={gauges.cost}
+                              label=""
+                              color="var(--accent-secondary)"
+                              size={24}
+                              icon={mobileGaugeIcons.cost}
+                            />
+                            <CircularGauge
+                              value={gauges.latency}
+                              label=""
+                              color="var(--accent-tertiary)"
+                              size={24}
+                              icon={mobileGaugeIcons.latency}
+                            />
                           </button>
                         {/each}
                       </div>
@@ -752,7 +816,7 @@
                       Ground Truth
                     </h3>
                     <span
-                      class="ml-auto min-w-0 truncate text-right font-mono text-[9px] text-stone-600 dark:text-white/70 sm:text-[10px]"
+                      class="ml-auto min-w-0 truncate text-right font-mono text-[9px] text-stone-600 sm:text-[10px] dark:text-white/70"
                       >{comma(referenceCharCount())} chars</span
                     >
                   </div>
@@ -762,11 +826,15 @@
                     class="min-w-0 flex-1 overflow-auto py-4 pr-4 pl-2 font-[Space_Mono] text-xs leading-relaxed text-stone-600 dark:text-white/70"
                   >
                     {#if sampleDetailsLoading}
-                      <p class="px-2 text-sm text-stone-600 dark:text-white/70">Loading sample text…</p>
+                      <p class="px-2 text-sm text-stone-600 dark:text-white/70">
+                        Loading sample text…
+                      </p>
                     {:else if sampleDetailsError}
-                      <p class="px-2 text-sm text-amber-700 dark:text-amber-200">{sampleDetailsError}</p>
+                      <p class="px-2 text-sm text-amber-700 dark:text-amber-200">
+                        {sampleDetailsError}
+                      </p>
                     {:else if activeSampleDetails}
-                      <div class="min-w-full w-max">
+                      <div class="w-max min-w-full">
                         {#each groundTruthLines as line}
                           <div class="grid w-max grid-cols-[1.75rem_auto] items-baseline gap-x-2.5">
                             <span
@@ -781,7 +849,8 @@
                                 {#each line.segments as segment}
                                   <span
                                     class:diff-replace={segment.type === 'replace'}
-                                    class:diff-delete={segment.type === 'delete'}>{segment.text}</span
+                                    class:diff-delete={segment.type === 'delete'}
+                                    >{segment.text}</span
                                   >
                                 {/each}
                               {/if}
@@ -812,13 +881,38 @@
                       Model Output
                     </h3>
                     {#if isMobile && mobileActivePanel === 'model-output'}
-                      {@const selectedGauges = mobileGauges(activeSample.resultsByModel[selectedModel])}
-                      <div class="ml-auto flex min-w-0 flex-1 items-center justify-end gap-1 overflow-hidden">
-                        <span class="min-w-0 truncate text-right font-mono text-[10px] text-stone-600 dark:text-white/70">{selectedModel}</span>
+                      {@const selectedGauges = mobileGauges(
+                        activeSample.resultsByModel[selectedModel]
+                      )}
+                      <div
+                        class="ml-auto flex min-w-0 flex-1 items-center justify-end gap-1 overflow-hidden"
+                      >
+                        <span
+                          class="min-w-0 truncate text-right font-mono text-[10px] text-stone-600 dark:text-white/70"
+                          >{selectedModel}</span
+                        >
                         <div class="flex shrink-0 items-center gap-0.5">
-                          <CircularGauge value={selectedGauges.quality} label="" color="var(--accent-primary)" size={24} icon={mobileGaugeIcons.quality} />
-                          <CircularGauge value={selectedGauges.cost} label="" color="var(--accent-secondary)" size={24} icon={mobileGaugeIcons.cost} />
-                          <CircularGauge value={selectedGauges.latency} label="" color="var(--accent-tertiary)" size={24} icon={mobileGaugeIcons.latency} />
+                          <CircularGauge
+                            value={selectedGauges.quality}
+                            label=""
+                            color="var(--accent-primary)"
+                            size={24}
+                            icon={mobileGaugeIcons.quality}
+                          />
+                          <CircularGauge
+                            value={selectedGauges.cost}
+                            label=""
+                            color="var(--accent-secondary)"
+                            size={24}
+                            icon={mobileGaugeIcons.cost}
+                          />
+                          <CircularGauge
+                            value={selectedGauges.latency}
+                            label=""
+                            color="var(--accent-tertiary)"
+                            size={24}
+                            icon={mobileGaugeIcons.latency}
+                          />
                         </div>
                       </div>
                     {:else}
@@ -858,7 +952,7 @@
                       use:syncScroll={() => gtPanel}
                       class="min-w-0 flex-1 overflow-auto py-4 pr-4 pl-2 font-[Space_Mono] text-xs leading-relaxed text-stone-600 dark:text-white/70"
                     >
-                      <div class="min-w-full w-max">
+                      <div class="w-max min-w-full">
                         {#each modelOutputLines as line}
                           <div class="grid w-max grid-cols-[1.75rem_auto] items-baseline gap-x-2.5">
                             <span
@@ -873,7 +967,8 @@
                                 {#each line.segments as segment}
                                   <span
                                     class:diff-replace={segment.type === 'replace'}
-                                    class:diff-insert={segment.type === 'insert'}>{segment.text}</span
+                                    class:diff-insert={segment.type === 'insert'}
+                                    >{segment.text}</span
                                   >
                                 {/each}
                               {/if}
@@ -926,5 +1021,4 @@
     color: var(--diff-delete-text);
     border-radius: 3px;
   }
-
 </style>
