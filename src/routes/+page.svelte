@@ -2,7 +2,8 @@
   import { pct, cost, duration, formatDate, comma, normalizeInverted } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-  import { base } from '$app/paths';
+  import { dev } from '$app/environment';
+  import { asset, resolve } from '$app/paths';
   import type { ModelSummary, SiteSummaryData } from '$lib/types';
   import type { PageData } from './$types';
   import TextAa from 'phosphor-svelte/lib/TextAa';
@@ -36,7 +37,10 @@
   const pageTitle = 'Paleo Bench | HTR Model Leaderboard';
   const pageDescription =
     'Compare handwritten Greek text recognition performance across LLM vision models with ranking, CER/WER quality, latency, and cost metrics.';
-  const socialImage = `${base}/paleo-bench.png`;
+  const productionSiteUrl = 'https://d-flood.github.io/paleo-bench/';
+  const socialImage = dev
+    ? asset('/paleo-bench.png')
+    : new URL('paleo-bench.png', productionSiteUrl).toString();
   const configuredModels = siteSummary.benchmark.config.models.map((m) => m.label);
 
   const modelRows: ModelRow[] = configuredModels.map((label) => {
@@ -75,7 +79,7 @@
 
   // Lollipop chart config
   const chartRowHeight = 38;
-  const chartMargin = { top: 28, right: 110, bottom: 38, left: 210 };
+  const chartMargin = { top: 28, right: 120, bottom: 38, left: 210 };
   const chartMinWidth = 860;
   let chartViewportWidth = $state(0);
   let chartWidth = $derived(Math.max(chartViewportWidth, chartMinWidth));
@@ -249,7 +253,7 @@
             >{formatDate(siteSummary.benchmark.timestamp)}</span
           >
           <a
-            href={`${base}/compare`}
+            href={resolve('/compare')}
             class="group flex items-center gap-2 rounded-full border border-[var(--accent-primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:brightness-95"
             style="background: var(--accent-primary); box-shadow: 0 10px 28px -20px var(--accent-primary);"
           >
@@ -589,10 +593,10 @@
                 <!-- Two gauge columns on far right -->
                 {#each gaugeMetrics as gm, gi}
                   <foreignObject
-                    x={chartWidth - chartMargin.right + gi * 52 + 4}
-                    y={y - 15}
-                    width="48"
-                    height="34"
+                    x={chartWidth - chartMargin.right + gi * 56 + 4}
+                    y={y - 16}
+                    width="54"
+                    height="38"
                   >
                     <div
                       style="display:flex;flex-direction:column;align-items:center;gap:0px;line-height:1;"
@@ -601,7 +605,7 @@
                         value={gm.gaugeValue(row)}
                         label={gm.label}
                         color={gm.color}
-                        size={26}
+                        size={30}
                         icon={gm.icon}
                         rawValue={gm.rawValue(row)}
                       />

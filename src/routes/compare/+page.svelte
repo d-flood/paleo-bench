@@ -11,10 +11,12 @@
   } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import { buildManifest } from '$lib/iiif';
-  import { browser } from '$app/environment';
-  import { base } from '$app/paths';
+  import { browser, dev } from '$app/environment';
+  import { asset, resolve } from '$app/paths';
   import { TriiiceratopsViewer, ViewerState } from 'triiiceratops';
-  import { TextAa, CurrencyDollar, Clock } from 'phosphor-svelte';
+  import TextAa from 'phosphor-svelte/lib/TextAa';
+  import CurrencyDollar from 'phosphor-svelte/lib/CurrencyDollar';
+  import Clock from 'phosphor-svelte/lib/Clock';
   import { theme } from '$lib/theme.svelte';
   import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import type {
@@ -42,7 +44,10 @@
   const pageTitle = 'Paleo Bench | Compare Model Outputs';
   const pageDescription =
     'Inspect side-by-side transcription output quality for each handwritten sample with synchronized diffs, CER/WER metrics, latency, and cost.';
-  const socialImage = `${base}/paleo-bench-compare.png`;
+  const productionSiteUrl = 'https://d-flood.github.io/paleo-bench/';
+  const socialImage = dev
+    ? asset('/paleo-bench-compare.png')
+    : new URL('paleo-bench-compare.png', productionSiteUrl).toString();
   const samples: GroupedSample[] = compareIndex.samples;
 
   let viewerThemeConfig = $derived(
@@ -219,7 +224,7 @@
     sampleDetailsError = null;
 
     try {
-      const response = await fetch(`${base}/site-data/samples/${sampleId}.json`);
+      const response = await fetch(asset(`/site-data/samples/${sampleId}.json`));
       if (!response.ok) {
         throw new Error(`Failed to load sample details (${response.status})`);
       }
@@ -424,7 +429,7 @@
           COMPARISON VIEW
         </h1>
         <a
-          href={base || '/'}
+          href={resolve('/')}
           class="group flex items-center gap-1 rounded-full border border-[var(--accent-primary)] px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:brightness-95"
           style="background: var(--accent-primary); box-shadow: 0 10px 28px -20px var(--accent-primary);"
           >Back to dashboard</a
