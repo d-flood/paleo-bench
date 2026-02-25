@@ -194,8 +194,8 @@
 
   let activeDetail = $derived.by(() => {
     const model = selectedModel
-      ? modelRows.find((r) => r.label === selectedModel)
-      : rowsWithSummary[0];
+      ? chartSorted.find((r) => r.label === selectedModel) ?? modelRows.find((r) => r.label === selectedModel)
+      : chartSorted[0];
     if (!model) return undefined;
     const idx = chartSorted.findIndex((r) => r.label === model.label);
     return { model, index: idx };
