@@ -25,11 +25,13 @@ name = "Byzantine Greek"
 [[groups.samples]]
 label = "GA 01, Rom 1:1-11"
 image = "https://example.org/iiif/byzantine_sample1/info.json"
+side = "verso"
 ground_truth = "data/byzantine/sample1.txt"
 
 [[groups.samples]]
 label = "GA 02, Rom 1:12-25"
 image = "https://example.org/iiif/byzantine_sample2/info.json"
+side = "recto"
 ground_truth = "data/byzantine/sample2.txt"
 
 [[groups]]

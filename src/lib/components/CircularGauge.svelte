@@ -24,6 +24,7 @@
   const fullAngle = Math.PI * 1.5;
   const fullLength = radius * fullAngle;
   const startAngle = -Math.PI * 0.75;
+  const minVisibleProgress = 0.06;
 
   let showTooltip = $state(false);
 
@@ -38,7 +39,8 @@
 
   function dashOffset(v: number): number {
     const clamped = Math.min(Math.max(v, 0), 1);
-    return fullLength * (1 - clamped);
+    const visible = minVisibleProgress + clamped * (1 - minVisibleProgress);
+    return fullLength * (1 - visible);
   }
 
   const arc = arcPath();

@@ -18,12 +18,14 @@ from .vision import call_vision_model
 
 @dataclass
 class SampleResult:
+    sample_order: int
     group_name: str
     sample_label: str
     image_url: str
     ground_truth_path: str
     ground_truth_text: str
     model_id: str
+    sample_side: str = ""
     model_output: str = ""
     error: str | None = None
     metrics: MetricScores | None = None
@@ -44,7 +46,7 @@ class BenchmarkResult:
     total_duration_seconds: float = 0.0
 
 
-ResultKey = tuple[str, str, str, str, str]
+ResultKey = tuple[str, str, str, str, str, str]
 
 
 def make_result_key(
@@ -52,6 +54,7 @@ def make_result_key(
     group_name: str,
     sample_label: str,
     image_url: str,
+    sample_side: str = "",
     ground_truth_path: str,
     model_id: str,
 ) -> ResultKey:
@@ -59,6 +62,7 @@ def make_result_key(
         str(model_id),
         str(group_name),
         str(image_url),
+        str(sample_side or ""),
         str(sample_label or ""),
         str(ground_truth_path),
     )
@@ -69,6 +73,7 @@ def sample_result_key(sample_result: SampleResult) -> ResultKey:
         group_name=sample_result.group_name,
         sample_label=sample_result.sample_label,
         image_url=sample_result.image_url,
+        sample_side=sample_result.sample_side,
         ground_truth_path=sample_result.ground_truth_path,
         model_id=sample_result.model_id,
     )
@@ -133,6 +138,7 @@ async def run_benchmark(
 
     # Build task list: (group, sample, model)
     tasks = []
+    sample_order = 0
     for group in config.groups:
         for sample in group.samples:
             gt_text = normalize_for_comparison(
@@ -143,12 +149,14 @@ async def run_benchmark(
                     group_name=group.name,
                     sample_label=sample.label,
                     image_url=sample.image_url,
+                    sample_side=sample.side or "",
                     ground_truth_path=str(sample.ground_truth),
                     model_id=model.label,
                 )
                 if key in skipped:
                     continue
-                tasks.append((group, sample, model, gt_text))
+                tasks.append((group, sample, model, gt_text, sample_order))
+            sample_order += 1
 
     total = len(tasks)
     if total == 0:
@@ -159,7 +167,7 @@ async def run_benchmark(
     completed = 0
     lock = asyncio.Lock()
 
-    async def process(group, sample, model, gt_text):
+    async def process(group, sample, model, gt_text, sample_order):
         nonlocal started, completed
         async with lock:
             started += 1
@@ -184,9 +192,11 @@ async def run_benchmark(
         )
 
         sr = SampleResult(
+            sample_order=sample_order,
             group_name=group.name,
             sample_label=sample.label,
             image_url=sample.image_url,
+            sample_side=sample.side or "",
             ground_truth_path=str(sample.ground_truth),
             ground_truth_text=gt_text,
             model_id=model.label,
@@ -205,7 +215,10 @@ async def run_benchmark(
         return sr
 
     start = time.monotonic()
-    futures = [asyncio.create_task(process(g, s, m, gt)) for g, s, m, gt in tasks]
+    futures = [
+        asyncio.create_task(process(g, s, m, gt, order))
+        for g, s, m, gt, order in tasks
+    ]
     for future in asyncio.as_completed(futures):
         sample_result = await future
         result.sample_results.append(sample_result)

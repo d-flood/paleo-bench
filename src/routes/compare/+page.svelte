@@ -1,15 +1,14 @@
 <script lang="ts">
   import {
-    pct,
     cost,
     duration,
     formatDate,
     comma,
     stripDiacritics,
-    simpleDiff,
-    normalizeInverted
+    simpleDiff
   } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
+  import ModelSelectorOptions from '$lib/components/ModelSelectorOptions.svelte';
   import { buildManifest } from '$lib/iiif';
   import { browser, dev } from '$app/environment';
   import { asset, resolve } from '$app/paths';
@@ -306,14 +305,14 @@
 
   function mobileGauges(result: CompareResultSummary | undefined) {
     if (!result?.metrics) return { quality: 0, cost: 0, latency: 0 };
+    const normalize = (value: number, min: number, max: number): number => {
+      if (max === min) return 0.5;
+      return Math.min(Math.max((value - min) / (max - min), 0), 1);
+    };
     return {
       quality: Math.max(0, 1 - result.metrics.cer),
-      cost: normalizeInverted(
-        result.response_metadata.cost,
-        sampleCostRange.min,
-        sampleCostRange.max
-      ),
-      latency: normalizeInverted(
+      cost: normalize(result.response_metadata.cost, sampleCostRange.min, sampleCostRange.max),
+      latency: normalize(
         result.response_metadata.latency_seconds,
         sampleLatencyRange.min,
         sampleLatencyRange.max
@@ -522,32 +521,16 @@
           <div
             class="max-h-48 overflow-y-auto rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)]"
           >
-            {#each activeSample.availableModels as model}
-              {@const result = activeSample.resultsByModel[model]}
-              {@const isActive = selectedModel === model}
-              <button
-                type="button"
-                onclick={() => (selectedModel = model)}
-                class="flex w-full cursor-pointer items-center gap-2 border-l-2 px-3 py-2 text-left text-xs transition-colors hover:bg-stone-50 dark:hover:bg-[#2c2c31]"
-                style:border-left-color={isActive ? 'var(--accent-secondary)' : 'transparent'}
-                style:background={isActive
-                  ? 'color-mix(in srgb, var(--accent-secondary) 10%, transparent)'
-                  : 'transparent'}
-              >
-                <span
-                  class="min-w-0 flex-1 truncate {isActive
-                    ? 'text-stone-800 dark:text-white/90'
-                    : 'text-stone-700 dark:text-white/60'}"
-                >
-                  {model}
-                </span>
-                {#if result?.metrics}
-                  <span class="shrink-0 font-mono text-[10px] text-stone-600 dark:text-white/70">
-                    {pct(result.metrics.cer, 1)}
-                  </span>
-                {/if}
-              </button>
-            {/each}
+            <ModelSelectorOptions
+              availableModels={activeSample.availableModels}
+              resultsByModel={activeSample.resultsByModel}
+              {selectedModel}
+              onSelect={(model) => (selectedModel = model)}
+              gaugesForResult={mobileGauges}
+              gaugeIcons={mobileGaugeIcons}
+              gaugeSize={24}
+              modelTextClass="text-xs"
+            />
           </div>
         {/if}
 
@@ -748,54 +731,18 @@
                       <div
                         class="absolute top-full right-0 z-50 mt-1 max-h-64 w-72 overflow-y-auto rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] shadow-lg"
                       >
-                        {#each activeSample.availableModels as model}
-                          {@const result = activeSample.resultsByModel[model]}
-                          {@const gauges = mobileGauges(result)}
-                          {@const isActive = selectedModel === model}
-                          <button
-                            type="button"
-                            onclick={() => {
-                              selectedModel = model;
-                              mobileModelDropdownOpen = false;
-                            }}
-                            class="flex w-full cursor-pointer items-center gap-2 border-l-2 px-3 py-2 text-left transition-colors hover:bg-stone-50 dark:hover:bg-[#2c2c31]"
-                            style:border-left-color={isActive
-                              ? 'var(--accent-secondary)'
-                              : 'transparent'}
-                            style:background={isActive
-                              ? 'color-mix(in srgb, var(--accent-secondary) 10%, transparent)'
-                              : 'transparent'}
-                          >
-                            <span
-                              class="min-w-0 flex-1 truncate font-mono text-[10px] {isActive
-                                ? 'text-stone-800 dark:text-white/90'
-                                : 'text-stone-700 dark:text-white/60'}"
-                            >
-                              {model}
-                            </span>
-                            <CircularGauge
-                              value={gauges.quality}
-                              label=""
-                              color="var(--accent-primary)"
-                              size={24}
-                              icon={mobileGaugeIcons.quality}
-                            />
-                            <CircularGauge
-                              value={gauges.cost}
-                              label=""
-                              color="var(--accent-secondary)"
-                              size={24}
-                              icon={mobileGaugeIcons.cost}
-                            />
-                            <CircularGauge
-                              value={gauges.latency}
-                              label=""
-                              color="var(--accent-tertiary)"
-                              size={24}
-                              icon={mobileGaugeIcons.latency}
-                            />
-                          </button>
-                        {/each}
+                        <ModelSelectorOptions
+                          availableModels={activeSample.availableModels}
+                          resultsByModel={activeSample.resultsByModel}
+                          {selectedModel}
+                          onSelect={(model) => {
+                            selectedModel = model;
+                            mobileModelDropdownOpen = false;
+                          }}
+                          gaugesForResult={mobileGauges}
+                          gaugeIcons={mobileGaugeIcons}
+                          gaugeSize={24}
+                        />
                       </div>
                     {/if}
                   </div>

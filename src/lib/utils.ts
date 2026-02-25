@@ -18,6 +18,11 @@ export function cost(n: number): string {
   return '$' + n.toFixed(4);
 }
 
+/** Format cost in USD rounded to nearest cent */
+export function costCents(n: number): string {
+  return '$' + n.toFixed(2);
+}
+
 /** Format a number with commas */
 export function comma(n: number): string {
   return n.toLocaleString();

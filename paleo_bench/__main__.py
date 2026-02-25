@@ -75,7 +75,11 @@ def main() -> int:
             )
             return 1
         config_dir = Path(args.config).resolve().parent
-        recomputed, skipped = recompute_comparisons(existing_data, config_dir=config_dir)
+        recomputed, skipped = recompute_comparisons(
+            existing_data,
+            config_dir=config_dir,
+            config=config,
+        )
         write_results_data(existing_data, config.output)
         print(
             f"Recomputed comparisons for {recomputed} row(s); skipped {skipped} row(s).",
@@ -85,19 +89,22 @@ def main() -> int:
 
     # IIIF prep: download and cache images
     cache_dir = Path(args.config).resolve().parent / ".cache"
-    unique_urls = {
-        sample.image_url
+    unique_samples = {
+        (sample.image_url, sample.side)
         for group in config.groups
         for sample in group.samples
     }
     try:
-        url_to_path: dict[str, Path] = {}
-        for url in unique_urls:
-            print(f"Fetching IIIF image: {url}", file=sys.stderr)
-            url_to_path[url] = fetch_iiif_image(url, cache_dir)
+        sample_to_path: dict[tuple[str, str | None], Path] = {}
+        for url, side in unique_samples:
+            if side:
+                print(f"Fetching IIIF image: {url} (side={side})", file=sys.stderr)
+            else:
+                print(f"Fetching IIIF image: {url}", file=sys.stderr)
+            sample_to_path[(url, side)] = fetch_iiif_image(url, cache_dir, side=side)
         for group in config.groups:
             for sample in group.samples:
-                sample.cached_image = url_to_path[sample.image_url]
+                sample.cached_image = sample_to_path[(sample.image_url, sample.side)]
     except IIIFError as e:
         print(f"IIIF error: {e}", file=sys.stderr)
         return 1

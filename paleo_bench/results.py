@@ -7,6 +7,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
+from .config import BenchConfig
 from .metrics import MetricScores, aggregate_metrics, compute_metrics, normalize_for_comparison
 from .runner import BenchmarkResult, ResultKey, make_result_key
 
@@ -46,6 +47,7 @@ def _build_json(result: BenchmarkResult) -> dict:
 
     for sr in result.sample_results:
         entry = {
+            "sample_order": sr.sample_order,
             "group": sr.group_name,
             "label": sr.sample_label,
             "image": sr.image_url,
@@ -62,6 +64,8 @@ def _build_json(result: BenchmarkResult) -> dict:
                 "latency_seconds": sr.latency_seconds,
             },
         }
+        if sr.sample_side:
+            entry["side"] = sr.sample_side
         output["results"].append(entry)
 
     return output
@@ -82,6 +86,7 @@ def _row_key(row: dict[str, Any]) -> ResultKey | None:
     model_id = row.get("model")
     group_name = row.get("group")
     image_url = row.get("image")
+    sample_side = row.get("side") or ""
     ground_truth_path = row.get("ground_truth_file")
 
     if not model_id or not group_name or not image_url or not ground_truth_path:
@@ -91,6 +96,7 @@ def _row_key(row: dict[str, Any]) -> ResultKey | None:
         model_id=str(model_id),
         group_name=str(group_name),
         image_url=str(image_url),
+        sample_side=str(sample_side),
         sample_label=str(row.get("label") or ""),
         ground_truth_path=str(ground_truth_path),
     )
@@ -283,18 +289,74 @@ def completed_result_keys(
     return keys
 
 
+def _resolve_ground_truth_path(path_value: str | Path, *, config_dir: Path) -> str:
+    path = Path(path_value)
+    if not path.is_absolute():
+        path = config_dir / path
+    return str(path.resolve())
+
+
+def _build_sample_order_index(
+    config: BenchConfig,
+    *,
+    config_dir: Path,
+) -> dict[tuple[str, str, str, str, str], int]:
+    order_index: dict[tuple[str, str, str, str, str], int] = {}
+    sample_order = 0
+    for group in config.groups:
+        for sample in group.samples:
+            key = (
+                group.name,
+                sample.label or "",
+                sample.image_url,
+                sample.side or "",
+                _resolve_ground_truth_path(sample.ground_truth, config_dir=config_dir),
+            )
+            order_index[key] = sample_order
+            sample_order += 1
+    return order_index
+
+
 def recompute_comparisons(
     data: dict[str, Any],
     *,
     config_dir: Path,
+    config: BenchConfig | None = None,
 ) -> tuple[int, int]:
     recomputed_rows = 0
     skipped_rows = 0
+    sample_order_index = (
+        _build_sample_order_index(config, config_dir=config_dir) if config is not None else {}
+    )
 
     for row in data.get("results", []):
+        group_name = row.get("group")
+        label = row.get("label")
+        image = row.get("image")
+        side = row.get("side") or ""
+        gt_path_value = row.get("ground_truth_file")
+        if (
+            sample_order_index
+            and isinstance(group_name, str)
+            and isinstance(label, str)
+            and isinstance(image, str)
+            and isinstance(side, str)
+            and isinstance(gt_path_value, str)
+            and gt_path_value.strip()
+        ):
+            key = (
+                group_name,
+                label,
+                image,
+                side,
+                _resolve_ground_truth_path(gt_path_value, config_dir=config_dir),
+            )
+            sample_order = sample_order_index.get(key)
+            if sample_order is not None:
+                row["sample_order"] = sample_order
+
         error = row.get("error")
         output = row.get("model_output")
-        gt_path_value = row.get("ground_truth_file")
         if isinstance(error, str) and error.strip():
             row["metrics"] = None
             skipped_rows += 1
@@ -308,9 +370,7 @@ def recompute_comparisons(
             skipped_rows += 1
             continue
 
-        gt_path = Path(gt_path_value)
-        if not gt_path.is_absolute():
-            gt_path = config_dir / gt_path
+        gt_path = Path(_resolve_ground_truth_path(gt_path_value, config_dir=config_dir))
         if not gt_path.exists():
             row["metrics"] = None
             skipped_rows += 1

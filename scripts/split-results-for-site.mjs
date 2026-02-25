@@ -75,6 +75,7 @@ for (const row of results) {
       group,
       label,
       image,
+      sampleOrder: Number.isFinite(Number(row.sample_order)) ? Number(row.sample_order) : null,
       ground_truth_file: row.ground_truth_file ?? '',
       ground_truth_text: row.ground_truth_text ?? '',
       availableModels: [],
@@ -85,6 +86,9 @@ for (const row of results) {
 
   const sample = samplesMap.get(sampleId);
   const model = row.model ?? '';
+  if (sample.sampleOrder == null && Number.isFinite(Number(row.sample_order))) {
+    sample.sampleOrder = Number(row.sample_order);
+  }
 
   sample.resultsByModel[model] = {
     model,
@@ -113,6 +117,7 @@ for (const sample of samplesMap.values()) {
     group: sample.group,
     label: sample.label,
     image: sample.image,
+    sampleOrder: sample.sampleOrder,
     ground_truth_file: sample.ground_truth_file,
     availableModels: sample.availableModels,
     resultsByModel: sample.resultsByModel
@@ -126,6 +131,9 @@ for (const sample of samplesMap.values()) {
 }
 
 compareSamples.sort((a, b) => {
+  const aOrder = Number.isFinite(a.sampleOrder) ? Number(a.sampleOrder) : Number.POSITIVE_INFINITY;
+  const bOrder = Number.isFinite(b.sampleOrder) ? Number(b.sampleOrder) : Number.POSITIVE_INFINITY;
+  if (aOrder !== bOrder) return aOrder - bOrder;
   if (a.group !== b.group) return String(a.group).localeCompare(String(b.group));
   return String(a.label).localeCompare(String(b.label));
 });

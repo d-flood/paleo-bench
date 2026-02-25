@@ -154,3 +154,15 @@ ground_truth = "data/grk_byz/GAL587_p66.txt"
 label = "GA L2010, 40v, Rom 14:17–18, 15:7–15"
 image = "https://collections.csntm.org/image-service/iiif/MNTGRCL2010/default/M_NT_GRC_L2010_0040b/M_NT_GRC_L2010_0040b/info.json"
 ground_truth = "data/grk_byz/GAL2010_40v.txt"
+
+[[groups.samples]]
+label = "GA 1, 72v, Rom 1:2–18"
+image = "https://collections.csntm.org/image-service/iiif/MNTGRCGA1/default/M_NT_GRC_GA1_0080/M_NT_GRC_GA1_0080/info.json"
+ground_truth = "data/grk_byz/GA1_72v.txt"
+side = "verso"
+
+[[groups.samples]]
+label = "GA 1, 73r, Rom 1:2–18"
+image = "https://collections.csntm.org/image-service/iiif/MNTGRCGA1/default/M_NT_GRC_GA1_0080/M_NT_GRC_GA1_0080/info.json"
+ground_truth = "data/grk_byz/GA1_73r.txt"
+side = "recto"

@@ -65,6 +65,7 @@ class TestResultsResume(unittest.TestCase):
         result = BenchmarkResult(config=config, timestamp="2026-02-24T00:00:00+00:00")
         result.sample_results = [
             SampleResult(
+                sample_order=0,
                 group_name="g1",
                 sample_label="folio-a",
                 image_url="https://example.org/iiif/a/info.json",
@@ -113,6 +114,7 @@ class TestResultsResume(unittest.TestCase):
         self.assertEqual(len(data["results"]), 2)
         rows_by_model = {row["model"]: row for row in data["results"]}
         self.assertEqual(rows_by_model["model-a"]["model_output"], "new-output")
+        self.assertEqual(rows_by_model["model-a"]["sample_order"], 0)
         self.assertEqual(rows_by_model["model-b"]["model_output"], "keep-me")
         self.assertIn("model-a", data["model_summaries"])
         self.assertIn("model-b", data["model_summaries"])
@@ -162,7 +164,56 @@ class TestResultsResume(unittest.TestCase):
         keys = completed_result_keys(data, model_labels={"model-a"})
         self.assertEqual(len(keys), 1)
         only = next(iter(keys))
-        self.assertEqual(only[3], "ok")
+        self.assertEqual(only[4], "ok")
+
+    def test_completed_result_keys_distinguishes_side_variants(self) -> None:
+        data = {
+            "results": [
+                {
+                    "group": "g1",
+                    "label": "folio-a",
+                    "image": "https://example.org/iiif/a/info.json",
+                    "side": "verso",
+                    "ground_truth_file": "data/grk_byz/GAL2010_40v.txt",
+                    "model": "model-a",
+                    "model_output": "left",
+                    "error": None,
+                },
+                {
+                    "group": "g1",
+                    "label": "folio-a",
+                    "image": "https://example.org/iiif/a/info.json",
+                    "side": "recto",
+                    "ground_truth_file": "data/grk_byz/GAL2010_40v.txt",
+                    "model": "model-a",
+                    "model_output": "right",
+                    "error": None,
+                },
+            ]
+        }
+
+        keys = completed_result_keys(data, model_labels={"model-a"})
+        self.assertEqual(len(keys), 2)
+
+    def test_completed_result_keys_treats_missing_side_as_empty(self) -> None:
+        data = {
+            "results": [
+                {
+                    "group": "g1",
+                    "label": "folio-a",
+                    "image": "https://example.org/iiif/a/info.json",
+                    "ground_truth_file": "data/grk_byz/GAL2010_40v.txt",
+                    "model": "model-a",
+                    "model_output": "output",
+                    "error": None,
+                }
+            ]
+        }
+
+        keys = completed_result_keys(data, model_labels={"model-a"})
+        self.assertEqual(len(keys), 1)
+        only = next(iter(keys))
+        self.assertEqual(only[3], "")
 
     def test_write_results_recomputes_model_summary_from_merged_rows(self) -> None:
         config = _bench_config()
@@ -277,6 +328,54 @@ class TestResultsResume(unittest.TestCase):
         self.assertEqual(skipped, 1)
         self.assertIsNone(data["results"][0]["metrics"])
         self.assertEqual(data["model_summaries"]["model-a"]["samples_evaluated"], 0)
+
+    def test_recompute_comparisons_backfills_sample_order_from_config(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            gt_path = tmp_path / "gt.txt"
+            gt_path.write_text("alpha beta", encoding="utf-8")
+            config = BenchConfig(
+                name="Test",
+                output=Path("results.json"),
+                max_concurrency=1,
+                prompts=PromptsConfig(system="s", user="u"),
+                models=[ModelConfig(id="provider/model-a", label="model-a")],
+                groups=[
+                    GroupConfig(
+                        name="g1",
+                        samples=[
+                            SampleConfig(
+                                image_url="https://example.org/iiif/a/info.json",
+                                ground_truth=Path("gt.txt"),
+                                label="folio-a",
+                            )
+                        ],
+                    )
+                ],
+            )
+            data = {
+                "benchmark": {
+                    "config": {
+                        "models": [{"label": "model-a", "id": "provider/model-a", "params": {}}]
+                    }
+                },
+                "results": [
+                    {
+                        "group": "g1",
+                        "label": "folio-a",
+                        "image": "https://example.org/iiif/a/info.json",
+                        "ground_truth_file": "gt.txt",
+                        "model": "model-a",
+                        "model_output": "alpha gamma",
+                        "error": None,
+                        "metrics": None,
+                    }
+                ],
+            }
+
+            recompute_comparisons(data, config_dir=tmp_path, config=config)
+
+        self.assertEqual(data["results"][0]["sample_order"], 0)
 
 
 if __name__ == "__main__":

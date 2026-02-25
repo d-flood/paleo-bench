@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { pct, cost, duration, formatDate, comma, normalizeInverted } from '$lib/utils';
+  import { pct, costCents, duration, formatDate, comma, normalizeInverted } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import ThemeToggle from '$lib/components/ThemeToggle.svelte';
   import { dev } from '$app/environment';
@@ -121,7 +121,7 @@
 
   function lollipopRawLabel(row: ModelRow): string {
     if (chartSortKey === 'quality') return pct(row.quality);
-    if (chartSortKey === 'cost') return cost(row.costPerSample);
+    if (chartSortKey === 'cost') return costCents(row.costPerSample);
     return duration(row.latencyPerSample);
   }
 
@@ -152,7 +152,7 @@
         if (costMax === costMin) return 0.5;
         return Math.min(Math.max((row.costPerSample - costMin) / (costMax - costMin), 0), 1);
       },
-      rawValue: (row: ModelRow) => cost(row.costPerSample)
+      rawValue: (row: ModelRow) => costCents(row.costPerSample)
     },
     latency: {
       key: 'latency',
@@ -267,7 +267,7 @@
 
     <!-- Run stats -->
     <div class="mb-8 grid grid-cols-2 gap-3 md:grid-cols-3">
-      {#each [{ label: 'Models', value: comma(configuredModels.length), color: 'var(--accent-primary)' }, { label: 'Samples', value: comma(totalSamples / configuredModels.length), color: 'var(--accent-tertiary)' }, { label: 'Total Cost', value: cost(totalCost), color: 'var(--accent-secondary)' }] as stat}
+      {#each [{ label: 'Models', value: comma(configuredModels.length), color: 'var(--accent-primary)' }, { label: 'Samples', value: comma(totalSamples / configuredModels.length), color: 'var(--accent-tertiary)' }, { label: 'Total Cost', value: costCents(totalCost), color: 'var(--accent-secondary)' }] as stat}
         <div class="rounded-xl border border-[var(--border-card)] bg-[var(--bg-surface)] p-4">
           <p
             class="mb-1 font-mono text-[10px] tracking-wider uppercase"
@@ -384,7 +384,7 @@
                   </div>
 
                   <div class="grid grid-cols-2 gap-2">
-                    {#each [{ label: 'CER Mean', value: pct(row.summary.cer_mean), color: 'var(--accent-primary)' }, { label: 'WER Mean', value: pct(row.summary.wer_mean), color: 'var(--accent-secondary)' }, { label: 'Cost / sample', value: cost(row.costPerSample), color: 'var(--accent-secondary)' }, { label: 'Latency / sample', value: duration(row.latencyPerSample), color: 'var(--accent-primary)' }] as card}
+                    {#each [{ label: 'CER Mean', value: pct(row.summary.cer_mean), color: 'var(--accent-primary)' }, { label: 'WER Mean', value: pct(row.summary.wer_mean), color: 'var(--accent-secondary)' }, { label: 'Cost / sample', value: costCents(row.costPerSample), color: 'var(--accent-secondary)' }, { label: 'Latency / sample', value: duration(row.latencyPerSample), color: 'var(--accent-primary)' }] as card}
                       <div
                         class="rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] p-2.5"
                       >
@@ -737,7 +737,7 @@
           </div>
 
           <div class="grid grid-cols-2 gap-3">
-            {#each [{ label: 'CER Mean', value: pct(activeDetail.model.summary.cer_mean), color: 'var(--accent-primary)' }, { label: 'WER Mean', value: pct(activeDetail.model.summary.wer_mean), color: 'var(--accent-secondary)' }, { label: 'Cost / sample', value: cost(activeDetail.model.costPerSample), color: 'var(--accent-secondary)' }, { label: 'Latency / sample', value: duration(activeDetail.model.latencyPerSample), color: 'var(--accent-primary)' }] as card}
+            {#each [{ label: 'CER Mean', value: pct(activeDetail.model.summary.cer_mean), color: 'var(--accent-primary)' }, { label: 'WER Mean', value: pct(activeDetail.model.summary.wer_mean), color: 'var(--accent-secondary)' }, { label: 'Cost / sample', value: costCents(activeDetail.model.costPerSample), color: 'var(--accent-secondary)' }, { label: 'Latency / sample', value: duration(activeDetail.model.latencyPerSample), color: 'var(--accent-primary)' }] as card}
               <div class="rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] p-3">
                 <p
                   class="mb-0.5 font-mono text-[9px] tracking-wider uppercase"

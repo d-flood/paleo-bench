@@ -2,6 +2,7 @@ import re
 import tomllib
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Literal
 
 
 class ConfigError(Exception):
@@ -20,6 +21,7 @@ class SampleConfig:
     image_url: str
     ground_truth: Path
     label: str = ""
+    side: Literal["verso", "recto"] | None = None
     cached_image: Path | None = None
 
 
@@ -121,7 +123,20 @@ def load_config(path: "str | Path") -> BenchConfig:
             if not gt_path.exists():
                 raise ConfigError(f"Ground truth file not found: {gt_path}")
             label = s.get("label", "")
-            samples.append(SampleConfig(image_url=image_url, ground_truth=gt_path, label=label))
+            side = s.get("side")
+            if side is not None:
+                if side not in ("verso", "recto"):
+                    raise ConfigError(
+                        f"Sample in group '{g['name']}' has invalid side '{side}'; expected 'verso' or 'recto'"
+                    )
+            samples.append(
+                SampleConfig(
+                    image_url=image_url,
+                    ground_truth=gt_path,
+                    label=label,
+                    side=side,
+                )
+            )
         groups.append(GroupConfig(name=g["name"], samples=samples))
 
     return BenchConfig(
