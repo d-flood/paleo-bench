@@ -34,6 +34,13 @@ export function formatDate(iso: string): string {
   });
 }
 
+/** Normalize a value where lower is better to 0–1 (lower input = higher output) */
+export function normalizeInverted(value: number, min: number, max: number): number {
+  if (max === min) return 0.5;
+  const t = (value - min) / (max - min);
+  return 1 - Math.min(Math.max(t, 0), 1);
+}
+
 /** Clamp a CER/WER value for display (cap at 1.0 for gauges) */
 export function clampScore(n: number): number {
   return Math.min(n, 1);

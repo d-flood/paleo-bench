@@ -4,9 +4,9 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "gen:results-version": "node scripts/generate-results-version.mjs",
-    "build": "node scripts/generate-results-version.mjs && vite build",
+    "dev": "node scripts/split-results-for-site.mjs && vite dev",
+    "gen:site-data": "node scripts/split-results-for-site.mjs",
+    "build": "node scripts/split-results-for-site.mjs && vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "diff": "^8.0.3",
+    "phosphor-svelte": "^3.1.0",
     "triiiceratops": "^0.16.10"
   }
 }

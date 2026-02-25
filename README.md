@@ -2,6 +2,14 @@
 
 Static SvelteKit site for viewing benchmark output stored in `static/results.json`.
 
+At build/dev startup, `scripts/split-results-for-site.mjs` derives lightweight site artifacts:
+
+- `static/site-data/summary.json`
+- `static/site-data/compare-index.json`
+- `static/site-data/samples/*.json`
+
+This keeps the initial HTML/data payload small while preserving an interactive compare view.
+
 ## Local development
 
 ```sh
@@ -15,16 +23,17 @@ bun run dev
 bun run build
 ```
 
-The build runs `scripts/generate-results-version.mjs` before `vite build`, generating
-`static/results.version.json` from the current `static/results.json`.
+The build runs `scripts/split-results-for-site.mjs` before `vite build`, generating
+`static/site-data/*` from the current `static/results.json`.
 
 ## Update benchmark results
 
 Benchmark execution is manual. After running the benchmark locally:
 
 1. Replace `static/results.json` with the new output.
-2. Commit the updated `static/results.json` (and generated `static/results.version.json` if changed).
-3. Push to `main` to trigger deployment.
+2. Run `bun run gen:site-data` (or run `bun run build`, which generates site data automatically).
+3. Commit the updated `static/results.json` and generated `static/site-data/*`.
+4. Push to `main` to trigger deployment.
 
 If you edited only ground-truth text and want to recompute comparisons without calling models again:
 

@@ -1,0 +1,2450 @@
+{
+  "benchmark": {
+    "name": "Paleo Benchmark Run",
+    "timestamp": "2026-02-24T21:19:06.915409+00:00",
+    "total_duration_seconds": 65.554
+  },
+  "model_summaries": {
+    "Gemini 3 Flash (high)": {
+      "cer_mean": 0.06214806516655893,
+      "cer_median": 0.061305207646671064,
+      "cer_min": 0.023408239700374533,
+      "cer_max": 0.09808259587020648,
+      "wer_mean": 0.23452696716222154,
+      "wer_median": 0.2356687898089172,
+      "wer_min": 0.05952380952380952,
+      "wer_max": 0.4,
+      "cer_case_insensitive_mean": 0.06127934998905912,
+      "cer_case_insensitive_median": 0.06064601186552406,
+      "cer_case_insensitive_min": 0.023408239700374533,
+      "cer_case_insensitive_max": 0.09660766961651918,
+      "wer_case_insensitive_mean": 0.23138728094610223,
+      "wer_case_insensitive_median": 0.22929936305732485,
+      "wer_case_insensitive_min": 0.05952380952380952,
+      "wer_case_insensitive_max": 0.395,
+      "normalized_levenshtein_similarity_mean": 0.9389113146628417,
+      "normalized_levenshtein_similarity_median": 0.9415829145728644,
+      "normalized_levenshtein_similarity_min": 0.9019174041297935,
+      "normalized_levenshtein_similarity_max": 0.9768518518518519,
+      "levenshtein_distance_mean": 83.4,
+      "levenshtein_distance_median": 90,
+      "levenshtein_distance_min": 25,
+      "levenshtein_distance_max": 133,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6807,
+      "total_output_tokens": 71769,
+      "total_tokens": 78576,
+      "total_cost": 0.21871,
+      "total_latency_seconds": 411.102
+    },
+    "Gemini 3 Flash (low)": {
+      "cer_mean": 0.05464403240753128,
+      "cer_median": 0.049000644745325596,
+      "cer_min": 0.008426966292134831,
+      "cer_max": 0.13716814159292035,
+      "wer_mean": 0.21636939020869647,
+      "wer_median": 0.19745222929936307,
+      "wer_min": 0.047619047619047616,
+      "wer_max": 0.5,
+      "cer_case_insensitive_mean": 0.05391702967317997,
+      "cer_case_insensitive_median": 0.049000644745325596,
+      "cer_case_insensitive_min": 0.008426966292134831,
+      "cer_case_insensitive_max": 0.1364306784660767,
+      "wer_case_insensitive_mean": 0.2124981022609754,
+      "wer_case_insensitive_median": 0.1910828025477707,
+      "wer_case_insensitive_min": 0.03463203463203463,
+      "wer_case_insensitive_max": 0.5,
+      "normalized_levenshtein_similarity_mean": 0.9461467169872854,
+      "normalized_levenshtein_similarity_median": 0.9509993552546744,
+      "normalized_levenshtein_similarity_min": 0.8653149891383056,
+      "normalized_levenshtein_similarity_max": 0.9915730337078652,
+      "levenshtein_distance_mean": 72.2,
+      "levenshtein_distance_median": 74,
+      "levenshtein_distance_min": 9,
+      "levenshtein_distance_max": 186,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6807,
+      "total_output_tokens": 3085,
+      "total_tokens": 9892,
+      "total_cost": 0.012658,
+      "total_latency_seconds": 28.048
+    },
+    "GPT-4.1": {
+      "cer_mean": 0.4855316769641425,
+      "cer_median": 0.5809155383623469,
+      "cer_min": 0.051417270929466054,
+      "cer_max": 0.6843657817109144,
+      "wer_mean": 0.7967388455301893,
+      "wer_median": 0.9236947791164659,
+      "wer_min": 0.2510822510822511,
+      "wer_max": 1,
+      "cer_case_insensitive_mean": 0.48506835254225,
+      "cer_case_insensitive_median": 0.5809155383623469,
+      "cer_case_insensitive_min": 0.05075807514831905,
+      "cer_case_insensitive_max": 0.6836283185840708,
+      "wer_case_insensitive_mean": 0.7958730446643884,
+      "wer_case_insensitive_median": 0.9236947791164659,
+      "wer_case_insensitive_min": 0.24675324675324675,
+      "wer_case_insensitive_max": 1,
+      "normalized_levenshtein_similarity_mean": 0.5168699458608281,
+      "normalized_levenshtein_similarity_median": 0.4190844616376531,
+      "normalized_levenshtein_similarity_min": 0.31563421828908556,
+      "normalized_levenshtein_similarity_max": 0.948582729070534,
+      "levenshtein_distance_mean": 620.4,
+      "levenshtein_distance_median": 709,
+      "levenshtein_distance_min": 78,
+      "levenshtein_distance_max": 928,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6920,
+      "total_output_tokens": 2760,
+      "total_tokens": 9680,
+      "total_cost": 0.03592,
+      "total_latency_seconds": 86.837
+    },
+    "Haiku 4.5": {
+      "cer_mean": 0.5546018965838553,
+      "cer_median": 0.5575221238938053,
+      "cer_min": 0.5115359261700725,
+      "cer_max": 0.5998160073597056,
+      "wer_mean": 1.156473070709507,
+      "wer_median": 1.0995670995670996,
+      "wer_min": 0.9745222929936306,
+      "wer_max": 1.5297619047619047,
+      "cer_case_insensitive_mean": 0.5546018965838553,
+      "cer_case_insensitive_median": 0.5575221238938053,
+      "cer_case_insensitive_min": 0.5115359261700725,
+      "cer_case_insensitive_max": 0.5998160073597056,
+      "wer_case_insensitive_mean": 1.156473070709507,
+      "wer_case_insensitive_median": 1.0995670995670996,
+      "wer_case_insensitive_min": 0.9745222929936306,
+      "wer_case_insensitive_max": 1.5297619047619047,
+      "normalized_levenshtein_similarity_mean": 0.44539810341614466,
+      "normalized_levenshtein_similarity_median": 0.4424778761061947,
+      "normalized_levenshtein_similarity_min": 0.40018399264029436,
+      "normalized_levenshtein_similarity_max": 0.4884640738299275,
+      "levenshtein_distance_mean": 724.4,
+      "levenshtein_distance_median": 756,
+      "levenshtein_distance_min": 607,
+      "levenshtein_distance_max": 831,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 9230,
+      "total_output_tokens": 5046,
+      "total_tokens": 14276,
+      "total_cost": 0.03446,
+      "total_latency_seconds": 108.452
+    },
+    "Gemini 3.1 Pro (high)": {
+      "cer_mean": 0.08190025713752673,
+      "cer_median": 0.051417270929466054,
+      "cer_min": 0.0046816479400749065,
+      "cer_max": 0.22640117994100295,
+      "wer_mean": 0.3229661303830592,
+      "wer_median": 0.15151515151515152,
+      "wer_min": 0.011904761904761904,
+      "wer_max": 1,
+      "cer_case_insensitive_mean": 0.08125294007533981,
+      "cer_case_insensitive_median": 0.05075807514831905,
+      "cer_case_insensitive_min": 0.0046816479400749065,
+      "cer_case_insensitive_max": 0.22566371681415928,
+      "wer_case_insensitive_mean": 0.31815743044973344,
+      "wer_case_insensitive_median": 0.14285714285714285,
+      "wer_case_insensitive_min": 0.011904761904761904,
+      "wer_case_insensitive_max": 0.995,
+      "normalized_levenshtein_similarity_mean": 0.9192918153237477,
+      "normalized_levenshtein_similarity_median": 0.950632911392405,
+      "normalized_levenshtein_similarity_min": 0.773598820058997,
+      "normalized_levenshtein_similarity_max": 0.9953183520599251,
+      "levenshtein_distance_mean": 109.2,
+      "levenshtein_distance_median": 78,
+      "levenshtein_distance_min": 5,
+      "levenshtein_distance_max": 307,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6807,
+      "total_output_tokens": 77382,
+      "total_tokens": 84189,
+      "total_cost": 0.942198,
+      "total_latency_seconds": 823.713
+    },
+    "Sonnet 4.6": {
+      "cer_mean": 0.21943137494328274,
+      "cer_median": 0.19342359767891681,
+      "cer_min": 0.06921555702043507,
+      "cer_max": 0.4498525073746313,
+      "wer_mean": 0.6570747401883155,
+      "wer_median": 0.6560509554140127,
+      "wer_min": 0.23376623376623376,
+      "wer_max": 1.0200803212851406,
+      "cer_case_insensitive_mean": 0.21928388231791401,
+      "cer_case_insensitive_median": 0.19342359767891681,
+      "cer_case_insensitive_min": 0.06921555702043507,
+      "cer_case_insensitive_max": 0.4491150442477876,
+      "wer_case_insensitive_mean": 0.6570747401883155,
+      "wer_case_insensitive_median": 0.6560509554140127,
+      "wer_case_insensitive_min": 0.23376623376623376,
+      "wer_case_insensitive_max": 1.0200803212851406,
+      "normalized_levenshtein_similarity_mean": 0.7819399117566798,
+      "normalized_levenshtein_similarity_median": 0.8134328358208955,
+      "normalized_levenshtein_similarity_min": 0.5501474926253687,
+      "normalized_levenshtein_similarity_max": 0.930784442979565,
+      "levenshtein_distance_mean": 286,
+      "levenshtein_distance_median": 239,
+      "levenshtein_distance_min": 105,
+      "levenshtein_distance_max": 610,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 9235,
+      "total_output_tokens": 4936,
+      "total_tokens": 14171,
+      "total_cost": 0.101745,
+      "total_latency_seconds": 204.491
+    },
+    "Sonnet 4.6 (thinking)": {
+      "cer_mean": 0.25782433195817306,
+      "cer_median": 0.2842686292548298,
+      "cer_min": 0.07185234014502308,
+      "cer_max": 0.45427728613569324,
+      "wer_mean": 0.9198649926033857,
+      "wer_median": 0.955,
+      "wer_min": 0.2554112554112554,
+      "wer_max": 1.7228915662650603,
+      "cer_case_insensitive_mean": 0.25749284669250994,
+      "cer_case_insensitive_median": 0.28334866605335784,
+      "cer_case_insensitive_min": 0.07185234014502308,
+      "cer_case_insensitive_max": 0.45353982300884954,
+      "wer_case_insensitive_mean": 0.9198649926033857,
+      "wer_case_insensitive_median": 0.955,
+      "wer_case_insensitive_min": 0.2554112554112554,
+      "wer_case_insensitive_max": 1.7228915662650603,
+      "normalized_levenshtein_similarity_mean": 0.7522755206855527,
+      "normalized_levenshtein_similarity_median": 0.731537793223284,
+      "normalized_levenshtein_similarity_min": 0.5457227138643068,
+      "normalized_levenshtein_similarity_max": 0.9281476598549769,
+      "levenshtein_distance_mean": 339.2,
+      "levenshtein_distance_median": 309,
+      "levenshtein_distance_min": 109,
+      "levenshtein_distance_max": 616,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 9380,
+      "total_output_tokens": 12298,
+      "total_tokens": 21678,
+      "total_cost": 0.21261,
+      "total_latency_seconds": 257.723
+    },
+    "Opus 4.6 (thinking)": {
+      "cer_mean": 0.1541235215049498,
+      "cer_median": 0.12250161186331399,
+      "cer_min": 0.03955174686882004,
+      "cer_max": 0.3665191740412979,
+      "wer_mean": 0.5032679421466161,
+      "wer_median": 0.4819277108433735,
+      "wer_min": 0.16883116883116883,
+      "wer_max": 0.935,
+      "cer_case_insensitive_mean": 0.15384418972335168,
+      "cer_case_insensitive_median": 0.12250161186331399,
+      "cer_case_insensitive_min": 0.03889255108767304,
+      "cer_case_insensitive_max": 0.36578171091445427,
+      "wer_case_insensitive_mean": 0.5024021412808153,
+      "wer_case_insensitive_median": 0.4819277108433735,
+      "wer_case_insensitive_min": 0.1645021645021645,
+      "wer_case_insensitive_max": 0.935,
+      "normalized_levenshtein_similarity_mean": 0.8458764784950502,
+      "normalized_levenshtein_similarity_median": 0.877498388136686,
+      "normalized_levenshtein_similarity_min": 0.6334808259587021,
+      "normalized_levenshtein_similarity_max": 0.96044825313118,
+      "levenshtein_distance_mean": 201.8,
+      "levenshtein_distance_median": 190,
+      "levenshtein_distance_min": 60,
+      "levenshtein_distance_max": 497,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 9380,
+      "total_output_tokens": 4868,
+      "total_tokens": 14248,
+      "total_cost": 0.1686,
+      "total_latency_seconds": 288.499
+    },
+    "GPT-5.2 (low)": {
+      "cer_mean": 0.289113773200448,
+      "cer_median": 0.1441947565543071,
+      "cer_min": 0.01911667765326302,
+      "cer_max": 0.7138643067846607,
+      "wer_mean": 0.4993442888935177,
+      "wer_median": 0.37751004016064255,
+      "wer_min": 0.09523809523809523,
+      "wer_max": 0.945,
+      "cer_case_insensitive_mean": 0.28860740220901265,
+      "cer_case_insensitive_median": 0.14232209737827714,
+      "cer_case_insensitive_min": 0.01845748187211602,
+      "cer_case_insensitive_max": 0.7138643067846607,
+      "wer_case_insensitive_mean": 0.4960975356467644,
+      "wer_case_insensitive_median": 0.37751004016064255,
+      "wer_case_insensitive_min": 0.09090909090909091,
+      "wer_case_insensitive_max": 0.945,
+      "normalized_levenshtein_similarity_mean": 0.7108887454659094,
+      "normalized_levenshtein_similarity_median": 0.8558052434456929,
+      "normalized_levenshtein_similarity_min": 0.28613569321533927,
+      "normalized_levenshtein_similarity_max": 0.9808959156785244,
+      "levenshtein_distance_mean": 364,
+      "levenshtein_distance_median": 171,
+      "levenshtein_distance_min": 29,
+      "levenshtein_distance_max": 968,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 10158,
+      "total_output_tokens": 6786,
+      "total_tokens": 16944,
+      "total_cost": 0.112781,
+      "total_latency_seconds": 146.249
+    },
+    "Gemini 3.1 Pro (low)": {
+      "cer_mean": 0.09278202808411509,
+      "cer_median": 0.06526038233355307,
+      "cer_min": 0.0046816479400749065,
+      "cer_max": 0.25737463126843657,
+      "wer_mean": 0.37512705300480603,
+      "wer_median": 0.2727272727272727,
+      "wer_min": 0.02976190476190476,
+      "wer_max": 1,
+      "cer_case_insensitive_mean": 0.09248704283337764,
+      "cer_case_insensitive_median": 0.06526038233355307,
+      "cer_case_insensitive_min": 0.0046816479400749065,
+      "cer_case_insensitive_max": 0.2558997050147493,
+      "wer_case_insensitive_mean": 0.37512705300480603,
+      "wer_case_insensitive_median": 0.2727272727272727,
+      "wer_case_insensitive_min": 0.02976190476190476,
+      "wer_case_insensitive_max": 1,
+      "normalized_levenshtein_similarity_mean": 0.9076860708218306,
+      "normalized_levenshtein_similarity_median": 0.9355888093689004,
+      "normalized_levenshtein_similarity_min": 0.7426253687315634,
+      "normalized_levenshtein_similarity_max": 0.9953183520599251,
+      "levenshtein_distance_mean": 125.8,
+      "levenshtein_distance_median": 92,
+      "levenshtein_distance_min": 5,
+      "levenshtein_distance_max": 349,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6807,
+      "total_output_tokens": 3229,
+      "total_tokens": 10036,
+      "total_cost": 0.052362,
+      "total_latency_seconds": 60.707
+    },
+    "Gemini 3 Pro (high)": {
+      "cer_mean": 0.05582916736806229,
+      "cer_median": 0.031835205992509365,
+      "cer_min": 0.017798286090969017,
+      "cer_max": 0.11504424778761062,
+      "wer_mean": 0.20739293712196788,
+      "wer_median": 0.08928571428571429,
+      "wer_min": 0.0735930735930736,
+      "wer_max": 0.48,
+      "cer_case_insensitive_mean": 0.05510505472482109,
+      "cer_case_insensitive_median": 0.031835205992509365,
+      "cer_case_insensitive_min": 0.016479894528675015,
+      "cer_case_insensitive_max": 0.11430678466076696,
+      "wer_case_insensitive_mean": 0.20358423718864205,
+      "wer_case_insensitive_median": 0.08928571428571429,
+      "wer_case_insensitive_min": 0.06493506493506493,
+      "wer_case_insensitive_max": 0.48,
+      "normalized_levenshtein_similarity_mean": 0.9445564330859928,
+      "normalized_levenshtein_similarity_median": 0.9681647940074907,
+      "normalized_levenshtein_similarity_min": 0.8849557522123894,
+      "normalized_levenshtein_similarity_max": 0.9823644676681907,
+      "levenshtein_distance_mean": 70.2,
+      "levenshtein_distance_median": 34,
+      "levenshtein_distance_min": 27,
+      "levenshtein_distance_max": 156,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6807,
+      "total_output_tokens": 66194,
+      "total_tokens": 73001,
+      "total_cost": 0.807942,
+      "total_latency_seconds": 645.657
+    },
+    "GPT-5.2 (high)": {
+      "cer_mean": 0.23900290657345874,
+      "cer_median": 0.23220973782771537,
+      "cer_min": 0.037574159525379035,
+      "cer_max": 0.5117994100294986,
+      "wer_mean": 0.5452400353336583,
+      "wer_median": 0.5476190476190477,
+      "wer_min": 0.22077922077922077,
+      "wer_max": 0.95,
+      "cer_case_insensitive_mean": 0.23814695477398815,
+      "cer_case_insensitive_median": 0.23220973782771537,
+      "cer_case_insensitive_min": 0.035596572181938034,
+      "cer_case_insensitive_max": 0.5110619469026548,
+      "wer_case_insensitive_mean": 0.5452400353336583,
+      "wer_case_insensitive_median": 0.5476190476190477,
+      "wer_case_insensitive_min": 0.22077922077922077,
+      "wer_case_insensitive_max": 0.95,
+      "normalized_levenshtein_similarity_mean": 0.7613851876958911,
+      "normalized_levenshtein_similarity_median": 0.7697307335190343,
+      "normalized_levenshtein_similarity_min": 0.4882005899705014,
+      "normalized_levenshtein_similarity_max": 0.962425840474621,
+      "levenshtein_distance_mean": 296.8,
+      "levenshtein_distance_median": 248,
+      "levenshtein_distance_min": 57,
+      "levenshtein_distance_max": 694,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 10158,
+      "total_output_tokens": 27542,
+      "total_tokens": 37700,
+      "total_cost": 0.400945,
+      "total_latency_seconds": 511.043
+    },
+    "GPT-5 Mini (high)": {
+      "cer_mean": 0.5359598438201213,
+      "cer_median": 0.5306254029658285,
+      "cer_min": 0.4747191011235955,
+      "cer_max": 0.5924563017479301,
+      "wer_mean": 0.9506773142699012,
+      "wer_median": 0.948051948051948,
+      "wer_min": 0.910828025477707,
+      "wer_max": 1,
+      "cer_case_insensitive_mean": 0.5356440120235975,
+      "cer_case_insensitive_median": 0.5306254029658285,
+      "cer_case_insensitive_min": 0.4747191011235955,
+      "cer_case_insensitive_max": 0.5915363385464582,
+      "wer_case_insensitive_mean": 0.9506773142699012,
+      "wer_case_insensitive_median": 0.948051948051948,
+      "wer_case_insensitive_min": 0.910828025477707,
+      "wer_case_insensitive_max": 1,
+      "normalized_levenshtein_similarity_mean": 0.46469061140595147,
+      "normalized_levenshtein_similarity_median": 0.4693745970341715,
+      "normalized_levenshtein_similarity_min": 0.41079597438243365,
+      "normalized_levenshtein_similarity_max": 0.5252808988764045,
+      "levenshtein_distance_mean": 704.2,
+      "levenshtein_distance_median": 752,
+      "levenshtein_distance_min": 507,
+      "levenshtein_distance_max": 823,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 10158,
+      "total_output_tokens": 20916,
+      "total_tokens": 31074,
+      "total_cost": 0.044371,
+      "total_latency_seconds": 355.91
+    },
+    "Haiku 4.5 (thinking)": {
+      "cer_mean": 0.6034617738547406,
+      "cer_median": 0.6032448377581121,
+      "cer_min": 0.4963744232036915,
+      "cer_max": 0.7865168539325843,
+      "wer_mean": 1.477714390027643,
+      "wer_median": 1.1927710843373494,
+      "wer_min": 0.961038961038961,
+      "wer_max": 3.0297619047619047,
+      "cer_case_insensitive_mean": 0.6030506029169131,
+      "cer_case_insensitive_median": 0.6025073746312685,
+      "cer_case_insensitive_min": 0.4950560316413975,
+      "cer_case_insensitive_max": 0.7865168539325843,
+      "wer_case_insensitive_mean": 1.4768485891618421,
+      "wer_case_insensitive_median": 1.1927710843373494,
+      "wer_case_insensitive_min": 0.9567099567099567,
+      "wer_case_insensitive_max": 3.0297619047619047,
+      "normalized_levenshtein_similarity_mean": 0.4270491441015875,
+      "normalized_levenshtein_similarity_median": 0.3967551622418879,
+      "normalized_levenshtein_similarity_min": 0.36603773584905663,
+      "normalized_levenshtein_similarity_max": 0.5036255767963085,
+      "levenshtein_distance_mean": 777,
+      "levenshtein_distance_median": 817,
+      "levenshtein_distance_min": 657,
+      "levenshtein_distance_max": 840,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 9380,
+      "total_output_tokens": 15123,
+      "total_tokens": 24503,
+      "total_cost": 0.084995,
+      "total_latency_seconds": 165.023
+    },
+    "Gemini 3 Pro (low)": {
+      "cer_mean": 0.05266247972354413,
+      "cer_median": 0.025708635464733027,
+      "cer_min": 0.009363295880149813,
+      "cer_max": 0.12831858407079647,
+      "wer_mean": 0.17801345376542982,
+      "wer_median": 0.0735930735930736,
+      "wer_min": 0.023809523809523808,
+      "wer_max": 0.48,
+      "cer_case_insensitive_mean": 0.05191982352005348,
+      "cer_case_insensitive_median": 0.024390243902439025,
+      "cer_case_insensitive_min": 0.009363295880149813,
+      "cer_case_insensitive_max": 0.12684365781710916,
+      "wer_case_insensitive_mean": 0.17500796668350962,
+      "wer_case_insensitive_median": 0.06493506493506493,
+      "wer_case_insensitive_min": 0.023809523809523808,
+      "wer_case_insensitive_max": 0.48,
+      "normalized_levenshtein_similarity_mean": 0.9483957339591832,
+      "normalized_levenshtein_similarity_median": 0.9747081712062257,
+      "normalized_levenshtein_similarity_min": 0.8732702112163147,
+      "normalized_levenshtein_similarity_max": 0.9906367041198502,
+      "levenshtein_distance_mean": 67.4,
+      "levenshtein_distance_median": 39,
+      "levenshtein_distance_min": 10,
+      "levenshtein_distance_max": 174,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 6807,
+      "total_output_tokens": 4159,
+      "total_tokens": 10966,
+      "total_cost": 0.063522,
+      "total_latency_seconds": 66.812
+    },
+    "Opus 4.6": {
+      "cer_mean": 0.17519250611860082,
+      "cer_median": 0.11667765326301911,
+      "cer_min": 0.04962546816479401,
+      "cer_max": 0.4033923303834808,
+      "wer_mean": 0.5965105461136464,
+      "wer_median": 0.5627705627705628,
+      "wer_min": 0.18452380952380953,
+      "wer_max": 0.935,
+      "cer_case_insensitive_mean": 0.1750606669623714,
+      "cer_case_insensitive_median": 0.11601845748187212,
+      "cer_case_insensitive_min": 0.04962546816479401,
+      "cer_case_insensitive_max": 0.4033923303834808,
+      "wer_case_insensitive_mean": 0.5956447452478456,
+      "wer_case_insensitive_median": 0.5584415584415584,
+      "wer_case_insensitive_min": 0.18452380952380953,
+      "wer_case_insensitive_max": 0.935,
+      "normalized_levenshtein_similarity_mean": 0.8250088411388642,
+      "normalized_levenshtein_similarity_median": 0.8833223467369808,
+      "normalized_levenshtein_similarity_min": 0.5966076696165192,
+      "normalized_levenshtein_similarity_max": 0.950374531835206,
+      "levenshtein_distance_mean": 230,
+      "levenshtein_distance_median": 177,
+      "levenshtein_distance_min": 53,
+      "levenshtein_distance_max": 547,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 9235,
+      "total_output_tokens": 4817,
+      "total_tokens": 14052,
+      "total_cost": 0.1666,
+      "total_latency_seconds": 228.07
+    },
+    "GPT-5 Mini (low)": {
+      "cer_mean": 0.546684731331696,
+      "cer_median": 0.5335786568537259,
+      "cer_min": 0.48408239700374533,
+      "cer_max": 0.6312056737588653,
+      "wer_mean": 0.9363172767170925,
+      "wer_median": 0.922077922077922,
+      "wer_min": 0.8928571428571429,
+      "wer_max": 1,
+      "cer_case_insensitive_mean": 0.54590236666765,
+      "cer_case_insensitive_median": 0.5335786568537259,
+      "cer_case_insensitive_min": 0.48408239700374533,
+      "cer_case_insensitive_max": 0.6292714377820761,
+      "wer_case_insensitive_mean": 0.9363172767170925,
+      "wer_case_insensitive_median": 0.922077922077922,
+      "wer_case_insensitive_min": 0.8928571428571429,
+      "wer_case_insensitive_max": 1,
+      "normalized_levenshtein_similarity_mean": 0.4542844904322331,
+      "normalized_levenshtein_similarity_median": 0.46642134314627415,
+      "normalized_levenshtein_similarity_min": 0.3736404350607806,
+      "normalized_levenshtein_similarity_max": 0.5159176029962547,
+      "levenshtein_distance_mean": 725.4,
+      "levenshtein_distance_median": 757,
+      "levenshtein_distance_min": 517,
+      "levenshtein_distance_max": 979,
+      "samples_evaluated": 5,
+      "samples_failed": 0,
+      "total_input_tokens": 10158,
+      "total_output_tokens": 5130,
+      "total_tokens": 15288,
+      "total_cost": 0.0128,
+      "total_latency_seconds": 96.492
+    }
+  },
+  "model_order": [
+    "Opus 4.6",
+    "Sonnet 4.6",
+    "Haiku 4.5",
+    "Opus 4.6 (thinking)",
+    "Sonnet 4.6 (thinking)",
+    "Haiku 4.5 (thinking)",
+    "GPT-5.2 (low)",
+    "GPT-4.1",
+    "GPT-5 Mini (low)",
+    "GPT-5.2 (high)",
+    "GPT-5 Mini (high)",
+    "Gemini 3.1 Pro (low)",
+    "Gemini 3 Pro (low)",
+    "Gemini 3 Flash (low)",
+    "Gemini 3.1 Pro (high)",
+    "Gemini 3 Pro (high)",
+    "Gemini 3 Flash (high)"
+  ],
+  "quality_ranked_model_order": [
+    "Gemini 3 Pro (low)",
+    "Gemini 3 Flash (low)",
+    "Gemini 3 Pro (high)",
+    "Gemini 3 Flash (high)",
+    "Gemini 3.1 Pro (high)",
+    "Gemini 3.1 Pro (low)",
+    "Opus 4.6 (thinking)",
+    "Opus 4.6",
+    "Sonnet 4.6",
+    "GPT-5.2 (high)",
+    "Sonnet 4.6 (thinking)",
+    "GPT-5.2 (low)",
+    "GPT-4.1",
+    "GPT-5 Mini (high)",
+    "GPT-5 Mini (low)",
+    "Haiku 4.5",
+    "Haiku 4.5 (thinking)"
+  ],
+  "samples": [
+    {
+      "sampleId": "c57dc0c3d7e9",
+      "group": "Byzantine Greek",
+      "label": "GA 2523, 190r, Rom 5:18–6:13",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCGA2523/default/M_NT_GRC_GA2523_0190a/M_NT_GRC_GA2523_0190a/info.json",
+      "ground_truth_file": "data/grk_byz/GA2523_190r.txt",
+      "availableModels": [
+        "Gemini 3 Pro (low)",
+        "Gemini 3 Flash (low)",
+        "Gemini 3 Pro (high)",
+        "Gemini 3 Flash (high)",
+        "Gemini 3.1 Pro (high)",
+        "Gemini 3.1 Pro (low)",
+        "Opus 4.6 (thinking)",
+        "Opus 4.6",
+        "Sonnet 4.6",
+        "GPT-5.2 (high)",
+        "Sonnet 4.6 (thinking)",
+        "GPT-5.2 (low)",
+        "GPT-4.1",
+        "GPT-5 Mini (high)",
+        "GPT-5 Mini (low)",
+        "Haiku 4.5",
+        "Haiku 4.5 (thinking)"
+      ],
+      "resultsByModel": {
+        "Haiku 4.5": {
+          "model": "Haiku 4.5",
+          "error": null,
+          "metrics": {
+            "cer": 0.5357833655705996,
+            "wer": 1.1285140562248996,
+            "cer_case_insensitive": 0.5357833655705996,
+            "wer_case_insensitive": 1.1285140562248996,
+            "levenshtein_distance": 831,
+            "normalized_levenshtein_similarity": 0.4642166344294004,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1843,
+            "output_tokens": 1217,
+            "cost": 0.007928000000000001,
+            "latency_seconds": 26.631
+          }
+        },
+        "Opus 4.6": {
+          "model": "Opus 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.08639587362991619,
+            "wer": 0.46586345381526106,
+            "cer_case_insensitive": 0.08639587362991619,
+            "wer_case_insensitive": 0.46586345381526106,
+            "levenshtein_distance": 134,
+            "normalized_levenshtein_similarity": 0.9136041263700838,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 1067,
+            "cost": 0.035895,
+            "latency_seconds": 48.665
+          }
+        },
+        "Sonnet 4.6": {
+          "model": "Sonnet 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.19342359767891681,
+            "wer": 1.0200803212851406,
+            "cer_case_insensitive": 0.19342359767891681,
+            "wer_case_insensitive": 1.0200803212851406,
+            "levenshtein_distance": 300,
+            "normalized_levenshtein_similarity": 0.8134328358208955,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 1260,
+            "cost": 0.024432000000000002,
+            "latency_seconds": 48.859
+          }
+        },
+        "Opus 4.6 (thinking)": {
+          "model": "Opus 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.12250161186331399,
+            "wer": 0.4819277108433735,
+            "cer_case_insensitive": 0.12250161186331399,
+            "wer_case_insensitive": 0.4819277108433735,
+            "levenshtein_distance": 190,
+            "normalized_levenshtein_similarity": 0.877498388136686,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 1134,
+            "cost": 0.037715,
+            "latency_seconds": 48.569
+          }
+        },
+        "Sonnet 4.6 (thinking)": {
+          "model": "Sonnet 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.3120567375886525,
+            "wer": 1.7228915662650603,
+            "cer_case_insensitive": 0.3120567375886525,
+            "wer_case_insensitive": 1.7228915662650603,
+            "levenshtein_distance": 484,
+            "normalized_levenshtein_similarity": 0.7226361031518624,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 2585,
+            "cost": 0.044394,
+            "latency_seconds": 59.447
+          }
+        },
+        "GPT-4.1": {
+          "model": "GPT-4.1",
+          "error": null,
+          "metrics": {
+            "cer": 0.5809155383623469,
+            "wer": 0.9236947791164659,
+            "cer_case_insensitive": 0.5809155383623469,
+            "wer_case_insensitive": 0.9236947791164659,
+            "levenshtein_distance": 901,
+            "normalized_levenshtein_similarity": 0.4190844616376531,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1384,
+            "output_tokens": 598,
+            "cost": 0.007552,
+            "latency_seconds": 18.303
+          }
+        },
+        "Haiku 4.5 (thinking)": {
+          "model": "Haiku 4.5 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5267569310122502,
+            "wer": 1.1927710843373494,
+            "cer_case_insensitive": 0.5267569310122502,
+            "wer_case_insensitive": 1.1927710843373494,
+            "levenshtein_distance": 817,
+            "normalized_levenshtein_similarity": 0.4732430689877498,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 3323,
+            "cost": 0.018488,
+            "latency_seconds": 46.221
+          }
+        },
+        "GPT-5 Mini (low)": {
+          "model": "GPT-5 Mini (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.6312056737588653,
+            "wer": 0.9558232931726908,
+            "cer_case_insensitive": 0.6292714377820761,
+            "wer_case_insensitive": 0.9558232931726908,
+            "levenshtein_distance": 979,
+            "normalized_levenshtein_similarity": 0.3736404350607806,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 1337,
+            "cost": 0.0031810000000000002,
+            "latency_seconds": 26.072
+          }
+        },
+        "GPT-5.2 (low)": {
+          "model": "GPT-5.2 (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.1102514506769826,
+            "wer": 0.37751004016064255,
+            "cer_case_insensitive": 0.1102514506769826,
+            "wer_case_insensitive": 0.37751004016064255,
+            "levenshtein_distance": 171,
+            "normalized_levenshtein_similarity": 0.8897485493230174,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 1615,
+            "cost": 0.026158999999999998,
+            "latency_seconds": 30.858
+          }
+        },
+        "Gemini 3 Flash (low)": {
+          "model": "Gemini 3 Flash (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.049000644745325596,
+            "wer": 0.2891566265060241,
+            "cer_case_insensitive": 0.049000644745325596,
+            "wer_case_insensitive": 0.2891566265060241,
+            "levenshtein_distance": 76,
+            "normalized_levenshtein_similarity": 0.9509993552546744,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 737,
+            "cost": 0.0028905,
+            "latency_seconds": 6.024
+          }
+        },
+        "Gemini 3.1 Pro (low)": {
+          "model": "Gemini 3.1 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.05931656995486783,
+            "wer": 0.26104417670682734,
+            "cer_case_insensitive": 0.05931656995486783,
+            "wer_case_insensitive": 0.26104417670682734,
+            "levenshtein_distance": 92,
+            "normalized_levenshtein_similarity": 0.9421747328724073,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 813,
+            "cost": 0.012474,
+            "latency_seconds": 15.993
+          }
+        },
+        "Gemini 3 Pro (low)": {
+          "model": "Gemini 3 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.01160541586073501,
+            "wer": 0.0642570281124498,
+            "cer_case_insensitive": 0.01160541586073501,
+            "wer_case_insensitive": 0.0642570281124498,
+            "levenshtein_distance": 18,
+            "normalized_levenshtein_similarity": 0.988394584139265,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 964,
+            "cost": 0.014286,
+            "latency_seconds": 15.104
+          }
+        },
+        "GPT-5 Mini (high)": {
+          "model": "GPT-5 Mini (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5306254029658285,
+            "wer": 0.9718875502008032,
+            "cer_case_insensitive": 0.5306254029658285,
+            "wer_case_insensitive": 0.9718875502008032,
+            "levenshtein_distance": 823,
+            "normalized_levenshtein_similarity": 0.4693745970341715,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 4266,
+            "cost": 0.009039,
+            "latency_seconds": 78.111
+          }
+        },
+        "GPT-5.2 (high)": {
+          "model": "GPT-5.2 (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.07672469374597034,
+            "wer": 0.3453815261044177,
+            "cer_case_insensitive": 0.07607994842037395,
+            "wer_case_insensitive": 0.3453815261044177,
+            "levenshtein_distance": 119,
+            "normalized_levenshtein_similarity": 0.9232753062540296,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 6580,
+            "cost": 0.095669,
+            "latency_seconds": 126.867
+          }
+        },
+        "Gemini 3 Flash (high)": {
+          "model": "Gemini 3 Flash (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.058027079303675046,
+            "wer": 0.3172690763052209,
+            "cer_case_insensitive": 0.05673758865248227,
+            "wer_case_insensitive": 0.3172690763052209,
+            "levenshtein_distance": 90,
+            "normalized_levenshtein_similarity": 0.9421221864951769,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 18911,
+            "cost": 0.0574125,
+            "latency_seconds": 107.554
+          }
+        },
+        "Gemini 3 Pro (high)": {
+          "model": "Gemini 3 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.020631850419084462,
+            "wer": 0.08835341365461848,
+            "cer_case_insensitive": 0.019987105093488073,
+            "wer_case_insensitive": 0.08433734939759036,
+            "levenshtein_distance": 32,
+            "normalized_levenshtein_similarity": 0.9796048438495857,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 13082,
+            "cost": 0.159702,
+            "latency_seconds": 124.934
+          }
+        },
+        "Gemini 3.1 Pro (high)": {
+          "model": "Gemini 3.1 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.03868471953578337,
+            "wer": 0.08835341365461848,
+            "cer_case_insensitive": 0.03868471953578337,
+            "wer_case_insensitive": 0.08433734939759036,
+            "levenshtein_distance": 60,
+            "normalized_levenshtein_similarity": 0.9625468164794008,
+            "char_count_reference": 1551,
+            "word_count_reference": 276
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 16354,
+            "cost": 0.198966,
+            "latency_seconds": 176.277
+          }
+        }
+      }
+    },
+    {
+      "sampleId": "c8fac9323b3a",
+      "group": "Byzantine Greek",
+      "label": "GA 2523, 195v, Rom 12:1–17",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCGA2523/default/M_NT_GRC_GA2523_0195b/M_NT_GRC_GA2523_0195b/info.json",
+      "ground_truth_file": "data/grk_byz/GA2523_195v.txt",
+      "availableModels": [
+        "Gemini 3 Pro (low)",
+        "Gemini 3 Flash (low)",
+        "Gemini 3 Pro (high)",
+        "Gemini 3 Flash (high)",
+        "Gemini 3.1 Pro (high)",
+        "Gemini 3.1 Pro (low)",
+        "Opus 4.6 (thinking)",
+        "Opus 4.6",
+        "Sonnet 4.6",
+        "GPT-5.2 (high)",
+        "Sonnet 4.6 (thinking)",
+        "GPT-5.2 (low)",
+        "GPT-4.1",
+        "GPT-5 Mini (high)",
+        "GPT-5 Mini (low)",
+        "Haiku 4.5",
+        "Haiku 4.5 (thinking)"
+      ],
+      "resultsByModel": {
+        "Opus 4.6": {
+          "model": "Opus 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.11667765326301911,
+            "wer": 0.5627705627705628,
+            "cer_case_insensitive": 0.11601845748187212,
+            "wer_case_insensitive": 0.5584415584415584,
+            "levenshtein_distance": 177,
+            "normalized_levenshtein_similarity": 0.8833223467369808,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 1051,
+            "cost": 0.035495,
+            "latency_seconds": 44.895
+          }
+        },
+        "Haiku 4.5": {
+          "model": "Haiku 4.5",
+          "error": null,
+          "metrics": {
+            "cer": 0.5115359261700725,
+            "wer": 1.0995670995670996,
+            "cer_case_insensitive": 0.5115359261700725,
+            "wer_case_insensitive": 1.0995670995670996,
+            "levenshtein_distance": 776,
+            "normalized_levenshtein_similarity": 0.4884640738299275,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1843,
+            "output_tokens": 1137,
+            "cost": 0.007528000000000001,
+            "latency_seconds": 24.7
+          }
+        },
+        "Sonnet 4.6": {
+          "model": "Sonnet 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.06921555702043507,
+            "wer": 0.23376623376623376,
+            "cer_case_insensitive": 0.06921555702043507,
+            "wer_case_insensitive": 0.23376623376623376,
+            "levenshtein_distance": 105,
+            "normalized_levenshtein_similarity": 0.930784442979565,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 1062,
+            "cost": 0.021462000000000002,
+            "latency_seconds": 40.844
+          }
+        },
+        "Opus 4.6 (thinking)": {
+          "model": "Opus 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.03955174686882004,
+            "wer": 0.16883116883116883,
+            "cer_case_insensitive": 0.03889255108767304,
+            "wer_case_insensitive": 0.1645021645021645,
+            "levenshtein_distance": 60,
+            "normalized_levenshtein_similarity": 0.96044825313118,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 1075,
+            "cost": 0.03624,
+            "latency_seconds": 41.993
+          }
+        },
+        "Haiku 4.5 (thinking)": {
+          "model": "Haiku 4.5 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.4963744232036915,
+            "wer": 0.961038961038961,
+            "cer_case_insensitive": 0.4950560316413975,
+            "wer_case_insensitive": 0.9567099567099567,
+            "levenshtein_distance": 753,
+            "normalized_levenshtein_similarity": 0.5036255767963085,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 3376,
+            "cost": 0.018753000000000002,
+            "latency_seconds": 35.141
+          }
+        },
+        "GPT-4.1": {
+          "model": "GPT-4.1",
+          "error": null,
+          "metrics": {
+            "cer": 0.051417270929466054,
+            "wer": 0.2510822510822511,
+            "cer_case_insensitive": 0.05075807514831905,
+            "wer_case_insensitive": 0.24675324675324675,
+            "levenshtein_distance": 78,
+            "normalized_levenshtein_similarity": 0.948582729070534,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1384,
+            "output_tokens": 668,
+            "cost": 0.008112,
+            "latency_seconds": 15.705
+          }
+        },
+        "Sonnet 4.6 (thinking)": {
+          "model": "Sonnet 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.07185234014502308,
+            "wer": 0.2554112554112554,
+            "cer_case_insensitive": 0.07185234014502308,
+            "wer_case_insensitive": 0.2554112554112554,
+            "levenshtein_distance": 109,
+            "normalized_levenshtein_similarity": 0.9281476598549769,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 2098,
+            "cost": 0.037089,
+            "latency_seconds": 45.886
+          }
+        },
+        "GPT-5.2 (low)": {
+          "model": "GPT-5.2 (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.01911667765326302,
+            "wer": 0.09523809523809523,
+            "cer_case_insensitive": 0.01845748187211602,
+            "wer_case_insensitive": 0.09090909090909091,
+            "levenshtein_distance": 29,
+            "normalized_levenshtein_similarity": 0.9808959156785244,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 1695,
+            "cost": 0.027279,
+            "latency_seconds": 34.562
+          }
+        },
+        "Gemini 3.1 Pro (low)": {
+          "model": "Gemini 3.1 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.06526038233355307,
+            "wer": 0.2727272727272727,
+            "cer_case_insensitive": 0.06526038233355307,
+            "wer_case_insensitive": 0.2727272727272727,
+            "levenshtein_distance": 99,
+            "normalized_levenshtein_similarity": 0.9355888093689004,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 748,
+            "cost": 0.011694,
+            "latency_seconds": 13.327
+          }
+        },
+        "Gemini 3 Pro (low)": {
+          "model": "Gemini 3 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.025708635464733027,
+            "wer": 0.0735930735930736,
+            "cer_case_insensitive": 0.024390243902439025,
+            "wer_case_insensitive": 0.06493506493506493,
+            "levenshtein_distance": 39,
+            "normalized_levenshtein_similarity": 0.9747081712062257,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 990,
+            "cost": 0.014598,
+            "latency_seconds": 21.373
+          }
+        },
+        "GPT-5 Mini (low)": {
+          "model": "GPT-5 Mini (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.4990112063282795,
+            "wer": 0.922077922077922,
+            "cer_case_insensitive": 0.4970336189848385,
+            "wer_case_insensitive": 0.922077922077922,
+            "levenshtein_distance": 757,
+            "normalized_levenshtein_similarity": 0.5009887936717206,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 1339,
+            "cost": 0.003185,
+            "latency_seconds": 25.49
+          }
+        },
+        "Gemini 3 Flash (low)": {
+          "model": "Gemini 3 Flash (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.01054713249835201,
+            "wer": 0.047619047619047616,
+            "cer_case_insensitive": 0.008569545154911009,
+            "wer_case_insensitive": 0.03463203463203463,
+            "levenshtein_distance": 16,
+            "normalized_levenshtein_similarity": 0.989452867501648,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 698,
+            "cost": 0.0027735,
+            "latency_seconds": 6.764
+          }
+        },
+        "GPT-5 Mini (high)": {
+          "model": "GPT-5 Mini (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.4957152274225445,
+            "wer": 0.948051948051948,
+            "cer_case_insensitive": 0.4950560316413975,
+            "wer_case_insensitive": 0.948051948051948,
+            "levenshtein_distance": 752,
+            "normalized_levenshtein_similarity": 0.5042847725774555,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 4348,
+            "cost": 0.009203,
+            "latency_seconds": 64.554
+          }
+        },
+        "Gemini 3 Flash (high)": {
+          "model": "Gemini 3 Flash (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.061305207646671064,
+            "wer": 0.16017316017316016,
+            "cer_case_insensitive": 0.06064601186552406,
+            "wer_case_insensitive": 0.15584415584415584,
+            "levenshtein_distance": 93,
+            "normalized_levenshtein_similarity": 0.9415829145728644,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 15612,
+            "cost": 0.047515499999999995,
+            "latency_seconds": 88.72
+          }
+        },
+        "GPT-5.2 (high)": {
+          "model": "GPT-5.2 (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.037574159525379035,
+            "wer": 0.22077922077922077,
+            "cer_case_insensitive": 0.035596572181938034,
+            "wer_case_insensitive": 0.22077922077922077,
+            "levenshtein_distance": 57,
+            "normalized_levenshtein_similarity": 0.962425840474621,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 6811,
+            "cost": 0.098903,
+            "latency_seconds": 119.124
+          }
+        },
+        "Gemini 3 Pro (high)": {
+          "model": "Gemini 3 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.017798286090969017,
+            "wer": 0.0735930735930736,
+            "cer_case_insensitive": 0.016479894528675015,
+            "wer_case_insensitive": 0.06493506493506493,
+            "levenshtein_distance": 27,
+            "normalized_levenshtein_similarity": 0.9823644676681907,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 12485,
+            "cost": 0.152538,
+            "latency_seconds": 118.895
+          }
+        },
+        "Gemini 3.1 Pro (high)": {
+          "model": "Gemini 3.1 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.051417270929466054,
+            "wer": 0.15151515151515152,
+            "cer_case_insensitive": 0.05075807514831905,
+            "wer_case_insensitive": 0.14285714285714285,
+            "levenshtein_distance": 78,
+            "normalized_levenshtein_similarity": 0.950632911392405,
+            "char_count_reference": 1517,
+            "word_count_reference": 258
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 14795,
+            "cost": 0.18025800000000003,
+            "latency_seconds": 199.24
+          }
+        }
+      }
+    },
+    {
+      "sampleId": "7393ad297171",
+      "group": "Byzantine Greek",
+      "label": "GA L2010, 40v, Rom 14:17–18, 15:7–15",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCL2010/default/M_NT_GRC_L2010_0040b/M_NT_GRC_L2010_0040b/info.json",
+      "ground_truth_file": "data/grk_byz/GAL2010_40v.txt",
+      "availableModels": [
+        "Gemini 3 Pro (low)",
+        "Gemini 3 Flash (low)",
+        "Gemini 3 Pro (high)",
+        "Gemini 3 Flash (high)",
+        "Gemini 3.1 Pro (high)",
+        "Gemini 3.1 Pro (low)",
+        "Opus 4.6 (thinking)",
+        "Opus 4.6",
+        "Sonnet 4.6",
+        "GPT-5.2 (high)",
+        "Sonnet 4.6 (thinking)",
+        "GPT-5.2 (low)",
+        "GPT-4.1",
+        "GPT-5 Mini (high)",
+        "GPT-5 Mini (low)",
+        "Haiku 4.5",
+        "Haiku 4.5 (thinking)"
+      ],
+      "resultsByModel": {
+        "Opus 4.6": {
+          "model": "Opus 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.04962546816479401,
+            "wer": 0.18452380952380953,
+            "cer_case_insensitive": 0.04962546816479401,
+            "wer_case_insensitive": 0.18452380952380953,
+            "levenshtein_distance": 53,
+            "normalized_levenshtein_similarity": 0.950374531835206,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 741,
+            "cost": 0.027745,
+            "latency_seconds": 39.198
+          }
+        },
+        "Haiku 4.5": {
+          "model": "Haiku 4.5",
+          "error": null,
+          "metrics": {
+            "cer": 0.5683520599250936,
+            "wer": 1.5297619047619047,
+            "cer_case_insensitive": 0.5683520599250936,
+            "wer_case_insensitive": 1.5297619047619047,
+            "levenshtein_distance": 607,
+            "normalized_levenshtein_similarity": 0.43164794007490637,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1843,
+            "output_tokens": 841,
+            "cost": 0.006048,
+            "latency_seconds": 16.969
+          }
+        },
+        "Sonnet 4.6": {
+          "model": "Sonnet 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.1647940074906367,
+            "wer": 0.44047619047619047,
+            "cer_case_insensitive": 0.1647940074906367,
+            "wer_case_insensitive": 0.44047619047619047,
+            "levenshtein_distance": 176,
+            "normalized_levenshtein_similarity": 0.8352059925093633,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 739,
+            "cost": 0.016617,
+            "latency_seconds": 32.127
+          }
+        },
+        "GPT-5.2 (low)": {
+          "model": "GPT-5.2 (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.1441947565543071,
+            "wer": 0.3273809523809524,
+            "cer_case_insensitive": 0.14232209737827714,
+            "wer_case_insensitive": 0.31547619047619047,
+            "levenshtein_distance": 154,
+            "normalized_levenshtein_similarity": 0.8558052434456929,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 768,
+            "cost": 0.014301000000000001,
+            "latency_seconds": 20.477
+          }
+        },
+        "Sonnet 4.6 (thinking)": {
+          "model": "Sonnet 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.16666666666666666,
+            "wer": 0.49404761904761907,
+            "cer_case_insensitive": 0.16666666666666666,
+            "wer_case_insensitive": 0.49404761904761907,
+            "levenshtein_distance": 178,
+            "normalized_levenshtein_similarity": 0.8333333333333334,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 1465,
+            "cost": 0.027594,
+            "latency_seconds": 34.795
+          }
+        },
+        "Haiku 4.5 (thinking)": {
+          "model": "Haiku 4.5 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.7865168539325843,
+            "wer": 3.0297619047619047,
+            "cer_case_insensitive": 0.7865168539325843,
+            "wer_case_insensitive": 3.0297619047619047,
+            "levenshtein_distance": 840,
+            "normalized_levenshtein_similarity": 0.36603773584905663,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 4258,
+            "cost": 0.023163000000000003,
+            "latency_seconds": 33.041
+          }
+        },
+        "GPT-4.1": {
+          "model": "GPT-4.1",
+          "error": null,
+          "metrics": {
+            "cer": 0.6638576779026217,
+            "wer": 1,
+            "cer_case_insensitive": 0.6638576779026217,
+            "wer_case_insensitive": 1,
+            "levenshtein_distance": 709,
+            "normalized_levenshtein_similarity": 0.33614232209737827,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1384,
+            "output_tokens": 364,
+            "cost": 0.005679999999999999,
+            "latency_seconds": 14.457
+          }
+        },
+        "GPT-5 Mini (low)": {
+          "model": "GPT-5 Mini (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.48408239700374533,
+            "wer": 0.8928571428571429,
+            "cer_case_insensitive": 0.48408239700374533,
+            "wer_case_insensitive": 0.8928571428571429,
+            "levenshtein_distance": 517,
+            "normalized_levenshtein_similarity": 0.5159176029962547,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 1066,
+            "cost": 0.0026390000000000003,
+            "latency_seconds": 19.75
+          }
+        },
+        "Gemini 3.1 Pro (low)": {
+          "model": "Gemini 3.1 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.0046816479400749065,
+            "wer": 0.02976190476190476,
+            "cer_case_insensitive": 0.0046816479400749065,
+            "wer_case_insensitive": 0.02976190476190476,
+            "levenshtein_distance": 5,
+            "normalized_levenshtein_similarity": 0.9953183520599251,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 502,
+            "cost": 0.008742,
+            "latency_seconds": 9.165
+          }
+        },
+        "Gemini 3 Flash (low)": {
+          "model": "Gemini 3 Flash (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.008426966292134831,
+            "wer": 0.047619047619047616,
+            "cer_case_insensitive": 0.008426966292134831,
+            "wer_case_insensitive": 0.047619047619047616,
+            "levenshtein_distance": 9,
+            "normalized_levenshtein_similarity": 0.9915730337078652,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 492,
+            "cost": 0.0021555000000000003,
+            "latency_seconds": 4.754
+          }
+        },
+        "Gemini 3 Pro (low)": {
+          "model": "Gemini 3 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.009363295880149813,
+            "wer": 0.023809523809523808,
+            "cer_case_insensitive": 0.009363295880149813,
+            "wer_case_insensitive": 0.023809523809523808,
+            "levenshtein_distance": 10,
+            "normalized_levenshtein_similarity": 0.9906367041198502,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 609,
+            "cost": 0.010026,
+            "latency_seconds": 10.106
+          }
+        },
+        "Opus 4.6 (thinking)": {
+          "model": "Opus 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.05805243445692884,
+            "wer": 0.17261904761904762,
+            "cer_case_insensitive": 0.05805243445692884,
+            "wer_case_insensitive": 0.17261904761904762,
+            "levenshtein_distance": 62,
+            "normalized_levenshtein_similarity": 0.9419475655430711,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 760,
+            "cost": 0.028365,
+            "latency_seconds": 108.265
+          }
+        },
+        "GPT-5 Mini (high)": {
+          "model": "GPT-5 Mini (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.4747191011235955,
+            "wer": 0.9226190476190477,
+            "cer_case_insensitive": 0.4747191011235955,
+            "wer_case_insensitive": 0.9226190476190477,
+            "levenshtein_distance": 507,
+            "normalized_levenshtein_similarity": 0.5252808988764045,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 3950,
+            "cost": 0.008407,
+            "latency_seconds": 62.573
+          }
+        },
+        "GPT-5.2 (high)": {
+          "model": "GPT-5.2 (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.23220973782771537,
+            "wer": 0.5476190476190477,
+            "cer_case_insensitive": 0.23220973782771537,
+            "wer_case_insensitive": 0.5476190476190477,
+            "levenshtein_distance": 248,
+            "normalized_levenshtein_similarity": 0.7697307335190343,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 5773,
+            "cost": 0.084371,
+            "latency_seconds": 105.431
+          }
+        },
+        "Gemini 3.1 Pro (high)": {
+          "model": "Gemini 3.1 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.0046816479400749065,
+            "wer": 0.011904761904761904,
+            "cer_case_insensitive": 0.0046816479400749065,
+            "wer_case_insensitive": 0.011904761904761904,
+            "levenshtein_distance": 5,
+            "normalized_levenshtein_similarity": 0.9953183520599251,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 8647,
+            "cost": 0.106482,
+            "latency_seconds": 88.06
+          }
+        },
+        "Gemini 3 Flash (high)": {
+          "model": "Gemini 3 Flash (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.023408239700374533,
+            "wer": 0.05952380952380952,
+            "cer_case_insensitive": 0.023408239700374533,
+            "wer_case_insensitive": 0.05952380952380952,
+            "levenshtein_distance": 25,
+            "normalized_levenshtein_similarity": 0.9768518518518519,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 11346,
+            "cost": 0.0347175,
+            "latency_seconds": 63.408
+          }
+        },
+        "Gemini 3 Pro (high)": {
+          "model": "Gemini 3 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.031835205992509365,
+            "wer": 0.08928571428571429,
+            "cer_case_insensitive": 0.031835205992509365,
+            "wer_case_insensitive": 0.08928571428571429,
+            "levenshtein_distance": 34,
+            "normalized_levenshtein_similarity": 0.9681647940074907,
+            "char_count_reference": 1068,
+            "word_count_reference": 193
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 13093,
+            "cost": 0.159834,
+            "latency_seconds": 123.293
+          }
+        }
+      }
+    },
+    {
+      "sampleId": "eae1408cd5a5",
+      "group": "Byzantine Greek",
+      "label": "GA L587, p. 66, Rom 1:16–20",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCL587/default/M_NT_GRC_L587_0033b/M_NT_GRC_L587_0033b/info.json",
+      "ground_truth_file": "data/grk_byz/GAL587_p66.txt",
+      "availableModels": [
+        "Gemini 3 Pro (low)",
+        "Gemini 3 Flash (low)",
+        "Gemini 3 Pro (high)",
+        "Gemini 3 Flash (high)",
+        "Gemini 3.1 Pro (high)",
+        "Gemini 3.1 Pro (low)",
+        "Opus 4.6 (thinking)",
+        "Opus 4.6",
+        "Sonnet 4.6",
+        "GPT-5.2 (high)",
+        "Sonnet 4.6 (thinking)",
+        "GPT-5.2 (low)",
+        "GPT-4.1",
+        "GPT-5 Mini (high)",
+        "GPT-5 Mini (low)",
+        "Haiku 4.5",
+        "Haiku 4.5 (thinking)"
+      ],
+      "resultsByModel": {
+        "Opus 4.6": {
+          "model": "Opus 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.21987120515179392,
+            "wer": 0.8343949044585988,
+            "cer_case_insensitive": 0.21987120515179392,
+            "wer_case_insensitive": 0.8343949044585988,
+            "levenshtein_distance": 239,
+            "normalized_levenshtein_similarity": 0.7811355311355311,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 872,
+            "cost": 0.03102,
+            "latency_seconds": 43.385
+          }
+        },
+        "Sonnet 4.6": {
+          "model": "Sonnet 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.21987120515179392,
+            "wer": 0.6560509554140127,
+            "cer_case_insensitive": 0.21987120515179392,
+            "wer_case_insensitive": 0.6560509554140127,
+            "levenshtein_distance": 239,
+            "normalized_levenshtein_similarity": 0.7801287948482061,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1844,
+            "output_tokens": 781,
+            "cost": 0.017247,
+            "latency_seconds": 36.157
+          }
+        },
+        "Haiku 4.5": {
+          "model": "Haiku 4.5",
+          "error": null,
+          "metrics": {
+            "cer": 0.5998160073597056,
+            "wer": 0.9745222929936306,
+            "cer_case_insensitive": 0.5998160073597056,
+            "wer_case_insensitive": 0.9745222929936306,
+            "levenshtein_distance": 652,
+            "normalized_levenshtein_similarity": 0.40018399264029436,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1843,
+            "output_tokens": 769,
+            "cost": 0.005688,
+            "latency_seconds": 17.661
+          }
+        },
+        "Opus 4.6 (thinking)": {
+          "model": "Opus 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.18399264029438822,
+            "wer": 0.7579617834394905,
+            "cer_case_insensitive": 0.18399264029438822,
+            "wer_case_insensitive": 0.7579617834394905,
+            "levenshtein_distance": 200,
+            "normalized_levenshtein_similarity": 0.8160073597056118,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 814,
+            "cost": 0.029715,
+            "latency_seconds": 37.677
+          }
+        },
+        "Sonnet 4.6 (thinking)": {
+          "model": "Sonnet 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.2842686292548298,
+            "wer": 1.1719745222929936,
+            "cer_case_insensitive": 0.28334866605335784,
+            "wer_case_insensitive": 1.1719745222929936,
+            "levenshtein_distance": 309,
+            "normalized_levenshtein_similarity": 0.731537793223284,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 1752,
+            "cost": 0.031899,
+            "latency_seconds": 40.694
+          }
+        },
+        "Haiku 4.5 (thinking)": {
+          "model": "Haiku 4.5 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.6044158233670653,
+            "wer": 1,
+            "cer_case_insensitive": 0.6044158233670653,
+            "wer_case_insensitive": 1,
+            "levenshtein_distance": 657,
+            "normalized_levenshtein_similarity": 0.39558417663293466,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1873,
+            "output_tokens": 1192,
+            "cost": 0.007833,
+            "latency_seconds": 19.691
+          }
+        },
+        "GPT-5.2 (low)": {
+          "model": "GPT-5.2 (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.45814167433302666,
+            "wer": 0.7515923566878981,
+            "cer_case_insensitive": 0.45814167433302666,
+            "wer_case_insensitive": 0.7515923566878981,
+            "levenshtein_distance": 498,
+            "normalized_levenshtein_similarity": 0.5418583256669733,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 1186,
+            "cost": 0.020153,
+            "latency_seconds": 26.285
+          }
+        },
+        "GPT-4.1": {
+          "model": "GPT-4.1",
+          "error": null,
+          "metrics": {
+            "cer": 0.44710211591536336,
+            "wer": 0.8089171974522293,
+            "cer_case_insensitive": 0.44618215271389144,
+            "wer_case_insensitive": 0.8089171974522293,
+            "levenshtein_distance": 486,
+            "normalized_levenshtein_similarity": 0.5649059982094897,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1384,
+            "output_tokens": 568,
+            "cost": 0.007311999999999999,
+            "latency_seconds": 18.602
+          }
+        },
+        "GPT-5 Mini (low)": {
+          "model": "GPT-5 Mini (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5335786568537259,
+            "wer": 0.910828025477707,
+            "cer_case_insensitive": 0.5335786568537259,
+            "wer_case_insensitive": 0.910828025477707,
+            "levenshtein_distance": 580,
+            "normalized_levenshtein_similarity": 0.46642134314627415,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 632,
+            "cost": 0.001771,
+            "latency_seconds": 11.824
+          }
+        },
+        "Gemini 3.1 Pro (low)": {
+          "model": "Gemini 3.1 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.07727690892364306,
+            "wer": 0.31210191082802546,
+            "cer_case_insensitive": 0.07727690892364306,
+            "wer_case_insensitive": 0.31210191082802546,
+            "levenshtein_distance": 84,
+            "normalized_levenshtein_similarity": 0.922723091076357,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 505,
+            "cost": 0.008778000000000001,
+            "latency_seconds": 9.637
+          }
+        },
+        "Gemini 3 Pro (low)": {
+          "model": "Gemini 3 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.08831646734130635,
+            "wer": 0.2484076433121019,
+            "cer_case_insensitive": 0.08739650413983441,
+            "wer_case_insensitive": 0.24203821656050956,
+            "levenshtein_distance": 96,
+            "normalized_levenshtein_similarity": 0.9149689991142604,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 641,
+            "cost": 0.010409999999999999,
+            "latency_seconds": 9.014
+          }
+        },
+        "Gemini 3 Flash (low)": {
+          "model": "Gemini 3 Flash (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.06807727690892364,
+            "wer": 0.19745222929936307,
+            "cer_case_insensitive": 0.0671573137074517,
+            "wer_case_insensitive": 0.1910828025477707,
+            "levenshtein_distance": 74,
+            "normalized_levenshtein_similarity": 0.9333933393339334,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 500,
+            "cost": 0.0021795,
+            "latency_seconds": 5.133
+          }
+        },
+        "GPT-5.2 (high)": {
+          "model": "GPT-5.2 (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.33670653173873044,
+            "wer": 0.6624203821656051,
+            "cer_case_insensitive": 0.3357865685372585,
+            "wer_case_insensitive": 0.6624203821656051,
+            "levenshtein_distance": 366,
+            "normalized_levenshtein_similarity": 0.6632934682612696,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 4565,
+            "cost": 0.06745899999999999,
+            "latency_seconds": 75.468
+          }
+        },
+        "GPT-5 Mini (high)": {
+          "model": "GPT-5 Mini (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5924563017479301,
+            "wer": 0.910828025477707,
+            "cer_case_insensitive": 0.5915363385464582,
+            "wer_case_insensitive": 0.910828025477707,
+            "levenshtein_distance": 644,
+            "normalized_levenshtein_similarity": 0.41079597438243365,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 2028,
+            "output_tokens": 5417,
+            "cost": 0.011340999999999999,
+            "latency_seconds": 98.726
+          }
+        },
+        "Gemini 3 Flash (high)": {
+          "model": "Gemini 3 Flash (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.06991720331186753,
+            "wer": 0.2356687898089172,
+            "cer_case_insensitive": 0.06899724011039558,
+            "wer_case_insensitive": 0.22929936305732485,
+            "levenshtein_distance": 76,
+            "normalized_levenshtein_similarity": 0.9320822162645219,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 12896,
+            "cost": 0.0393675,
+            "latency_seconds": 73.55
+          }
+        },
+        "Gemini 3.1 Pro (high)": {
+          "model": "Gemini 3.1 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.08831646734130635,
+            "wer": 0.3630573248407643,
+            "cer_case_insensitive": 0.08647654093836246,
+            "wer_case_insensitive": 0.35668789808917195,
+            "levenshtein_distance": 96,
+            "normalized_levenshtein_similarity": 0.9143621766280107,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 14342,
+            "cost": 0.174822,
+            "latency_seconds": 134.444
+          }
+        },
+        "Gemini 3 Pro (high)": {
+          "model": "Gemini 3 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.09383624655013799,
+            "wer": 0.3057324840764331,
+            "cer_case_insensitive": 0.09291628334866606,
+            "wer_case_insensitive": 0.29936305732484075,
+            "levenshtein_distance": 102,
+            "normalized_levenshtein_similarity": 0.9076923076923077,
+            "char_count_reference": 1087,
+            "word_count_reference": 202
+          },
+          "response_metadata": {
+            "input_tokens": 1359,
+            "output_tokens": 14272,
+            "cost": 0.173982,
+            "latency_seconds": 146.427
+          }
+        }
+      }
+    },
+    {
+      "sampleId": "d91daf1c2f3f",
+      "group": "Byzantine Greek",
+      "label": "GA L60, 64r, Rom 12:9–19",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCL60/default/M_NT_GRC_L60_0139/M_NT_GRC_L60_0139/info.json",
+      "ground_truth_file": "data/grk_byz/GAL60_64r.txt",
+      "availableModels": [
+        "Gemini 3 Pro (low)",
+        "Gemini 3 Flash (low)",
+        "Gemini 3 Pro (high)",
+        "Gemini 3 Flash (high)",
+        "Gemini 3.1 Pro (high)",
+        "Gemini 3.1 Pro (low)",
+        "Opus 4.6 (thinking)",
+        "Opus 4.6",
+        "Sonnet 4.6",
+        "GPT-5.2 (high)",
+        "Sonnet 4.6 (thinking)",
+        "GPT-5.2 (low)",
+        "GPT-4.1",
+        "GPT-5 Mini (high)",
+        "GPT-5 Mini (low)",
+        "Haiku 4.5",
+        "Haiku 4.5 (thinking)"
+      ],
+      "resultsByModel": {
+        "Opus 4.6": {
+          "model": "Opus 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.4033923303834808,
+            "wer": 0.935,
+            "cer_case_insensitive": 0.4033923303834808,
+            "wer_case_insensitive": 0.935,
+            "levenshtein_distance": 547,
+            "normalized_levenshtein_similarity": 0.5966076696165192,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1859,
+            "output_tokens": 1086,
+            "cost": 0.036445000000000005,
+            "latency_seconds": 51.927
+          }
+        },
+        "Haiku 4.5": {
+          "model": "Haiku 4.5",
+          "error": null,
+          "metrics": {
+            "cer": 0.5575221238938053,
+            "wer": 1.05,
+            "cer_case_insensitive": 0.5575221238938053,
+            "wer_case_insensitive": 1.05,
+            "levenshtein_distance": 756,
+            "normalized_levenshtein_similarity": 0.4424778761061947,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1858,
+            "output_tokens": 1082,
+            "cost": 0.007268,
+            "latency_seconds": 22.491
+          }
+        },
+        "Sonnet 4.6": {
+          "model": "Sonnet 4.6",
+          "error": null,
+          "metrics": {
+            "cer": 0.4498525073746313,
+            "wer": 0.935,
+            "cer_case_insensitive": 0.4491150442477876,
+            "wer_case_insensitive": 0.935,
+            "levenshtein_distance": 610,
+            "normalized_levenshtein_similarity": 0.5501474926253687,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1859,
+            "output_tokens": 1094,
+            "cost": 0.021987,
+            "latency_seconds": 46.504
+          }
+        },
+        "Haiku 4.5 (thinking)": {
+          "model": "Haiku 4.5 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.6032448377581121,
+            "wer": 1.205,
+            "cer_case_insensitive": 0.6025073746312685,
+            "wer_case_insensitive": 1.205,
+            "levenshtein_distance": 818,
+            "normalized_levenshtein_similarity": 0.3967551622418879,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1888,
+            "output_tokens": 2974,
+            "cost": 0.016758000000000002,
+            "latency_seconds": 30.929
+          }
+        },
+        "Opus 4.6 (thinking)": {
+          "model": "Opus 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.3665191740412979,
+            "wer": 0.935,
+            "cer_case_insensitive": 0.36578171091445427,
+            "wer_case_insensitive": 0.935,
+            "levenshtein_distance": 497,
+            "normalized_levenshtein_similarity": 0.6334808259587021,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1888,
+            "output_tokens": 1085,
+            "cost": 0.036565,
+            "latency_seconds": 51.995
+          }
+        },
+        "GPT-5 Mini (low)": {
+          "model": "GPT-5 Mini (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5855457227138643,
+            "wer": 1,
+            "cer_case_insensitive": 0.5855457227138643,
+            "wer_case_insensitive": 1,
+            "levenshtein_distance": 794,
+            "normalized_levenshtein_similarity": 0.4144542772861357,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 2046,
+            "output_tokens": 756,
+            "cost": 0.0020235,
+            "latency_seconds": 13.356
+          }
+        },
+        "GPT-4.1": {
+          "model": "GPT-4.1",
+          "error": null,
+          "metrics": {
+            "cer": 0.6843657817109144,
+            "wer": 1,
+            "cer_case_insensitive": 0.6836283185840708,
+            "wer_case_insensitive": 1,
+            "levenshtein_distance": 928,
+            "normalized_levenshtein_similarity": 0.31563421828908556,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1384,
+            "output_tokens": 562,
+            "cost": 0.007264,
+            "latency_seconds": 19.77
+          }
+        },
+        "GPT-5.2 (low)": {
+          "model": "GPT-5.2 (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.7138643067846607,
+            "wer": 0.945,
+            "cer_case_insensitive": 0.7138643067846607,
+            "wer_case_insensitive": 0.945,
+            "levenshtein_distance": 968,
+            "normalized_levenshtein_similarity": 0.28613569321533927,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 2046,
+            "output_tokens": 1522,
+            "cost": 0.0248885,
+            "latency_seconds": 34.067
+          }
+        },
+        "Gemini 3.1 Pro (low)": {
+          "model": "Gemini 3.1 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.25737463126843657,
+            "wer": 1,
+            "cer_case_insensitive": 0.2558997050147493,
+            "wer_case_insensitive": 1,
+            "levenshtein_distance": 349,
+            "normalized_levenshtein_similarity": 0.7426253687315634,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1371,
+            "output_tokens": 661,
+            "cost": 0.010674,
+            "latency_seconds": 12.585
+          }
+        },
+        "Sonnet 4.6 (thinking)": {
+          "model": "Sonnet 4.6 (thinking)",
+          "error": null,
+          "metrics": {
+            "cer": 0.45427728613569324,
+            "wer": 0.955,
+            "cer_case_insensitive": 0.45353982300884954,
+            "wer_case_insensitive": 0.955,
+            "levenshtein_distance": 616,
+            "normalized_levenshtein_similarity": 0.5457227138643068,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1888,
+            "output_tokens": 4398,
+            "cost": 0.071634,
+            "latency_seconds": 76.901
+          }
+        },
+        "Gemini 3 Pro (low)": {
+          "model": "Gemini 3 Pro (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.12831858407079647,
+            "wer": 0.48,
+            "cer_case_insensitive": 0.12684365781710916,
+            "wer_case_insensitive": 0.48,
+            "levenshtein_distance": 174,
+            "normalized_levenshtein_similarity": 0.8732702112163147,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1371,
+            "output_tokens": 955,
+            "cost": 0.014202000000000001,
+            "latency_seconds": 11.215
+          }
+        },
+        "Gemini 3 Flash (low)": {
+          "model": "Gemini 3 Flash (low)",
+          "error": null,
+          "metrics": {
+            "cer": 0.13716814159292035,
+            "wer": 0.5,
+            "cer_case_insensitive": 0.1364306784660767,
+            "wer_case_insensitive": 0.5,
+            "levenshtein_distance": 186,
+            "normalized_levenshtein_similarity": 0.8653149891383056,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1371,
+            "output_tokens": 658,
+            "cost": 0.0026595,
+            "latency_seconds": 5.373
+          }
+        },
+        "GPT-5 Mini (high)": {
+          "model": "GPT-5 Mini (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5862831858407079,
+            "wer": 1,
+            "cer_case_insensitive": 0.5862831858407079,
+            "wer_case_insensitive": 1,
+            "levenshtein_distance": 795,
+            "normalized_levenshtein_similarity": 0.41371681415929207,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 2046,
+            "output_tokens": 2935,
+            "cost": 0.0063815,
+            "latency_seconds": 51.946
+          }
+        },
+        "Gemini 3 Flash (high)": {
+          "model": "Gemini 3 Flash (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.09808259587020648,
+            "wer": 0.4,
+            "cer_case_insensitive": 0.09660766961651918,
+            "wer_case_insensitive": 0.395,
+            "levenshtein_distance": 133,
+            "normalized_levenshtein_similarity": 0.9019174041297935,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1371,
+            "output_tokens": 13004,
+            "cost": 0.0396975,
+            "latency_seconds": 77.87
+          }
+        },
+        "GPT-5.2 (high)": {
+          "model": "GPT-5.2 (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.5117994100294986,
+            "wer": 0.95,
+            "cer_case_insensitive": 0.5110619469026548,
+            "wer_case_insensitive": 0.95,
+            "levenshtein_distance": 694,
+            "normalized_levenshtein_similarity": 0.4882005899705014,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 2046,
+            "output_tokens": 3813,
+            "cost": 0.054543299999999996,
+            "latency_seconds": 84.153
+          }
+        },
+        "Gemini 3 Pro (high)": {
+          "model": "Gemini 3 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.11504424778761062,
+            "wer": 0.48,
+            "cer_case_insensitive": 0.11430678466076696,
+            "wer_case_insensitive": 0.48,
+            "levenshtein_distance": 156,
+            "normalized_levenshtein_similarity": 0.8849557522123894,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1371,
+            "output_tokens": 13262,
+            "cost": 0.161886,
+            "latency_seconds": 132.108
+          }
+        },
+        "Gemini 3.1 Pro (high)": {
+          "model": "Gemini 3.1 Pro (high)",
+          "error": null,
+          "metrics": {
+            "cer": 0.22640117994100295,
+            "wer": 1,
+            "cer_case_insensitive": 0.22566371681415928,
+            "wer_case_insensitive": 0.995,
+            "levenshtein_distance": 307,
+            "normalized_levenshtein_similarity": 0.773598820058997,
+            "char_count_reference": 1356,
+            "word_count_reference": 228
+          },
+          "response_metadata": {
+            "input_tokens": 1371,
+            "output_tokens": 23244,
+            "cost": 0.28167000000000003,
+            "latency_seconds": 225.692
+          }
+        }
+      }
+    }
+  ]
+}

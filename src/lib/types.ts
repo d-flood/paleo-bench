@@ -91,3 +91,40 @@ export interface BenchmarkData {
   model_summaries: Record<string, ModelSummary>;
   group_summaries: Record<string, Record<string, ModelSummary>>;
 }
+
+export interface CompareResultSummary {
+  model: string;
+  error: string | null;
+  metrics: ResultMetrics | null;
+  response_metadata: ResponseMetadata;
+}
+
+export interface CompareSampleIndex {
+  sampleId: string;
+  group: string;
+  label: string;
+  image: string;
+  ground_truth_file: string;
+  availableModels: string[];
+  resultsByModel: Record<string, CompareResultSummary>;
+}
+
+export interface SiteSummaryData {
+  benchmark: BenchmarkData['benchmark'];
+  model_summaries: BenchmarkData['model_summaries'];
+  group_summaries: BenchmarkData['group_summaries'];
+}
+
+export interface CompareIndexData {
+  benchmark: Pick<BenchmarkData['benchmark'], 'name' | 'timestamp' | 'total_duration_seconds'>;
+  model_summaries: BenchmarkData['model_summaries'];
+  model_order: string[];
+  quality_ranked_model_order: string[];
+  samples: CompareSampleIndex[];
+}
+
+export interface SampleDetailsData {
+  sampleId: string;
+  ground_truth_text: string;
+  model_outputs: Record<string, string>;
+}

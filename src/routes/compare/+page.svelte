@@ -1,81 +1,40 @@
 <script lang="ts">
-  import { pct, cost, duration, formatDate, comma, stripDiacritics, simpleDiff } from '$lib/utils';
+  import { pct, cost, duration, formatDate, comma, stripDiacritics, simpleDiff, normalizeInverted } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import { buildManifest } from '$lib/iiif';
+  import { browser } from '$app/environment';
   import { base } from '$app/paths';
   import { TriiiceratopsViewer, ViewerState } from 'triiiceratops';
+  import { TextAa, CurrencyDollar, Clock } from 'phosphor-svelte';
   import { theme } from '$lib/theme.svelte';
   import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-  import type { BenchmarkResult, BenchmarkData } from '$lib/types';
+  import type {
+    CompareIndexData,
+    CompareResultSummary,
+    CompareSampleIndex,
+    SampleDetailsData
+  } from '$lib/types';
   import type { PageData } from './$types';
 
-  type GroupedSample = {
-    key: string;
-    group: string;
-    label: string;
-    image: string;
-    ground_truth_file: string;
-    ground_truth_text: string;
-    resultsByModel: Record<string, BenchmarkResult>;
-    availableModels: string[];
+  type GroupedSample = CompareSampleIndex;
+  type DiffToken = {
+    type: string;
+    text: string;
+  };
+  type DiffLine = {
+    lineNumber: number;
+    segments: DiffToken[];
   };
   type MobilePanel = 'ground-truth' | 'model-output';
 
   const { data: pageData }: { data: PageData } = $props();
   // svelte-ignore state_referenced_locally
-  const benchmarkData: BenchmarkData = pageData.benchmarkData;
+  const compareIndex: CompareIndexData = pageData.compareIndex;
   const pageTitle = 'Paleo Bench | Compare Model Outputs';
   const pageDescription =
     'Inspect side-by-side transcription output quality for each handwritten sample with synchronized diffs, CER/WER metrics, latency, and cost.';
   const socialImage = `${base}/paleo-bench-compare.png`;
-  const configuredModelOrder = benchmarkData.benchmark.config.models.map((m) => m.label);
-  const qualityRankedModelOrder = [...configuredModelOrder].sort((a, b) => {
-    const aSummary = benchmarkData.model_summaries[a];
-    const bSummary = benchmarkData.model_summaries[b];
-    const aQuality =
-      aSummary && aSummary.samples_evaluated > 0 ? 1 - aSummary.cer_mean : Number.NEGATIVE_INFINITY;
-    const bQuality =
-      bSummary && bSummary.samples_evaluated > 0 ? 1 - bSummary.cer_mean : Number.NEGATIVE_INFINITY;
-    return bQuality - aQuality;
-  });
-
-  function groupResultsBySample(results: BenchmarkResult[]): GroupedSample[] {
-    const grouped = new Map<string, GroupedSample>();
-
-    for (const result of results) {
-      const key = `${result.group}::${result.label}::${result.image}`;
-      const existing = grouped.get(key);
-      if (existing) {
-        existing.resultsByModel[result.model] = result;
-        continue;
-      }
-
-      grouped.set(key, {
-        key,
-        group: result.group,
-        label: result.label,
-        image: result.image,
-        ground_truth_file: result.ground_truth_file,
-        ground_truth_text: result.ground_truth_text,
-        resultsByModel: { [result.model]: result },
-        availableModels: []
-      });
-    }
-
-    for (const sample of grouped.values()) {
-      const present = new Set(Object.keys(sample.resultsByModel));
-      sample.availableModels = [
-        ...qualityRankedModelOrder.filter((model) => present.has(model)),
-        ...Object.keys(sample.resultsByModel).filter(
-          (model) => !qualityRankedModelOrder.includes(model)
-        )
-      ];
-    }
-
-    return Array.from(grouped.values());
-  }
-
-  const samples = groupResultsBySample(benchmarkData.results);
+  const samples: GroupedSample[] = compareIndex.samples;
 
   let viewerThemeConfig = $derived(
     theme.current === 'dark'
@@ -107,7 +66,7 @@
 
   const manifest = buildManifest(
     samples.map((s) => ({ label: s.label, infoJsonUrl: s.image })),
-    benchmarkData.benchmark.name
+    compareIndex.benchmark.name
   );
   const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
   const manifestUrl = URL.createObjectURL(manifestBlob);
@@ -115,8 +74,12 @@
   let viewerState = $state<ViewerState>();
   let activeCanvasIndex = $state(0);
   let selectedModel = $state('');
+  let sampleDetailsCache = $state<Record<string, SampleDetailsData>>({});
+  let loadingSampleId = $state<string | null>(null);
+  let sampleDetailsError = $state<string | null>(null);
   let sidebarOpen = $state(false);
   let mobileActivePanel = $state<MobilePanel>('ground-truth');
+  let mobileModelDropdownOpen = $state(false);
   let isMobile = $state(false);
 
   // Draggable resizer state
@@ -129,7 +92,7 @@
   const mobileBreakpoint = 1024;
 
   function updateViewportMode() {
-    if (typeof window === 'undefined') return;
+    if (!browser) return;
     isMobile = window.innerWidth < mobileBreakpoint;
     if (!isMobile) {
       sidebarOpen = false;
@@ -138,7 +101,7 @@
   }
 
   $effect(() => {
-    if (typeof window === 'undefined') return;
+    if (!browser) return;
     updateViewportMode();
     const onResize = () => updateViewportMode();
     window.addEventListener('resize', onResize);
@@ -148,20 +111,19 @@
   });
 
   $effect(() => {
-    if (typeof window !== 'undefined' && viewerHeight === 0) {
+    if (browser && viewerHeight === 0) {
       viewerHeight =
         window.innerHeight * (isMobile ? mobileDefaultViewerHeightRatio : defaultViewerHeightRatio);
     }
   });
 
   function clampViewerHeight(nextHeight: number): number {
-    const maxHeight =
-      typeof window !== 'undefined' ? window.innerHeight * maxViewerHeightRatio : nextHeight;
+    const maxHeight = browser ? window.innerHeight * maxViewerHeightRatio : nextHeight;
     return Math.min(maxHeight, Math.max(minViewerHeight, nextHeight));
   }
 
   function setViewerHeightRatio(ratio: number) {
-    if (typeof window === 'undefined') return;
+    if (!browser) return;
     viewerHeight = clampViewerHeight(window.innerHeight * ratio);
   }
 
@@ -200,7 +162,7 @@
     } else if (e.key === 'Home') {
       e.preventDefault();
       viewerHeight = minViewerHeight;
-    } else if (e.key === 'End' && typeof window !== 'undefined') {
+    } else if (e.key === 'End' && browser) {
       e.preventDefault();
       viewerHeight = window.innerHeight * maxViewerHeightRatio;
     }
@@ -239,24 +201,142 @@
     }
   });
 
+  async function ensureSampleDetails(sampleId: string) {
+    if (sampleDetailsCache[sampleId]) {
+      return;
+    }
+
+    loadingSampleId = sampleId;
+    sampleDetailsError = null;
+
+    try {
+      const response = await fetch(`${base}/site-data/samples/${sampleId}.json`);
+      if (!response.ok) {
+        throw new Error(`Failed to load sample details (${response.status})`);
+      }
+      const details = (await response.json()) as SampleDetailsData;
+      sampleDetailsCache = {
+        ...sampleDetailsCache,
+        [sampleId]: details
+      };
+    } catch (error) {
+      sampleDetailsError = error instanceof Error ? error.message : 'Failed to load sample details';
+    } finally {
+      if (loadingSampleId === sampleId) {
+        loadingSampleId = null;
+      }
+    }
+  }
+
   let activeSample = $derived(samples[activeCanvasIndex] ?? samples[0]);
-  let activeResult = $derived(
+  let activeSampleDetails = $derived(
+    activeSample ? sampleDetailsCache[activeSample.sampleId] : undefined
+  );
+  let sampleDetailsLoading = $derived(
+    activeSample ? loadingSampleId === activeSample.sampleId : false
+  );
+  let activeResultBase = $derived(
     activeSample ? activeSample.resultsByModel[selectedModel] : undefined
   );
+  let activeResult = $derived.by(() => {
+    if (!activeResultBase) return undefined;
+    return {
+      ...activeResultBase,
+      model_output: activeSampleDetails?.model_outputs[selectedModel] ?? ''
+    };
+  });
   let normalizedGroundTruth = $derived(
-    activeSample ? stripDiacritics(activeSample.ground_truth_text) : ''
+    activeSampleDetails ? stripDiacritics(activeSampleDetails.ground_truth_text) : ''
   );
   let normalizedModelOutput = $derived(
-    activeResult ? stripDiacritics(activeResult.model_output) : ''
+    activeResult?.model_output ? stripDiacritics(activeResult.model_output) : ''
   );
   let diffResult = $derived(simpleDiff(normalizedGroundTruth, normalizedModelOutput));
   let groundTruthDiff = $derived(diffResult.ref);
   let modelOutputDiff = $derived(diffResult.hyp);
+  let groundTruthLines = $derived(splitDiffLines(groundTruthDiff));
+  let modelOutputLines = $derived(splitDiffLines(modelOutputDiff));
+
+  // Per-sample min/max for cost and latency (used for mobile gauge normalization)
+  let sampleCostRange = $derived.by(() => {
+    if (!activeSample) return { min: 0, max: 1 };
+    let min = Infinity, max = -Infinity;
+    for (const model of activeSample.availableModels) {
+      const r = activeSample.resultsByModel[model];
+      if (r?.response_metadata?.cost != null) {
+        const v = r.response_metadata.cost;
+        if (v < min) min = v;
+        if (v > max) max = v;
+      }
+    }
+    if (!isFinite(min)) return { min: 0, max: 1 };
+    return { min, max };
+  });
+
+  let sampleLatencyRange = $derived.by(() => {
+    if (!activeSample) return { min: 0, max: 1 };
+    let min = Infinity, max = -Infinity;
+    for (const model of activeSample.availableModels) {
+      const r = activeSample.resultsByModel[model];
+      if (r?.response_metadata?.latency_seconds != null) {
+        const v = r.response_metadata.latency_seconds;
+        if (v < min) min = v;
+        if (v > max) max = v;
+      }
+    }
+    if (!isFinite(min)) return { min: 0, max: 1 };
+    return { min, max };
+  });
+
+  function mobileGauges(result: CompareResultSummary | undefined) {
+    if (!result?.metrics) return { quality: 0, cost: 0, latency: 0 };
+    return {
+      quality: Math.max(0, 1 - result.metrics.cer),
+      cost: normalizeInverted(result.response_metadata.cost, sampleCostRange.min, sampleCostRange.max),
+      latency: normalizeInverted(result.response_metadata.latency_seconds, sampleLatencyRange.min, sampleLatencyRange.max)
+    };
+  }
+
+  function splitDiffLines(segments: DiffToken[]): DiffLine[] {
+    const lines: DiffLine[] = [{ lineNumber: 1, segments: [] }];
+
+    for (const segment of segments) {
+      const parts = segment.text.split('\n');
+      for (let i = 0; i < parts.length; i += 1) {
+        const part = parts[i];
+        if (part.length > 0) {
+          lines[lines.length - 1].segments.push({
+            type: segment.type,
+            text: part
+          });
+        }
+        if (i < parts.length - 1) {
+          lines.push({
+            lineNumber: lines.length + 1,
+            segments: []
+          });
+        }
+      }
+    }
+
+    return lines;
+  }
+
+  const mobileGaugeIcons = {
+    quality: TextAa,
+    cost: CurrencyDollar,
+    latency: Clock
+  };
 
   $effect(() => {
     if (activeSample && !activeSample.availableModels.includes(selectedModel)) {
       selectedModel = activeSample.availableModels[0] ?? '';
     }
+  });
+
+  $effect(() => {
+    if (!browser || !activeSample) return;
+    void ensureSampleDetails(activeSample.sampleId);
   });
 
   function selectSample(i: number) {
@@ -272,13 +352,13 @@
   }
 
   function referenceCharCount(): number {
-    if (activeResult?.metrics) return activeResult.metrics.char_count_reference;
-    if (!activeSample) return 0;
-    return stripDiacritics(activeSample.ground_truth_text).length;
+    if (activeResultBase?.metrics) return activeResultBase.metrics.char_count_reference;
+    if (!activeSampleDetails) return 0;
+    return stripDiacritics(activeSampleDetails.ground_truth_text).length;
   }
 
   function modelCharCount(): number {
-    if (!activeResult) return 0;
+    if (!activeResult?.model_output) return 0;
     return stripDiacritics(activeResult.model_output).length;
   }
 </script>
@@ -342,7 +422,7 @@
           View on GitHub
         </a>
         <span class="hidden font-mono text-xs text-stone-600 md:block dark:text-white/70"
-          >{formatDate(benchmarkData.benchmark.timestamp)}</span
+          >{formatDate(compareIndex.benchmark.timestamp)}</span
         >
         <ThemeToggle />
       </div>
@@ -605,14 +685,51 @@
                   Model Output
                 </button>
                 {#if activeSample}
-                  <select
-                    class="compare-select ml-auto max-w-[45%] min-w-0 truncate rounded-full border border-[var(--border-card)] bg-[var(--bg-surface)] px-2.5 py-1 font-mono text-[10px] text-stone-700 outline-none focus:border-[var(--accent-primary)] dark:text-white/85"
-                    bind:value={selectedModel}
-                  >
-                    {#each activeSample.availableModels as model}
-                      <option value={model}>{model}</option>
-                    {/each}
-                  </select>
+                  <div class="relative ml-auto max-w-[55%] min-w-0">
+                    <!-- Selected model button -->
+                    <button
+                      type="button"
+                      onclick={() => (mobileModelDropdownOpen = !mobileModelDropdownOpen)}
+                      class="flex w-full cursor-pointer items-center gap-1.5 rounded-full border border-[var(--border-card)] bg-[var(--bg-surface)] px-2.5 py-1"
+                    >
+                      <span class="min-w-0 flex-1 truncate font-mono text-[10px] text-stone-700 dark:text-white/85">{selectedModel}</span>
+                      <svg class="h-3 w-3 shrink-0 text-stone-500 transition-transform dark:text-white/50" class:rotate-180={mobileModelDropdownOpen} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    <!-- Dropdown panel -->
+                    {#if mobileModelDropdownOpen}
+                      <!-- Backdrop -->
+                      <button
+                        type="button"
+                        class="fixed inset-0 z-40 cursor-default"
+                        onclick={() => (mobileModelDropdownOpen = false)}
+                        aria-label="Close model dropdown"
+                      ></button>
+                      <div class="absolute right-0 top-full z-50 mt-1 max-h-64 w-72 overflow-y-auto rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] shadow-lg">
+                        {#each activeSample.availableModels as model}
+                          {@const result = activeSample.resultsByModel[model]}
+                          {@const gauges = mobileGauges(result)}
+                          {@const isActive = selectedModel === model}
+                          <button
+                            type="button"
+                            onclick={() => { selectedModel = model; mobileModelDropdownOpen = false; }}
+                            class="flex w-full cursor-pointer items-center gap-2 border-l-2 px-3 py-2 text-left transition-colors hover:bg-stone-50 dark:hover:bg-[#2c2c31]"
+                            style:border-left-color={isActive ? 'var(--accent-secondary)' : 'transparent'}
+                            style:background={isActive ? 'color-mix(in srgb, var(--accent-secondary) 10%, transparent)' : 'transparent'}
+                          >
+                            <span class="min-w-0 flex-1 truncate font-mono text-[10px] {isActive ? 'text-stone-800 dark:text-white/90' : 'text-stone-700 dark:text-white/60'}">
+                              {model}
+                            </span>
+                            <CircularGauge value={gauges.quality} label="" color="var(--accent-primary)" size={24} icon={mobileGaugeIcons.quality} />
+                            <CircularGauge value={gauges.cost} label="" color="var(--accent-secondary)" size={24} icon={mobileGaugeIcons.cost} />
+                            <CircularGauge value={gauges.latency} label="" color="var(--accent-tertiary)" size={24} icon={mobileGaugeIcons.latency} />
+                          </button>
+                        {/each}
+                      </div>
+                    {/if}
+                  </div>
                 {/if}
               </div>
             {/if}
@@ -620,11 +737,11 @@
               <!-- Ground Truth panel -->
               {#if !isMobile || mobileActivePanel === 'ground-truth'}
                 <div
-                  class="flex min-h-0 flex-1 flex-col border-b border-[var(--border-card)] lg:border-r lg:border-b-0"
+                  class="flex min-h-0 min-w-0 flex-1 flex-col border-b border-[var(--border-card)] lg:border-r lg:border-b-0"
                   style="background: color-mix(in srgb, var(--accent-primary) 6%, var(--bg-surface));"
                 >
                   <div
-                    class="flex shrink-0 items-center gap-2 border-b border-[var(--border-card)] px-4 py-2"
+                    class="flex min-w-0 shrink-0 items-center gap-2 border-b border-[var(--border-card)] px-4 py-2"
                   >
                     <span class="h-2 w-2 rounded-full" style="background: var(--accent-primary);"
                     ></span>
@@ -634,21 +751,45 @@
                     >
                       Ground Truth
                     </h3>
-                    <span class="ml-auto font-mono text-[10px] text-stone-600 dark:text-white/70"
+                    <span
+                      class="ml-auto min-w-0 truncate text-right font-mono text-[9px] text-stone-600 dark:text-white/70 sm:text-[10px]"
                       >{comma(referenceCharCount())} chars</span
                     >
                   </div>
                   <div
                     bind:this={gtPanel}
                     use:syncScroll={() => modelPanel}
-                    class="flex-1 overflow-y-auto p-4 font-[Space_Mono] text-xs leading-relaxed whitespace-pre-wrap text-stone-600 dark:text-white/70"
+                    class="min-w-0 flex-1 overflow-auto py-4 pr-4 pl-2 font-[Space_Mono] text-xs leading-relaxed text-stone-600 dark:text-white/70"
                   >
-                    {#each groundTruthDiff as segment}
-                      <span
-                        class:diff-replace={segment.type === 'replace'}
-                        class:diff-delete={segment.type === 'delete'}>{segment.text}</span
-                      >
-                    {/each}
+                    {#if sampleDetailsLoading}
+                      <p class="px-2 text-sm text-stone-600 dark:text-white/70">Loading sample text…</p>
+                    {:else if sampleDetailsError}
+                      <p class="px-2 text-sm text-amber-700 dark:text-amber-200">{sampleDetailsError}</p>
+                    {:else if activeSampleDetails}
+                      <div class="min-w-full w-max">
+                        {#each groundTruthLines as line}
+                          <div class="grid w-max grid-cols-[1.75rem_auto] items-baseline gap-x-2.5">
+                            <span
+                              class="w-7 shrink-0 text-right font-mono text-[10px] text-stone-400 dark:text-white/35"
+                            >
+                              {line.lineNumber}
+                            </span>
+                            <div class="w-max whitespace-pre">
+                              {#if line.segments.length === 0}
+                                <span>&nbsp;</span>
+                              {:else}
+                                {#each line.segments as segment}
+                                  <span
+                                    class:diff-replace={segment.type === 'replace'}
+                                    class:diff-delete={segment.type === 'delete'}>{segment.text}</span
+                                  >
+                                {/each}
+                              {/if}
+                            </div>
+                          </div>
+                        {/each}
+                      </div>
+                    {/if}
                   </div>
                 </div>
               {/if}
@@ -656,11 +797,11 @@
               <!-- Model Output panel -->
               {#if !isMobile || mobileActivePanel === 'model-output'}
                 <div
-                  class="flex min-h-0 flex-1 flex-col"
+                  class="flex min-h-0 min-w-0 flex-1 flex-col"
                   style="background: color-mix(in srgb, var(--accent-secondary) 6%, var(--bg-surface));"
                 >
                   <div
-                    class="flex shrink-0 items-center gap-2 border-b border-[var(--border-card)] px-4 py-2"
+                    class="flex min-w-0 shrink-0 items-center gap-2 border-b border-[var(--border-card)] px-4 py-2"
                   >
                     <span class="h-2 w-2 rounded-full" style="background: var(--accent-secondary);"
                     ></span>
@@ -670,12 +811,39 @@
                     >
                       Model Output
                     </h3>
-                    <span
-                      class="ml-auto truncate font-mono text-[10px] text-stone-600 dark:text-white/70"
-                      >{selectedModel}</span
-                    >
+                    {#if isMobile && mobileActivePanel === 'model-output'}
+                      {@const selectedGauges = mobileGauges(activeSample.resultsByModel[selectedModel])}
+                      <div class="ml-auto flex min-w-0 flex-1 items-center justify-end gap-1 overflow-hidden">
+                        <span class="min-w-0 truncate text-right font-mono text-[10px] text-stone-600 dark:text-white/70">{selectedModel}</span>
+                        <div class="flex shrink-0 items-center gap-0.5">
+                          <CircularGauge value={selectedGauges.quality} label="" color="var(--accent-primary)" size={24} icon={mobileGaugeIcons.quality} />
+                          <CircularGauge value={selectedGauges.cost} label="" color="var(--accent-secondary)" size={24} icon={mobileGaugeIcons.cost} />
+                          <CircularGauge value={selectedGauges.latency} label="" color="var(--accent-tertiary)" size={24} icon={mobileGaugeIcons.latency} />
+                        </div>
+                      </div>
+                    {:else}
+                      <span
+                        class="ml-auto truncate font-mono text-[10px] text-stone-600 dark:text-white/70"
+                        >{selectedModel}</span
+                      >
+                    {/if}
                   </div>
-                  {#if activeResult?.error}
+                  {#if sampleDetailsLoading}
+                    <div
+                      class="flex flex-1 items-center justify-center text-sm text-stone-600 dark:text-white/70"
+                    >
+                      Loading sample text…
+                    </div>
+                  {:else if sampleDetailsError}
+                    <div class="p-4">
+                      <div
+                        class="rounded-lg border border-amber-400/30 p-3 text-xs text-amber-700 dark:text-amber-200"
+                        style="background: rgba(245,158,11,0.08);"
+                      >
+                        {sampleDetailsError}
+                      </div>
+                    </div>
+                  {:else if activeResult?.error}
                     <div class="p-4">
                       <div
                         class="rounded-lg border border-amber-400/30 p-3 text-xs text-amber-700 dark:text-amber-200"
@@ -688,14 +856,31 @@
                     <div
                       bind:this={modelPanel}
                       use:syncScroll={() => gtPanel}
-                      class="flex-1 overflow-y-auto p-4 font-[Space_Mono] text-xs leading-relaxed whitespace-pre-wrap text-stone-600 dark:text-white/70"
+                      class="min-w-0 flex-1 overflow-auto py-4 pr-4 pl-2 font-[Space_Mono] text-xs leading-relaxed text-stone-600 dark:text-white/70"
                     >
-                      {#each modelOutputDiff as segment}
-                        <span
-                          class:diff-replace={segment.type === 'replace'}
-                          class:diff-insert={segment.type === 'insert'}>{segment.text}</span
-                        >
-                      {/each}
+                      <div class="min-w-full w-max">
+                        {#each modelOutputLines as line}
+                          <div class="grid w-max grid-cols-[1.75rem_auto] items-baseline gap-x-2.5">
+                            <span
+                              class="w-7 shrink-0 text-right font-mono text-[10px] text-stone-400 dark:text-white/35"
+                            >
+                              {line.lineNumber}
+                            </span>
+                            <div class="w-max whitespace-pre">
+                              {#if line.segments.length === 0}
+                                <span>&nbsp;</span>
+                              {:else}
+                                {#each line.segments as segment}
+                                  <span
+                                    class:diff-replace={segment.type === 'replace'}
+                                    class:diff-insert={segment.type === 'insert'}>{segment.text}</span
+                                  >
+                                {/each}
+                              {/if}
+                            </div>
+                          </div>
+                        {/each}
+                      </div>
                     </div>
                   {:else}
                     <div
@@ -741,4 +926,5 @@
     color: var(--diff-delete-text);
     border-radius: 3px;
   }
+
 </style>

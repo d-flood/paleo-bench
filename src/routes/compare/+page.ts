@@ -1,6 +1,12 @@
+import { base } from '$app/paths';
 import type { PageLoad } from './$types';
-import { loadBenchmarkData } from '$lib/results-loader';
+import type { CompareIndexData } from '$lib/types';
 
 export const load: PageLoad = async ({ fetch }) => {
-  return { benchmarkData: await loadBenchmarkData(fetch) };
+  const response = await fetch(`${base}/site-data/compare-index.json`);
+  if (!response.ok) {
+    throw new Error('Failed to load compare site data');
+  }
+
+  return { compareIndex: (await response.json()) as CompareIndexData };
 };

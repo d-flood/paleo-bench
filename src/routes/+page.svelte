@@ -1,51 +1,58 @@
 <script lang="ts">
-  import { pct, cost, duration, formatDate, comma } from '$lib/utils';
+  import { pct, cost, duration, formatDate, comma, normalizeInverted } from '$lib/utils';
   import CircularGauge from '$lib/components/CircularGauge.svelte';
   import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-  import { base } from '$app/paths';
-  import type { BenchmarkData, ModelSummary } from '$lib/types';
+  import { page } from '$app/state';
+  import type { ModelSummary, SiteSummaryData } from '$lib/types';
   import type { PageData } from './$types';
+  import TextAa from 'phosphor-svelte/lib/TextAa';
+  import CurrencyDollar from 'phosphor-svelte/lib/CurrencyDollar';
+  import Clock from 'phosphor-svelte/lib/Clock';
+  import type { Component } from 'svelte';
 
-  type SortKey = 'rank' | 'quality' | 'similarity' | 'cer' | 'wer' | 'cost' | 'latency' | 'tokens';
   type ChartSortKey = 'quality' | 'cost' | 'latency';
 
   type ModelRow = {
     label: string;
     summary: ModelSummary | null;
     quality: number;
-    similarity: number;
     costPerSample: number;
     latencyPerSample: number;
     tokensPerSample: number;
-    rank: number;
+  };
+
+  type GaugeMetric = {
+    key: string;
+    label: string;
+    icon: Component;
+    color: string;
+    gaugeValue: (row: ModelRow) => number;
+    rawValue: (row: ModelRow) => string;
   };
 
   const { data: pageData }: { data: PageData } = $props();
   // svelte-ignore state_referenced_locally
-  const benchmarkData: BenchmarkData = pageData.benchmarkData;
+  const siteSummary: SiteSummaryData = pageData.siteSummary;
   const pageTitle = 'Paleo Bench | HTR Model Leaderboard';
   const pageDescription =
     'Compare handwritten Greek text recognition performance across LLM vision models with ranking, CER/WER quality, latency, and cost metrics.';
-  const socialImage = `${base}/paleo-bench.png`;
-  const configuredModels = benchmarkData.benchmark.config.models.map((m) => m.label);
+  const socialImage = `${page.url.origin}/paleo-bench.png`;
+  const configuredModels = siteSummary.benchmark.config.models.map((m) => m.label);
 
   const modelRows: ModelRow[] = configuredModels.map((label) => {
-    const summary = benchmarkData.model_summaries[label] ?? null;
+    const summary = siteSummary.model_summaries[label] ?? null;
     if (!summary || summary.samples_evaluated === 0) {
       return {
         label,
         summary,
         quality: 0,
-        similarity: 0,
         costPerSample: 0,
         latencyPerSample: 0,
-        tokensPerSample: 0,
-        rank: 999
+        tokensPerSample: 0
       };
     }
 
     const quality = Math.max(0, 1 - summary.cer_mean);
-    const similarity = Math.max(0, summary.normalized_levenshtein_similarity_mean);
     const costPerSample = summary.total_cost / summary.samples_evaluated;
     const latencyPerSample = summary.total_latency_seconds / summary.samples_evaluated;
     const tokensPerSample = summary.total_tokens / summary.samples_evaluated;
@@ -54,82 +61,21 @@
       label,
       summary,
       quality,
-      similarity,
       costPerSample,
       latencyPerSample,
-      tokensPerSample,
-      rank: 0
+      tokensPerSample
     };
   });
 
   const rowsWithSummary = modelRows.filter((row) => row.summary);
 
-  const rankedByQuality = [...modelRows].sort((a, b) => b.quality - a.quality);
-  rankedByQuality.forEach((row, i) => (row.rank = row.summary ? i + 1 : 999));
-  const topModel = rankedByQuality[0];
-
-  let sortKey = $state<SortKey>('rank');
-  let sortAsc = $state(true);
   let hoveredModel = $state<string | null>(null);
   let selectedModel = $state<string | null>(null);
-  let searchQuery = $state('');
   let chartSortKey = $state<ChartSortKey>('quality');
-
-  function toggleSort(key: SortKey) {
-    if (sortKey === key) {
-      sortAsc = !sortAsc;
-    } else {
-      sortKey = key;
-      sortAsc = key === 'rank' || key === 'quality' || key === 'similarity';
-    }
-  }
-
-  function getSortValue(row: ModelRow, key: SortKey): number {
-    switch (key) {
-      case 'rank':
-        return row.rank;
-      case 'quality':
-        return row.quality;
-      case 'similarity':
-        return row.similarity;
-      case 'cer':
-        return row.summary?.cer_mean ?? 999;
-      case 'wer':
-        return row.summary?.wer_mean ?? 999;
-      case 'cost':
-        return row.costPerSample;
-      case 'latency':
-        return row.latencyPerSample;
-      case 'tokens':
-        return row.tokensPerSample;
-    }
-  }
-
-  let sortedRows = $derived.by(() => {
-    let rows = [...modelRows];
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      rows = rows.filter((r) => r.label.toLowerCase().includes(q));
-    }
-    rows.sort((a, b) => {
-      const va = getSortValue(a, sortKey);
-      const vb = getSortValue(b, sortKey);
-      const ascending =
-        sortKey === 'cer' ||
-        sortKey === 'wer' ||
-        sortKey === 'cost' ||
-        sortKey === 'latency' ||
-        sortKey === 'tokens';
-      const dir = sortAsc ? 1 : -1;
-      if (ascending) return (va - vb) * dir;
-      return (vb - va) * dir;
-    });
-    return rows;
-  });
 
   // Lollipop chart config
   const chartRowHeight = 38;
-  const chartMargin = { top: 28, right: 150, bottom: 38, left: 210 };
+  const chartMargin = { top: 28, right: 110, bottom: 38, left: 210 };
   const chartMinWidth = 860;
   let chartViewportWidth = $state(0);
   let chartWidth = $derived(Math.max(chartViewportWidth, chartMinWidth));
@@ -148,42 +94,84 @@
     rowsWithSummary.length * chartRowHeight + chartMargin.top + chartMargin.bottom;
   let chartInnerWidth = $derived(chartWidth - chartMargin.left - chartMargin.right);
 
+  let costMin = $derived(Math.min(...chartSorted.map((r) => r.costPerSample), 0));
+  let costMax = $derived(Math.max(...chartSorted.map((r) => r.costPerSample), 0));
+  let latencyMin = $derived(Math.min(...chartSorted.map((r) => r.latencyPerSample), 0));
+  let latencyMax = $derived(Math.max(...chartSorted.map((r) => r.latencyPerSample), 0));
   let maxQuality = $derived(Math.max(...chartSorted.map((r) => r.quality), 0.01));
   let minQuality = $derived(Math.min(...chartSorted.map((r) => r.quality), 0));
   let qualityFloor = $derived(Math.max(0, Math.floor(minQuality * 20) / 20 - 0.05));
 
+  function lollipopValue(row: ModelRow): number {
+    if (chartSortKey === 'quality') return row.quality;
+    if (chartSortKey === 'cost') return normalizeInverted(row.costPerSample, costMin, costMax);
+    return normalizeInverted(row.latencyPerSample, latencyMin, latencyMax);
+  }
+
   function barWidth(row: ModelRow): number {
-    return ((row.quality - qualityFloor) / (maxQuality - qualityFloor)) * chartInnerWidth;
+    if (chartSortKey === 'quality') {
+      return ((row.quality - qualityFloor) / (maxQuality - qualityFloor)) * chartInnerWidth;
+    }
+    return lollipopValue(row) * chartInnerWidth;
   }
 
-  function latencyColor(row: ModelRow): string {
-    const latencies = chartSorted.map((r) => r.latencyPerSample).sort((a, b) => a - b);
-    const t1 = latencies[Math.floor(latencies.length / 3)] ?? 0;
-    const t2 = latencies[Math.floor((latencies.length * 2) / 3)] ?? 0;
-    if (row.latencyPerSample <= t1) return 'var(--accent-tertiary)';
-    if (row.latencyPerSample <= t2) return 'var(--accent-secondary)';
-    return '#b6493f';
+  function lollipopRawLabel(row: ModelRow): string {
+    if (chartSortKey === 'quality') return pct(row.quality);
+    if (chartSortKey === 'cost') return cost(row.costPerSample);
+    return duration(row.latencyPerSample);
   }
 
-  const minDotR = 4;
-  const maxDotR = 10;
-  let costMin = $derived(Math.min(...chartSorted.map((r) => r.costPerSample), 0));
-  let costMax = $derived(Math.max(...chartSorted.map((r) => r.costPerSample), 0));
+  let xAxisLabel = $derived(
+    chartSortKey === 'quality'
+      ? 'Quality (1 \u2212 CER)'
+      : chartSortKey === 'cost'
+        ? 'Cost efficiency (lower cost \u2192 longer bar)'
+        : 'Speed (lower latency \u2192 longer bar)'
+  );
 
-  function costRadius(row: ModelRow): number {
-    if (costMax === costMin) return (minDotR + maxDotR) / 2;
-    const t = (row.costPerSample - costMin) / (costMax - costMin);
-    return minDotR + t * (maxDotR - minDotR);
-  }
+  // The two gauge metrics NOT selected by the radio button
+  const allMetrics: Record<ChartSortKey, GaugeMetric> = {
+    quality: {
+      key: 'quality',
+      label: 'Quality',
+      icon: TextAa,
+      color: 'var(--accent-primary)',
+      gaugeValue: (row: ModelRow) => row.quality,
+      rawValue: (row: ModelRow) => pct(row.quality)
+    },
+    cost: {
+      key: 'cost',
+      label: 'Cost',
+      icon: CurrencyDollar,
+      color: 'var(--accent-secondary)',
+      gaugeValue: (row: ModelRow) => {
+        if (costMax === costMin) return 0.5;
+        return Math.min(Math.max((row.costPerSample - costMin) / (costMax - costMin), 0), 1);
+      },
+      rawValue: (row: ModelRow) => cost(row.costPerSample)
+    },
+    latency: {
+      key: 'latency',
+      label: 'Latency',
+      icon: Clock,
+      color: 'var(--accent-tertiary)',
+      gaugeValue: (row: ModelRow) => {
+        if (latencyMax === latencyMin) return 0.5;
+        return Math.min(
+          Math.max((row.latencyPerSample - latencyMin) / (latencyMax - latencyMin), 0),
+          1
+        );
+      },
+      rawValue: (row: ModelRow) => duration(row.latencyPerSample)
+    }
+  };
 
-  function costTier(row: ModelRow): { signs: string; color: string } {
-    const costs = chartSorted.map((r) => r.costPerSample).sort((a, b) => a - b);
-    const t1 = costs[Math.floor(costs.length / 3)] ?? 0;
-    const t2 = costs[Math.floor((costs.length * 2) / 3)] ?? 0;
-    if (row.costPerSample <= t1) return { signs: '$', color: 'var(--accent-tertiary)' };
-    if (row.costPerSample <= t2) return { signs: '$$', color: 'var(--accent-secondary)' };
-    return { signs: '$$$', color: '#b6493f' };
-  }
+  let gaugeMetrics = $derived.by(() => {
+    const keys: ChartSortKey[] = ['quality', 'cost', 'latency'];
+    return keys.filter((k) => k !== chartSortKey).map((k) => allMetrics[k]);
+  });
+
+  let activeMetric = $derived(allMetrics[chartSortKey]);
 
   function rowY(index: number): number {
     return chartMargin.top + index * chartRowHeight + chartRowHeight / 2;
@@ -200,14 +188,14 @@
     }
   }
 
-  function sortArrow(key: SortKey): string {
-    if (sortKey !== key) return '';
-    return sortAsc ? ' \u2191' : ' \u2193';
-  }
-
-  let activeDetail = $derived(
-    selectedModel ? modelRows.find((r) => r.label === selectedModel) : topModel
-  );
+  let activeDetail = $derived.by(() => {
+    const model = selectedModel
+      ? modelRows.find((r) => r.label === selectedModel)
+      : rowsWithSummary[0];
+    if (!model) return undefined;
+    const idx = chartSorted.findIndex((r) => r.label === model.label);
+    return { model, index: idx };
+  });
 
   const totalCost = rowsWithSummary.reduce((s, r) => s + (r.summary?.total_cost ?? 0), 0);
   const totalSamples = rowsWithSummary.reduce((s, r) => s + (r.summary?.samples_evaluated ?? 0), 0);
@@ -252,17 +240,16 @@
             Greek minuscule handwritten text recognition benchmarks across {comma(
               configuredModels.length
             )}
-            model configurations. Models ranked by transcription accuracy, with latency indicated by color
-            and cost by dot size.
+            model configurations. Models ranked by transcription accuracy, cost, and latency.
           </p>
         </div>
         <div class="flex flex-col items-start gap-3 md:items-end">
           <ThemeToggle />
           <span class="font-mono text-xs text-stone-600 dark:text-white/70"
-            >{formatDate(benchmarkData.benchmark.timestamp)}</span
+            >{formatDate(siteSummary.benchmark.timestamp)}</span
           >
           <a
-            href={`${base}/compare`}
+            href={`${page.url.origin}/compare`}
             class="group flex items-center gap-2 rounded-full border border-[var(--accent-primary)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md hover:brightness-95"
             style="background: var(--accent-primary); box-shadow: 0 10px 28px -20px var(--accent-primary);"
           >
@@ -306,7 +293,7 @@
             <div
               class="inline-flex rounded-full border border-[var(--border-card)] bg-[var(--bg-surface)] p-1"
               role="radiogroup"
-              aria-label="Sort ranking chart by"
+              aria-label="Select primary metric"
             >
               {#each [{ key: 'quality', label: 'Quality' }, { key: 'cost', label: 'Cost' }, { key: 'latency', label: 'Latency' }] as option}
                 <button
@@ -314,7 +301,7 @@
                   role="radio"
                   aria-checked={chartSortKey === option.key}
                   onclick={() => (chartSortKey = option.key as ChartSortKey)}
-                  class="rounded-full px-3 py-1 font-mono text-[10px] tracking-wide uppercase transition-colors"
+                  class="cursor-pointer rounded-full px-3 py-1 font-mono text-[10px] tracking-wide uppercase transition-colors"
                   class:bg-stone-800={chartSortKey === option.key}
                   class:text-white={chartSortKey === option.key}
                   class:dark:bg-white={chartSortKey === option.key}
@@ -330,8 +317,9 @@
           </div>
         </div>
 
+        <!-- Mobile view -->
         <div class="space-y-2 md:hidden">
-          {#each chartSorted as row}
+          {#each chartSorted as row, i}
             {@const isExpanded = selectedModel === row.label}
             <div
               class="overflow-hidden rounded-lg border border-[var(--border-card)]"
@@ -344,45 +332,49 @@
                 onclick={() => toggleSelectedModel(row.label)}
                 class="w-full p-3 text-left"
               >
-                <div class="flex items-start justify-between gap-3">
+                <div class="flex items-center justify-between gap-3">
                   <div class="flex min-w-0 items-center gap-2.5">
                     <span
                       class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold"
                       style="background: color-mix(in srgb, var(--accent-primary) 20%, transparent); color: var(--accent-primary);"
-                      >{row.rank}</span
+                      >{i + 1}</span
                     >
                     <div class="min-w-0">
                       <p class="truncate text-sm font-medium text-stone-700 dark:text-white/85">
                         {row.label}
                       </p>
-                      <p class="font-mono text-[10px] text-stone-600 dark:text-white/70">
-                        Quality {pct(row.quality)}
-                      </p>
                     </div>
                   </div>
-                  <span
-                    class="mt-0.5 shrink-0 rounded-full"
-                    style="background: {latencyColor(row)}; width: {costRadius(row) *
-                      2}px; height: {costRadius(row) * 2}px;"
-                  ></span>
+                  <div class="flex shrink-0 items-center gap-1.5">
+                    {#each [allMetrics.quality, allMetrics.cost, allMetrics.latency] as m}
+                      <CircularGauge
+                        value={m.gaugeValue(row)}
+                        label={m.label}
+                        color={m.color}
+                        size={28}
+                        icon={m.icon}
+                        rawValue={m.rawValue(row)}
+                      />
+                    {/each}
+                  </div>
                 </div>
-                <p class="mt-2 font-mono text-[10px] text-stone-600 dark:text-white/70">
-                  {cost(row.costPerSample)}
-                  <span style="color: {costTier(row).color};">{costTier(row).signs}</span>
-                  · {duration(row.latencyPerSample)}
-                </p>
               </button>
 
               {#if isExpanded && row.summary}
                 <div class="space-y-3 border-t border-[var(--border-card)] px-3 pt-3 pb-3">
                   <div class="flex justify-center gap-4">
-                    {#each [{ label: 'Quality', value: row.quality, color: 'var(--accent-primary)' }, { label: 'Similarity', value: row.similarity, color: 'var(--accent-tertiary)' }] as gauge}
+                    {#each [allMetrics.quality, allMetrics.cost, allMetrics.latency] as gm}
                       <div class="text-center">
                         <CircularGauge
-                          value={gauge.value}
-                          label={gauge.label}
-                          color={gauge.color}
+                          value={gm.gaugeValue(row)}
+                          label={gm.label}
+                          color={gm.color}
+                          icon={gm.icon}
+                          rawValue={gm.rawValue(row)}
                         />
+                        <p class="mt-1 font-mono text-[9px] text-stone-600 dark:text-white/70">
+                          {gm.rawValue(row)}
+                        </p>
                       </div>
                     {/each}
                   </div>
@@ -410,6 +402,7 @@
           {/each}
         </div>
 
+        <!-- Desktop chart -->
         <div
           class="hidden pb-1 md:block"
           class:overflow-x-auto={chartNeedsHorizontalScroll}
@@ -422,13 +415,13 @@
             viewBox={`0 0 ${chartWidth} ${chartHeight}`}
             style={`min-width: ${chartMinWidth}px;`}
             role="img"
-            aria-label={`Horizontal lollipop chart of model quality sorted by ${chartSortKey}`}
+            aria-label={`Horizontal lollipop chart of model performance sorted by ${chartSortKey}`}
           >
             <defs>
-              {#each chartSorted as row, i}
+              {#each chartSorted as _, i}
                 <linearGradient id="bar-grad-{i}" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0%" stop-color="var(--svg-bar-start)" stop-opacity="1" />
-                  <stop offset="100%" stop-color={latencyColor(row)} stop-opacity="0.35" />
+                  <stop offset="100%" stop-color="var(--svg-text-ghost)" stop-opacity="0.35" />
                 </linearGradient>
               {/each}
             </defs>
@@ -444,8 +437,12 @@
 
             <!-- X-axis ticks -->
             {#each Array.from({ length: 6 }, (_, i) => i) as i}
-              {@const tickVal = qualityFloor + (i / 5) * (maxQuality - qualityFloor)}
-              {@const x = chartMargin.left + (i / 5) * chartInnerWidth}
+              {@const tickFrac = i / 5}
+              {@const tickVal =
+                chartSortKey === 'quality'
+                  ? qualityFloor + tickFrac * (maxQuality - qualityFloor)
+                  : tickFrac}
+              {@const x = chartMargin.left + tickFrac * chartInnerWidth}
               <line
                 x1={x}
                 x2={x}
@@ -461,7 +458,7 @@
                 font-family="Space Mono"
                 fill="var(--svg-text-ghost)"
               >
-                {pct(tickVal, 0)}
+                {chartSortKey === 'quality' ? pct(tickVal, 0) : pct(tickFrac, 0)}
               </text>
             {/each}
 
@@ -480,12 +477,10 @@
             {#each chartSorted as row, i}
               {@const y = rowY(i)}
               {@const bw = barWidth(row)}
-              {@const color = latencyColor(row)}
               {@const isHovered = hoveredModel === row.label}
               {@const isSelected = selectedModel === row.label}
               {@const isDimmed =
                 (hoveredModel && !isHovered) || (selectedModel && !isSelected && !hoveredModel)}
-              {@const isTop = i === 0}
               <g
                 role="button"
                 tabindex="0"
@@ -505,6 +500,37 @@
                   fill={isHovered || isSelected ? 'var(--svg-hit-hover)' : 'transparent'}
                   rx="4"
                 />
+
+                <!-- Rank badge -->
+                <circle
+                  cx={chartMargin.left + 20}
+                  cy={y}
+                  r={10}
+                  fill={isDimmed
+                    ? 'var(--svg-text-dim)'
+                    : isHovered || isSelected
+                      ? 'var(--accent-primary)'
+                      : 'color-mix(in srgb, var(--accent-primary) 20%, transparent)'}
+                  opacity={isDimmed ? 0.3 : 1}
+                  style="transition: fill 0.2s ease;"
+                />
+                <text
+                  x={chartMargin.left + 20}
+                  y={y + 4}
+                  text-anchor="middle"
+                  font-size="9"
+                  font-family="Space Mono"
+                  font-weight="bold"
+                  fill={isDimmed
+                    ? 'var(--svg-text-dim)'
+                    : isHovered || isSelected
+                      ? 'white'
+                      : 'var(--accent-primary)'}
+                  opacity={isDimmed ? 0.3 : 1}
+                  style="transition: fill 0.2s ease;"
+                >
+                  {i + 1}
+                </text>
 
                 <!-- Model label -->
                 <text
@@ -535,19 +561,19 @@
                   style="transition: opacity 0.2s ease;"
                 />
 
-                <!-- Dot at end — radius encodes cost, color encodes latency -->
+                <!-- Dot at end — uniform size/color -->
                 <circle
                   cx={chartMargin.left + bw}
                   cy={y}
-                  r={isDimmed ? costRadius(row) * 0.7 : costRadius(row)}
-                  fill={color}
+                  r={isDimmed ? 3.5 : 5}
+                  fill="var(--svg-text-ghost)"
                   fill-opacity={isDimmed ? 0.3 : 0.9}
-                  stroke={isTop ? 'var(--accent-primary)' : 'var(--svg-dot-stroke)'}
-                  stroke-width={isTop ? 1.5 : 1}
+                  stroke={i === 0 ? 'var(--accent-primary)' : 'var(--svg-dot-stroke)'}
+                  stroke-width={i === 0 ? 1.5 : 1}
                   style="transition: all 0.2s ease;"
                 />
 
-                <!-- Quality value below dot, right-aligned to dot center -->
+                <!-- Raw value label below dot -->
                 <text
                   x={chartMargin.left + bw}
                   y={y + 16}
@@ -557,27 +583,36 @@
                   fill={isDimmed ? 'var(--svg-text-dim)' : 'var(--svg-text-muted)'}
                   style="transition: fill 0.2s ease;"
                 >
-                  {pct(row.quality)}
+                  {lollipopRawLabel(row)}
                 </text>
 
-                <!-- Cost and latency annotation on far right -->
-                <text
-                  x={chartWidth - 12}
-                  y={y + 5}
-                  text-anchor="end"
-                  font-size="12"
-                  font-family="Space Mono"
-                  style="transition: fill 0.2s ease;"
-                >
-                  <tspan fill={isDimmed ? 'var(--svg-text-dim)' : 'var(--svg-text-ghost)'}
-                    >{cost(row.costPerSample)}</tspan
-                  >{' '}<tspan
-                    fill={isDimmed ? 'var(--svg-text-dim)' : costTier(row).color}
-                    font-size="11">{costTier(row).signs}</tspan
-                  ><tspan fill={isDimmed ? 'var(--svg-text-dim)' : 'var(--svg-text-ghost)'}>
-                    · {duration(row.latencyPerSample)}</tspan
+                <!-- Two gauge columns on far right -->
+                {#each gaugeMetrics as gm, gi}
+                  <foreignObject
+                    x={chartWidth - chartMargin.right + gi * 52 + 4}
+                    y={y - 15}
+                    width="48"
+                    height="34"
                   >
-                </text>
+                    <div
+                      style="display:flex;flex-direction:column;align-items:center;gap:0px;line-height:1;"
+                    >
+                      <CircularGauge
+                        value={gm.gaugeValue(row)}
+                        label={gm.label}
+                        color={gm.color}
+                        size={26}
+                        icon={gm.icon}
+                        rawValue={gm.rawValue(row)}
+                      />
+                      <span
+                        style="font-family:'Space Mono',monospace;font-size:6px;color:var(--svg-text-ghost);white-space:nowrap;margin-top:-1px;"
+                      >
+                        {gm.rawValue(row)}
+                      </span>
+                    </div>
+                  </foreignObject>
+                {/each}
               </g>
             {/each}
 
@@ -590,7 +625,7 @@
               font-family="Outfit"
               fill="var(--svg-text-ghost)"
             >
-              Quality (1 − CER)
+              {xAxisLabel}
             </text>
           </svg>
         </div>
@@ -600,47 +635,37 @@
           class="mt-4 flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-[var(--border-card)] pt-4"
         >
           <div class="flex items-center gap-3">
-            <p
-              class="font-mono text-[9px] tracking-wider text-stone-600 uppercase dark:text-white/70"
-            >
-              Dot Color = Latency
-            </p>
-            <div class="flex items-center gap-2.5">
-              {#each [{ color: 'var(--accent-tertiary)', label: 'Low' }, { color: 'var(--accent-secondary)', label: 'Mid' }, { color: '#b6493f', label: 'High' }] as tier}
-                <div class="flex items-center gap-1">
-                  <span
-                    class="inline-block h-2.5 w-2.5 rounded-full"
-                    style="background: {tier.color};"
-                  ></span>
-                  <span class="font-mono text-[8px] text-stone-600 dark:text-white/70"
-                    >{tier.label}</span
-                  >
-                </div>
-              {/each}
+            <div class="flex items-center gap-1.5">
+              <span
+                class="inline-block h-1.5 w-6 rounded-full"
+                style="background: var(--svg-text-ghost);"
+              ></span>
+              <span
+                class="font-mono text-[9px] tracking-wider text-stone-600 uppercase dark:text-white/70"
+              >
+                Bar = {activeMetric.label}
+              </span>
             </div>
           </div>
-          <div class="flex items-center gap-3">
-            <p
-              class="font-mono text-[9px] tracking-wider text-stone-600 uppercase dark:text-white/70"
-            >
-              Cost
-            </p>
-            <div class="flex items-center gap-2.5">
-              {#each [{ signs: '$', color: 'var(--accent-tertiary)', label: 'Low' }, { signs: '$$', color: 'var(--accent-secondary)', label: 'Mid' }, { signs: '$$$', color: '#b6493f', label: 'High' }] as tier}
-                <div class="flex items-center gap-1">
-                  <span class="font-mono text-[10px] font-bold" style="color: {tier.color};"
-                    >{tier.signs}</span
-                  >
-                  <span class="font-mono text-[8px] text-stone-600 dark:text-white/70"
-                    >{tier.label}</span
-                  >
-                </div>
-              {/each}
+          {#each gaugeMetrics as gm}
+            <div class="flex items-center gap-1.5">
+              <CircularGauge
+                value={0.7}
+                label={gm.label}
+                color={gm.color}
+                size={18}
+                icon={gm.icon}
+              />
+              <span
+                class="font-mono text-[9px] tracking-wider text-stone-600 uppercase dark:text-white/70"
+              >
+                {gm.label}
+              </span>
             </div>
-          </div>
+          {/each}
           <p class="text-[10px] text-stone-600 dark:text-white/70">
             {chartSortKey === 'quality'
-              ? 'Sorted by quality (1 - CER) descending'
+              ? 'Sorted by quality (1 \u2212 CER) descending'
               : chartSortKey === 'cost'
                 ? 'Sorted by cost per sample ascending'
                 : 'Sorted by latency per sample ascending'}
@@ -652,7 +677,7 @@
       <div
         class="hidden min-w-0 space-y-4 rounded-2xl border border-[var(--border-card)] bg-[var(--bg-surface)] p-5 md:p-6 xl:block"
       >
-        {#if activeDetail?.summary}
+        {#if activeDetail?.model?.summary}
           <div class="flex items-center justify-between">
             <p
               class="font-mono text-[10px] tracking-wider text-stone-600 uppercase dark:text-white/70"
@@ -677,29 +702,38 @@
               <span
                 class="flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold"
                 style="background: color-mix(in srgb, var(--accent-primary) 20%, transparent); color: var(--accent-primary);"
-                >{activeDetail.rank}</span
+                >{activeDetail.index + 1}</span
               >
               <div>
                 <h3 class="text-lg font-semibold text-stone-800 dark:text-white/90">
-                  {activeDetail.label}
+                  {activeDetail.model.label}
                 </h3>
                 <p class="text-xs text-stone-700 dark:text-white/70">
-                  Quality: {pct(activeDetail.quality, 1)}
+                  Quality: {pct(activeDetail.model.quality, 1)}
                 </p>
               </div>
             </div>
           </div>
 
           <div class="flex justify-center gap-4">
-            {#each [{ label: 'Quality', value: activeDetail.quality, color: 'var(--accent-primary)' }, { label: 'Similarity', value: activeDetail.similarity, color: 'var(--accent-tertiary)' }] as gauge}
+            {#each [allMetrics.quality, allMetrics.cost, allMetrics.latency] as gm}
               <div class="text-center">
-                <CircularGauge value={gauge.value} label={gauge.label} color={gauge.color} />
+                <CircularGauge
+                  value={gm.gaugeValue(activeDetail.model)}
+                  label={gm.label}
+                  color={gm.color}
+                  icon={gm.icon}
+                  rawValue={gm.rawValue(activeDetail.model)}
+                />
+                <p class="mt-1 font-mono text-[9px] text-stone-600 dark:text-white/70">
+                  {gm.rawValue(activeDetail.model)}
+                </p>
               </div>
             {/each}
           </div>
 
           <div class="grid grid-cols-2 gap-3">
-            {#each [{ label: 'CER Mean', value: pct(activeDetail.summary.cer_mean), color: 'var(--accent-primary)' }, { label: 'WER Mean', value: pct(activeDetail.summary.wer_mean), color: 'var(--accent-secondary)' }, { label: 'Cost / sample', value: cost(activeDetail.costPerSample), color: 'var(--accent-secondary)' }, { label: 'Latency / sample', value: duration(activeDetail.latencyPerSample), color: 'var(--accent-primary)' }] as card}
+            {#each [{ label: 'CER Mean', value: pct(activeDetail.model.summary.cer_mean), color: 'var(--accent-primary)' }, { label: 'WER Mean', value: pct(activeDetail.model.summary.wer_mean), color: 'var(--accent-secondary)' }, { label: 'Cost / sample', value: cost(activeDetail.model.costPerSample), color: 'var(--accent-secondary)' }, { label: 'Latency / sample', value: duration(activeDetail.model.latencyPerSample), color: 'var(--accent-primary)' }] as card}
               <div class="rounded-lg border border-[var(--border-card)] bg-[var(--bg-surface)] p-3">
                 <p
                   class="mb-0.5 font-mono text-[9px] tracking-wider uppercase"
@@ -748,15 +782,6 @@
                   1 minus CER — how accurate the transcription is overall. Higher is better.
                 </dd>
               </div>
-              <div class="flex gap-2">
-                <dt class="shrink-0 font-mono font-medium" style="color: var(--accent-tertiary);">
-                  Similarity
-                </dt>
-                <dd class="text-stone-700 dark:text-white/70">
-                  Normalized Levenshtein similarity — how closely the output matches the reference
-                  text, from 0 to 1. Higher is better.
-                </dd>
-              </div>
             </dl>
           </div>
         {:else}
@@ -773,7 +798,7 @@
       class="mt-8 flex flex-col items-center gap-2 border-t border-[var(--border-card)] pt-6 text-center md:flex-row md:justify-between md:text-left"
     >
       <p class="font-mono text-[10px] text-stone-600 dark:text-white/70">
-        {benchmarkData.benchmark.name}
+        {siteSummary.benchmark.name}
       </p>
       <a
         href="https://github.com/d-flood/paleo-bench"
@@ -785,7 +810,7 @@
         View on GitHub
       </a>
       <p class="max-w-full font-mono text-[10px] text-balance text-stone-600 dark:text-white/70">
-        {benchmarkData.benchmark.config.groups.map((g) => g.name).join(' · ')}
+        {siteSummary.benchmark.config.groups.map((g) => g.name).join(' · ')}
       </p>
     </footer>
   </main>
