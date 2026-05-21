@@ -29,6 +29,14 @@ class FakeResult:
     )
 
 
+class FakeFreeResult:
+    output = "transcription"
+    usage = types.SimpleNamespace(input_tokens=100, output_tokens=20, total_tokens=120)
+    response = types.SimpleNamespace(
+        cost=lambda: types.SimpleNamespace(total_price=0.0),
+    )
+
+
 class FakeAgent:
     calls = []
     results = []
@@ -157,6 +165,18 @@ class TestVisionModelCall(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(response.error)
         self.assertEqual(FakeAgent.calls[0]["model_settings"]["timeout"], 300)
 
+    async def test_uses_configured_cost_when_provider_cost_missing(self) -> None:
+        model = ModelConfig(
+            id="openrouter:test/model",
+            label="test",
+            params={"input_token_cost": 0.001, "output_token_cost": 0.01},
+        )
+        with self._patch_agent(FakeFreeResult()):
+            response = await call_vision_model(model, self.image_path, self.prompts)
+
+        self.assertIsNone(response.error)
+        self.assertAlmostEqual(response.cost, 0.3)
+
     async def test_retries_timeout_error(self) -> None:
         with (
             self._patch_agent(Timeout("connection timed out"), FakeResult()),
@@ -224,6 +244,32 @@ class TestVisionModelCall(unittest.IsolatedAsyncioTestCase):
             response = await call_vision_model(model, self.image_path, self.prompts)
 
         self.assertIn("ignored unsupported model params: api_base", response.error)
+
+    async def test_opencode_go_model_routing(self) -> None:
+        with self._patch_agent(), patch.dict("os.environ", {"OPENCODE_GO_API_KEY": "test-key"}):
+            response = await call_vision_model(
+                ModelConfig(id="opencode-go:qwen3.6-plus", label="qwen3.6-plus"),
+                self.image_path,
+                self.prompts,
+            )
+
+        self.assertIsNone(response.error)
+        self.assertEqual(response.text, "transcription")
+        self.assertEqual(response.model_id, "qwen3.6-plus")
+        self.assertIn("system_prompt", FakeAgent.calls[0]["agent_kwargs"])
+
+    async def test_openrouter_model_routing(self) -> None:
+        with self._patch_agent(), patch.dict("os.environ", {"OPENROUTER_API_KEY": "test-key"}):
+            response = await call_vision_model(
+                ModelConfig(id="openrouter:qwen/qwen3.6-plus", label="Qwen 3.6 Plus"),
+                self.image_path,
+                self.prompts,
+            )
+
+        self.assertIsNone(response.error)
+        self.assertEqual(response.text, "transcription")
+        self.assertEqual(response.model_id, "Qwen 3.6 Plus")
+        self.assertIn("system_prompt", FakeAgent.calls[0]["agent_kwargs"])
 
 
 if __name__ == "__main__":

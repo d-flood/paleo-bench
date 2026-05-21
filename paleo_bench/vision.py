@@ -2,6 +2,7 @@ import base64
 import asyncio
 import io
 import mimetypes
+import os
 import sys
 import time
 from collections.abc import Mapping
@@ -17,6 +18,8 @@ from pydantic_ai.exceptions import (
     UnexpectedModelBehavior,
     UserError,
 )
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from .config import ModelConfig, PromptsConfig
 
@@ -26,6 +29,7 @@ _MAX_IMAGE_BYTES = 3_700_000
 _MAX_IMAGE_DIMENSION = 8_000
 _MAX_ATTEMPTS = 3
 _DEFAULT_TIMEOUT_SECONDS = 180
+_RESAMPLE_FILTER = Image.Resampling.LANCZOS
 _STREAMING_MODEL_PREFIXES = ("google-gla:", "google-vertex:", "gemini:")
 _MODEL_SETTINGS_KEYS = {
     "extra_body",
@@ -43,6 +47,9 @@ _MODEL_SETTINGS_KEYS = {
     "timeout",
     "top_p",
 }
+_IMAGE_SETTINGS_KEYS = {"image_max_bytes", "image_max_dimension"}
+_COST_SETTINGS_KEYS = {"input_token_cost", "output_token_cost"}
+_SUPPORTED_MODEL_PARAM_KEYS = _MODEL_SETTINGS_KEYS | _IMAGE_SETTINGS_KEYS | _COST_SETTINGS_KEYS
 
 
 @dataclass
@@ -57,15 +64,22 @@ class VisionResponse:
     error: str | None = None
 
 
-def _encode_image(image_path: Path) -> tuple[str, str]:
+class HardRequestTimeoutError(TimeoutError):
+    pass
+
+
+def _encode_image(
+    image_path: Path,
+    *,
+    max_bytes: int = _MAX_IMAGE_BYTES,
+    max_dimension: int = _MAX_IMAGE_DIMENSION,
+) -> tuple[str, str]:
     with Image.open(image_path) as probe:
         width, height = probe.size
 
-    within_dimension_limit = (
-        width <= _MAX_IMAGE_DIMENSION and height <= _MAX_IMAGE_DIMENSION
-    )
+    within_dimension_limit = width <= max_dimension and height <= max_dimension
     raw = image_path.read_bytes()
-    if len(raw) <= _MAX_IMAGE_BYTES and within_dimension_limit:
+    if len(raw) <= max_bytes and within_dimension_limit:
         mime_type, _ = mimetypes.guess_type(str(image_path))
         if mime_type is None:
             mime_type = "image/jpeg"
@@ -74,21 +88,21 @@ def _encode_image(image_path: Path) -> tuple[str, str]:
     # Downscale until under both dimension and encoded-size limits.
     img = Image.open(image_path)
     if not within_dimension_limit:
-        img.thumbnail((_MAX_IMAGE_DIMENSION, _MAX_IMAGE_DIMENSION), Image.LANCZOS)
+        img.thumbnail((max_dimension, max_dimension), _RESAMPLE_FILTER)
     quality = 85
     while True:
         buf = io.BytesIO()
         img.save(buf, format="JPEG", quality=quality)
         if (
-            buf.tell() <= _MAX_IMAGE_BYTES
-            and img.width <= _MAX_IMAGE_DIMENSION
-            and img.height <= _MAX_IMAGE_DIMENSION
+            buf.tell() <= max_bytes
+            and img.width <= max_dimension
+            and img.height <= max_dimension
         ):
             break
         # Reduce dimensions by 25%
         img = img.resize(
             (int(img.width * 0.75), int(img.height * 0.75)),
-            Image.LANCZOS,
+            _RESAMPLE_FILTER,
         )
         quality = max(quality - 5, 50)
 
@@ -98,14 +112,33 @@ def _encode_image(image_path: Path) -> tuple[str, str]:
 
 def _model_settings(params: Mapping[str, Any]) -> tuple[ModelSettings, list[str]]:
     supported = {k: v for k, v in params.items() if k in _MODEL_SETTINGS_KEYS}
-    unsupported = sorted(k for k in params if k not in _MODEL_SETTINGS_KEYS)
+    unsupported = sorted(k for k in params if k not in _SUPPORTED_MODEL_PARAM_KEYS)
     supported.setdefault("timeout", _DEFAULT_TIMEOUT_SECONDS)
     return ModelSettings(**supported), unsupported
 
 
+def _image_limits(params: Mapping[str, Any]) -> tuple[int, int]:
+    max_bytes = params.get("image_max_bytes", _MAX_IMAGE_BYTES)
+    max_dimension = params.get("image_max_dimension", _MAX_IMAGE_DIMENSION)
+    try:
+        parsed_max_bytes = int(max_bytes)
+        parsed_max_dimension = int(max_dimension)
+    except (TypeError, ValueError):
+        return _MAX_IMAGE_BYTES, _MAX_IMAGE_DIMENSION
+    return parsed_max_bytes, parsed_max_dimension
+
+
+def _settings_timeout_seconds(settings: ModelSettings) -> float:
+    value = settings.get("timeout") if isinstance(settings, Mapping) else None
+    try:
+        return float(value or _DEFAULT_TIMEOUT_SECONDS)
+    except (TypeError, ValueError):
+        return float(_DEFAULT_TIMEOUT_SECONDS)
+
+
 def _usage_value(usage: Any, *names: str) -> int:
     for name in names:
-        value = None
+        value: Any = None
         if isinstance(usage, Mapping):
             value = usage.get(name)
         elif usage is not None:
@@ -134,7 +167,19 @@ def _result_cost(result: Any) -> float:
         return 0.0
 
 
+def _configured_cost(params: Mapping[str, Any], input_tokens: int, output_tokens: int) -> float:
+    try:
+        input_token_cost = float(params.get("input_token_cost", 0.0) or 0.0)
+        output_token_cost = float(params.get("output_token_cost", 0.0) or 0.0)
+    except (TypeError, ValueError):
+        return 0.0
+    return input_tokens * input_token_cost + output_tokens * output_token_cost
+
+
 def _is_retryable_error(exc: Exception) -> bool:
+    if isinstance(exc, HardRequestTimeoutError):
+        return False
+
     if isinstance(exc, ModelHTTPError):
         return exc.status_code == 429 or exc.status_code >= 500
 
@@ -160,6 +205,34 @@ def _is_retryable_error(exc: Exception) -> bool:
 
 def _should_stream_model(model_id: str) -> bool:
     return model_id.startswith(_STREAMING_MODEL_PREFIXES)
+
+
+_OPENCODE_GO_BASE_URL = "https://opencode.ai/zen/go/v1"
+_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+
+
+def _make_agent(model_id: str, system_prompt: str) -> Agent:
+    if model_id.startswith("opencode-go:"):
+        model_name = model_id.split(":", 1)[1]
+        pydantic_model = OpenAIChatModel(
+            model_name,
+            provider=OpenAIProvider(
+                base_url=_OPENCODE_GO_BASE_URL,
+                api_key=os.environ.get("OPENCODE_GO_API_KEY"),
+            ),
+        )
+        return Agent(pydantic_model, system_prompt=system_prompt)
+    if model_id.startswith("openrouter:"):
+        model_name = model_id.split(":", 1)[1]
+        pydantic_model = OpenAIChatModel(
+            model_name,
+            provider=OpenAIProvider(
+                base_url=_OPENROUTER_BASE_URL,
+                api_key=os.environ.get("OPENROUTER_API_KEY"),
+            ),
+        )
+        return Agent(pydantic_model, system_prompt=system_prompt)
+    return Agent(model_id, system_prompt=system_prompt)
 
 
 async def _run_agent(agent: Agent, prompt: list[Any], settings: ModelSettings, stream: bool) -> Any:
@@ -220,7 +293,17 @@ async def call_vision_model(
 ) -> VisionResponse:
     start = time.monotonic()
     try:
-        b64_data, mime_type = _encode_image(image_path)
+        image_max_bytes, image_max_dimension = _image_limits(model.params)
+        b64_data, mime_type = _encode_image(
+            image_path,
+            max_bytes=image_max_bytes,
+            max_dimension=image_max_dimension,
+        )
+        print(
+            f"  IMAGE [{model.label}] encoded {len(b64_data):,} base64 chars "
+            f"as {mime_type}",
+            file=sys.stderr,
+        )
         image_content = BinaryContent(
             data=base64.b64decode(b64_data),
             media_type=mime_type,
@@ -230,13 +313,32 @@ async def call_vision_model(
         result = None
         for attempt in range(_MAX_ATTEMPTS):
             try:
-                agent = Agent(model.id, system_prompt=prompts.system)
+                agent = _make_agent(model.id, prompts.system)
                 async with agent:
-                    result = await _run_agent(
-                        agent,
-                        [prompts.user, image_content],
-                        settings,
-                        _should_stream_model(model.id),
+                    timeout_seconds = _settings_timeout_seconds(settings)
+                    print(
+                        f"  REQUEST [{model.label}] attempt {attempt + 1}/{_MAX_ATTEMPTS} "
+                        f"with hard timeout {timeout_seconds:g}s",
+                        file=sys.stderr,
+                    )
+                    try:
+                        result = await asyncio.wait_for(
+                            _run_agent(
+                                agent,
+                                [prompts.user, image_content],
+                                settings,
+                                _should_stream_model(model.id),
+                            ),
+                            timeout=timeout_seconds,
+                        )
+                    except asyncio.TimeoutError as e:
+                        raise HardRequestTimeoutError(
+                            f"request exceeded hard timeout of {timeout_seconds:g}s"
+                        ) from e
+                    print(
+                        f"  RESPONSE [{model.label}] received after "
+                        f"{time.monotonic() - start:.1f}s",
+                        file=sys.stderr,
                     )
                 break
             except Exception as e:
@@ -255,17 +357,24 @@ async def call_vision_model(
         usage = _result_usage(result)
         input_tokens = _usage_value(usage, "input_tokens", "request_tokens")
         output_tokens = _usage_value(usage, "output_tokens", "response_tokens")
+        cost = _result_cost(result) or _configured_cost(
+            model.params,
+            input_tokens,
+            output_tokens,
+        )
         return VisionResponse(
             text=str(getattr(result, "output", "") or ""),
             input_tokens=input_tokens,
             output_tokens=output_tokens,
             total_tokens=_usage_value(usage, "total_tokens") or input_tokens + output_tokens,
-            cost=_result_cost(result),
+            cost=cost,
             latency_seconds=round(latency, 3),
             model_id=model.label,
         )
     except Exception as e:
-        unsupported_params = sorted(k for k in model.params if k not in _MODEL_SETTINGS_KEYS)
+        unsupported_params = sorted(
+            k for k in model.params if k not in _SUPPORTED_MODEL_PARAM_KEYS
+        )
         error = _format_model_error(e, model, unsupported_params)
         print(f"  ERROR [{model.label}]: {error}", file=sys.stderr)
         return VisionResponse(

@@ -199,20 +199,19 @@ async def run_benchmark(
                     file=sys.stderr,
                 )
                 await asyncio.sleep(wait_seconds)
-
-            print(
-                f"  READY [{provider}] waiting for concurrency slot before {model.label}",
-                file=sys.stderr,
-            )
-            async with semaphore:
-                print(
-                    f"  CALL [{provider}] sending request to {model.label}",
-                    file=sys.stderr,
-                )
-                response = await call_vision_model(model, image_path, config.prompts)
             if cooldown > 0:
                 provider_next_available_at[provider] = time.monotonic() + cooldown
-            return response
+
+        print(
+            f"  READY [{provider}] waiting for concurrency slot before {model.label}",
+            file=sys.stderr,
+        )
+        async with semaphore:
+            print(
+                f"  CALL [{provider}] sending request to {model.label}",
+                file=sys.stderr,
+            )
+            return await call_vision_model(model, image_path, config.prompts)
 
     async def process(group, sample, model, gt_text, sample_order):
         nonlocal started, completed

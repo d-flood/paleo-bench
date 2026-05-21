@@ -27,6 +27,25 @@ id = "google:gemini-3.5-flash"
 label = "gemini-3.5-flash-low"
 thinking = "low"
 
+[[models]]
+id = "openrouter:qwen/qwen3.6-plus"
+label = "qwen3.6-plus"
+input_token_cost = 0.000000325
+output_token_cost = 0.00000195
+image_max_bytes = 900000
+image_max_dimension = 3000
+timeout = 300
+
+[[models]]
+id = "openrouter:moonshotai/kimi-k2.6"
+label = "kimi-k2.6"
+input_token_cost = 0.00000075
+output_token_cost = 0.0000035
+extra_body = { provider = { order = ["DeepInfra", "Novita", "Moonshot AI", "SiliconFlow"], allow_fallbacks = true } }
+image_max_bytes = 900000
+image_max_dimension = 3000
+timeout = 300
+
 [[groups]]
 name = "Test Group"
 

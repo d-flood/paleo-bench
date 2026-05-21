@@ -202,7 +202,7 @@
   });
 
   const totalCost = rowsWithSummary.reduce((s, r) => s + (r.summary?.total_cost ?? 0), 0);
-  const totalSamples = rowsWithSummary.reduce((s, r) => s + (r.summary?.samples_evaluated ?? 0), 0);
+  const totalSamples = siteSummary.benchmark.config.sample_count;
 </script>
 
 <svelte:head>
@@ -267,7 +267,7 @@
 
     <!-- Run stats -->
     <div class="mb-8 grid grid-cols-2 gap-3 md:grid-cols-3">
-      {#each [{ label: 'Models', value: comma(configuredModels.length), color: 'var(--accent-primary)' }, { label: 'Samples', value: comma(totalSamples / configuredModels.length), color: 'var(--accent-tertiary)' }, { label: 'Total Cost', value: costCents(totalCost), color: 'var(--accent-secondary)' }] as stat}
+      {#each [{ label: 'Models', value: comma(configuredModels.length), color: 'var(--accent-primary)' }, { label: 'Samples', value: comma(totalSamples), color: 'var(--accent-tertiary)' }, { label: 'Total Cost', value: costCents(totalCost), color: 'var(--accent-secondary)' }] as stat}
         <div class="rounded-xl border border-[var(--border-card)] bg-[var(--bg-surface)] p-4">
           <p
             class="mb-1 font-mono text-[10px] tracking-wider uppercase"
@@ -675,6 +675,12 @@
                 : 'Sorted by latency per sample ascending'}
           </p>
         </div>
+        {#if chartSortKey === 'latency'}
+          <p class="mt-3 text-[10px] italic text-stone-500 dark:text-white/50">
+            Note: Kimi K2.6 was accessed through OpenRouter and was served especially slow during
+            this run. Its latency numbers are not very reflective.
+          </p>
+        {/if}
       </div>
 
       <!-- Detail panel (desktop only — mobile uses expandable rows) -->
