@@ -8,17 +8,28 @@ system = "You are an expert at reading handwritten text."
 user = "Transcribe the handwritten text in this image exactly as written. Output only the transcription, nothing else."
 
 [[models]]
-id = "anthropic/claude-sonnet-4-20250514"
-label = "sonnet-no-thinking"
+id = "anthropic:claude-sonnet-4-6"
+label = "sonnet-4.6-no-thinking"
 
 [[models]]
-id = "anthropic/claude-sonnet-4-20250514"
-label = "sonnet-thinking-16k"
-thinking = { type = "enabled", budget_tokens = 16000 }
+id = "anthropic:claude-opus-4-7"
+label = "opus-4.7-thinking"
+max_tokens = 16000
+thinking = "high"
+
+[[models]]
+id = "openai-chat:gpt-5.4-mini"
+label = "gpt-5.4-mini-low"
+thinking = "low"
+
+[[models]]
+id = "google:gemini-3.5-flash"
+label = "gemini-3.5-flash-low"
+thinking = "low"
 
 [[groups]]
 name = "Test Group"
 
 [[groups.samples]]
 image = "https://example.org/iiif/test_sample1/info.json"
-ground_truth = "data/test/sample1.txt"
+ground_truth = "data/grk_byz/GA1_72v.txt"

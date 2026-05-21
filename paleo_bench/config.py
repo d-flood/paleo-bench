@@ -45,6 +45,7 @@ class BenchConfig:
     prompts: PromptsConfig
     models: list[ModelConfig]
     groups: list[GroupConfig]
+    provider_cooldown_seconds: dict[str, float] = field(default_factory=dict)
 
 
 def load_config(path: "str | Path") -> BenchConfig:
@@ -67,6 +68,10 @@ def load_config(path: "str | Path") -> BenchConfig:
     name = bench.get("name", "Paleo Benchmark Run")
     output = Path(bench.get("output", "results.json"))
     max_concurrency = bench.get("max_concurrency", 5)
+    provider_cooldown_seconds = {
+        str(provider): float(seconds)
+        for provider, seconds in bench.get("provider_cooldown_seconds", {}).items()
+    }
 
     # [prompts]
     prompts_raw = raw.get("prompts")
@@ -143,6 +148,7 @@ def load_config(path: "str | Path") -> BenchConfig:
         name=name,
         output=output,
         max_concurrency=max_concurrency,
+        provider_cooldown_seconds=provider_cooldown_seconds,
         prompts=prompts,
         models=models,
         groups=groups,

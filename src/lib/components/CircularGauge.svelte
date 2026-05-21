@@ -48,8 +48,13 @@
   let computedAriaLabel = $derived(ariaLabel ?? `${label}: ${pct(value)}`);
 
   function handleClick(e: MouseEvent) {
-    if (rawValue) {
-      e.stopPropagation();
+    e.stopPropagation();
+    showTooltip = !showTooltip;
+  }
+
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
       showTooltip = !showTooltip;
     }
   }
@@ -62,76 +67,27 @@
 <svelte:window onclick={showTooltip ? handleOutsideClick : undefined} />
 
 <span class="gauge-wrapper" style="position: relative; display: inline-block;">
-  <button
-    type="button"
-    class="gauge-clickable"
-    onclick={handleClick}
-    style="cursor: {rawValue ? 'pointer' : 'default'}; display: inline-block; background: none; border: none; padding: 0; margin: 0; line-height: 0;"
-    aria-label={rawValue ? `${label}: ${rawValue}` : computedAriaLabel}
-  >
-    <svg
-      viewBox="0 0 100 100"
-      width={size}
-      height={size}
-      class="gauge-svg"
-      style="--gauge-color: {color};"
-      role="img"
+  {#if rawValue}
+    <span
+      role="button"
+      tabindex="0"
+      class="gauge-clickable"
+      onclick={handleClick}
+      onkeydown={handleKeyDown}
+      style="cursor: pointer; display: inline-block; background: none; border: none; padding: 0; margin: 0; line-height: 0;"
+      aria-label={`${label}: ${rawValue}`}
+    >
+      {@render gaugeBody()}
+    </span>
+  {:else}
+    <span
+      class="gauge-clickable"
+      style="cursor: default; display: inline-block; background: none; border: none; padding: 0; margin: 0; line-height: 0;"
       aria-label={computedAriaLabel}
     >
-      <path
-        d={arc}
-        fill="none"
-        stroke="var(--gauge-track)"
-        stroke-width="5"
-        stroke-linecap="round"
-      />
-      <path
-        d={arc}
-        fill="none"
-        stroke={color}
-        stroke-width="5"
-        stroke-linecap="round"
-        stroke-dasharray={fullLength}
-        stroke-dashoffset={dashOffset(value)}
-        class="gauge-value"
-      />
-
-      {#if icon}
-        <foreignObject x="10" y="10" width="80" height="80">
-          <div
-            class="gauge-icon"
-            style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:{color};"
-          >
-            {@render iconSlot()}
-          </div>
-        </foreignObject>
-      {/if}
-
-      {#if !isSmall && !icon}
-        <text
-          x="50"
-          y="46"
-          text-anchor="middle"
-          fill="var(--svg-text)"
-          font-size="13"
-          font-family="Space Mono"
-          font-weight="700"
-        >
-          {pct(value, 0)}
-        </text>
-        <text
-          x="50"
-          y="60"
-          text-anchor="middle"
-          fill="var(--svg-text-ghost)"
-          font-size="7"
-          font-family="Space Mono"
-        >
-          {label.toUpperCase()}
-        </text>
-      {/if}
-    </svg>
-  </button>
+      {@render gaugeBody()}
+    </span>
+  {/if}
 
   {#if showTooltip && rawValue}
     <span class="gauge-tooltip">
@@ -139,6 +95,71 @@
     </span>
   {/if}
 </span>
+
+{#snippet gaugeBody()}
+  <svg
+    viewBox="0 0 100 100"
+    width={size}
+    height={size}
+    class="gauge-svg"
+    style="--gauge-color: {color};"
+    role="img"
+    aria-label={computedAriaLabel}
+  >
+    <path
+      d={arc}
+      fill="none"
+      stroke="var(--gauge-track)"
+      stroke-width="5"
+      stroke-linecap="round"
+    />
+    <path
+      d={arc}
+      fill="none"
+      stroke={color}
+      stroke-width="5"
+      stroke-linecap="round"
+      stroke-dasharray={fullLength}
+      stroke-dashoffset={dashOffset(value)}
+      class="gauge-value"
+    />
+
+    {#if icon}
+      <foreignObject x="10" y="10" width="80" height="80">
+        <div
+          class="gauge-icon"
+          style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:{color};"
+        >
+          {@render iconSlot()}
+        </div>
+      </foreignObject>
+    {/if}
+
+    {#if !isSmall && !icon}
+      <text
+        x="50"
+        y="46"
+        text-anchor="middle"
+        fill="var(--svg-text)"
+        font-size="13"
+        font-family="Space Mono"
+        font-weight="700"
+      >
+        {pct(value, 0)}
+      </text>
+      <text
+        x="50"
+        y="60"
+        text-anchor="middle"
+        fill="var(--svg-text-ghost)"
+        font-size="7"
+        font-family="Space Mono"
+      >
+        {label.toUpperCase()}
+      </text>
+    {/if}
+  </svg>
+{/snippet}
 
 {#snippet iconSlot()}
   {#if icon}

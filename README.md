@@ -42,3 +42,33 @@ uv run python -m paleo_bench --config config.toml --recompute-comparisons
 ```
 
 This recalculates per-row metrics plus model/group summaries from existing `static/results.json`.
+
+## PydanticAI model settings
+
+Slow vision/reasoning models can exceed the default request timeout. Extra keys in
+each `[[models]]` entry are interpreted as PydanticAI `ModelSettings`, so use
+PydanticAI model IDs and set per-model settings in TOML:
+
+```toml
+[[models]]
+id = "anthropic:claude-opus-4-7"
+label = "opus-4.7-thinking"
+timeout = 300
+thinking = "high"
+```
+
+Use `openai-chat:` for OpenAI Chat Completions models, for example
+`openai-chat:gpt-5.4-mini`.
+
+If several providers are timing out, also try lowering `[bench].max_concurrency`
+to reduce concurrent connection pressure.
+
+For resume runs where only one provider has failed rows left, add provider
+cooldowns so other providers can run while repeated calls wait:
+
+```toml
+[bench.provider_cooldown_seconds]
+anthropic = 10
+openai = 60
+google = 30
+```

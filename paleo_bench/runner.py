@@ -79,6 +79,15 @@ def sample_result_key(sample_result: SampleResult) -> ResultKey:
     )
 
 
+def _provider_from_model_id(model_id: str) -> str:
+    if ":" in model_id:
+        provider = model_id.split(":", 1)[0]
+        if provider.startswith("openai-"):
+            return "openai"
+        return provider
+    return model_id.split("/", 1)[0]
+
+
 def recompute_summaries(result: BenchmarkResult) -> None:
     result.model_summaries = {}
     result.group_summaries = {}
@@ -163,9 +172,47 @@ async def run_benchmark(
         return result
 
     semaphore = asyncio.Semaphore(config.max_concurrency)
+    provider_locks = {
+        _provider_from_model_id(model.id): asyncio.Lock() for model in config.models
+    }
+    provider_next_available_at = {
+        _provider_from_model_id(model.id): 0.0 for model in config.models
+    }
     started = 0
     completed = 0
+    failed_models: set[str] = set()
     lock = asyncio.Lock()
+
+    async def call_with_provider_cooldown(model, image_path):
+        provider = _provider_from_model_id(model.id)
+        provider_lock = provider_locks[provider]
+        print(
+            f"  QUEUED [{provider}] waiting for provider slot before {model.label}",
+            file=sys.stderr,
+        )
+        async with provider_lock:
+            cooldown = config.provider_cooldown_seconds.get(provider, 0.0)
+            wait_seconds = provider_next_available_at[provider] - time.monotonic()
+            if wait_seconds > 0:
+                print(
+                    f"  COOLDOWN [{provider}] waiting {wait_seconds:.1f}s before {model.label}",
+                    file=sys.stderr,
+                )
+                await asyncio.sleep(wait_seconds)
+
+            print(
+                f"  READY [{provider}] waiting for concurrency slot before {model.label}",
+                file=sys.stderr,
+            )
+            async with semaphore:
+                print(
+                    f"  CALL [{provider}] sending request to {model.label}",
+                    file=sys.stderr,
+                )
+                response = await call_vision_model(model, image_path, config.prompts)
+            if cooldown > 0:
+                provider_next_available_at[provider] = time.monotonic() + cooldown
+            return response
 
     async def process(group, sample, model, gt_text, sample_order):
         nonlocal started, completed
@@ -179,8 +226,22 @@ async def run_benchmark(
             file=sys.stderr,
         )
 
-        async with semaphore:
-            response = await call_vision_model(model, sample.cached_image, config.prompts)
+        async with lock:
+            skip_error = (
+                f"Skipped because {model.label} already failed earlier in this run; "
+                "rerun later to retry this model."
+                if model.label in failed_models
+                else None
+            )
+
+        if skip_error:
+            print(f"  SKIP [{model.label}] {skip_error}", file=sys.stderr)
+            response = VisionResponse(model_id=model.label, error=skip_error)
+        else:
+            response = await call_with_provider_cooldown(model, sample.cached_image)
+            if response.error:
+                async with lock:
+                    failed_models.add(model.label)
 
         async with lock:
             completed += 1

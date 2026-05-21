@@ -81,6 +81,55 @@ class TestRunnerResume(unittest.TestCase):
         self.assertEqual(checkpoints, [1])
         self.assertEqual(result.sample_results[0].sample_label, "b")
 
+    def test_run_benchmark_applies_same_provider_cooldown(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            gt = tmp_path / "gt.txt"
+            gt.write_text("alpha", encoding="utf-8")
+            image = tmp_path / "dummy.jpg"
+            image.write_bytes(b"dummy")
+            config = BenchConfig(
+                name="Test",
+                output=tmp_path / "results.json",
+                max_concurrency=2,
+                prompts=PromptsConfig(system="s", user="u"),
+                models=[
+                    ModelConfig(id="openai:model-a", label="model-a"),
+                    ModelConfig(id="openai:model-b", label="model-b"),
+                ],
+                groups=[
+                    GroupConfig(
+                        name="g1",
+                        samples=[
+                            SampleConfig(
+                                image_url="https://example.org/iiif/a/info.json",
+                                ground_truth=gt,
+                                label="a",
+                                cached_image=image,
+                            )
+                        ],
+                    )
+                ],
+                provider_cooldown_seconds={"openai": 5},
+            )
+            sleeps = []
+
+            async def fake_call_vision_model(*_args, **_kwargs) -> VisionResponse:
+                return VisionResponse(text="alpha", latency_seconds=0.01)
+
+            async def fake_sleep(delay: float) -> None:
+                sleeps.append(delay)
+
+            with (
+                patch("paleo_bench.runner.call_vision_model", new=fake_call_vision_model),
+                patch("paleo_bench.runner.asyncio.sleep", new=fake_sleep),
+            ):
+                result = asyncio.run(run_benchmark(config))
+
+        self.assertEqual(len(result.sample_results), 2)
+        self.assertEqual(len(sleeps), 1)
+        self.assertGreater(sleeps[0], 4.9)
+
 
 if __name__ == "__main__":
     unittest.main()

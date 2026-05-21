@@ -18,9 +18,9 @@ export function cost(n: number): string {
   return '$' + n.toFixed(4);
 }
 
-/** Format cost in USD rounded to nearest cent */
+/** Format cost in USD rounded to 3 decimal places */
 export function costCents(n: number): string {
-  return '$' + n.toFixed(2);
+  return '$' + n.toFixed(3);
 }
 
 /** Format a number with commas */

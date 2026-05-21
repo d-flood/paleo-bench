@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "httpx>=0.27",
-    "litellm>=1.40",
+    "pydantic-ai",
     "python-dotenv>=1.0",
     "jiwer>=3.0",
     "rapidfuzz>=3.0",

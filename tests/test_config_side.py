@@ -61,6 +61,21 @@ class TestConfigSide(unittest.TestCase):
             with self.assertRaises(ConfigError):
                 load_config(path)
 
+    def test_load_config_accepts_provider_cooldowns(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = _write_config(Path(tmp_dir), None)
+            text = path.read_text(encoding="utf-8")
+            text = text.replace(
+                "[prompts]",
+                "[bench.provider_cooldown_seconds]\nopenai = 10\ngemini = 10\n\n[prompts]",
+            )
+            path.write_text(text, encoding="utf-8")
+
+            config = load_config(path)
+
+        self.assertEqual(config.provider_cooldown_seconds["openai"], 10.0)
+        self.assertEqual(config.provider_cooldown_seconds["gemini"], 10.0)
+
 
 if __name__ == "__main__":
     unittest.main()

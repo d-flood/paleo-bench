@@ -1,23 +1,51 @@
 [bench]
 name = "Paleo Benchmark Run"
 output = "static/results.json"
+# Lower this if providers start timing out under concurrent load.
 max_concurrency = 5
+
+# Optional cooldown after each provider call. Useful when resume runs leave many
+# missing rows from the same provider.
+[bench.provider_cooldown_seconds]
+anthropic = 10
+openai = 10
+google = 10
 
 [prompts]
 system = "You are an expert at reading handwritten text."
 user = "Transcribe the handwritten text in this image exactly as written. Output only the transcription, nothing else."
 
 [[models]]
-id = "anthropic/claude-sonnet-4-20250514"
-label = "sonnet-no-thinking"
+id = "anthropic:claude-sonnet-4-6"
+label = "sonnet-4.6-no-thinking"
 
 [[models]]
-id = "anthropic/claude-sonnet-4-20250514"
-label = "sonnet-thinking-16k"
-thinking = { type = "enabled", budget_tokens = 16000 }
+id = "anthropic:claude-opus-4-7"
+label = "opus-4.7-thinking"
+max_tokens = 16000
+# Optional PydanticAI request timeout in seconds for slower vision/reasoning models.
+timeout = 300
+thinking = "high"
 
 [[models]]
-id = "openai/gpt-4o"
+id = "openai-chat:gpt-5.5"
+label = "gpt-5.5-low"
+thinking = "low"
+
+[[models]]
+id = "openai-chat:gpt-5.4-mini"
+label = "gpt-5.4-mini-low"
+thinking = "low"
+
+[[models]]
+id = "google:gemini-3.1-pro-preview"
+label = "gemini-3.1-pro-low"
+thinking = "low"
+
+[[models]]
+id = "google:gemini-3.5-flash"
+label = "gemini-3.5-flash-low"
+thinking = "low"
 
 [[groups]]
 name = "Byzantine Greek"
@@ -26,13 +54,13 @@ name = "Byzantine Greek"
 label = "GA 01, Rom 1:1-11"
 image = "https://example.org/iiif/byzantine_sample1/info.json"
 side = "verso"
-ground_truth = "data/byzantine/sample1.txt"
+ground_truth = "data/grk_byz/GA1_72v.txt"
 
 [[groups.samples]]
 label = "GA 02, Rom 1:12-25"
 image = "https://example.org/iiif/byzantine_sample2/info.json"
 side = "recto"
-ground_truth = "data/byzantine/sample2.txt"
+ground_truth = "data/grk_byz/GA1_73r.txt"
 
 [[groups]]
 name = "Greek Papyri"
@@ -40,4 +68,4 @@ name = "Greek Papyri"
 [[groups.samples]]
 label = "P46, Rom 1:1-15"
 image = "https://example.org/iiif/papyri_sample1/info.json"
-ground_truth = "data/papyri/sample1.txt"
+ground_truth = "data/grk_byz/GAL587_p66.txt"
