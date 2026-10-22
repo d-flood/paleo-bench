@@ -48,6 +48,22 @@ def _build_config(tmp_dir: Path) -> BenchConfig:
 
 
 class TestRunnerResume(unittest.TestCase):
+    def test_failed_model_skips_later_samples_without_crashing(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            config = _build_config(Path(tmp_dir))
+            calls = []
+
+            async def fail(*args, **_kwargs) -> VisionResponse:
+                calls.append(args)
+                return VisionResponse(error="authentication failed")
+
+            with patch("paleo_bench.runner.call_vision_model", new=fail):
+                result = asyncio.run(run_benchmark(config))
+
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(len(result.sample_results), 2)
+        self.assertTrue(all(row.error for row in result.sample_results))
+
     def test_run_benchmark_skips_existing_pairs_and_calls_checkpoint(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             config = _build_config(Path(tmp_dir))

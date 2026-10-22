@@ -30,7 +30,7 @@ _MAX_IMAGE_DIMENSION = 8_000
 _MAX_ATTEMPTS = 3
 _DEFAULT_TIMEOUT_SECONDS = 180
 _RESAMPLE_FILTER = Image.Resampling.LANCZOS
-_STREAMING_MODEL_PREFIXES = ("google-gla:", "google-vertex:", "gemini:")
+_STREAMING_MODEL_PREFIXES = ("google:", "google-cloud:", "google-gla:", "google-vertex:", "gemini:")
 _MODEL_SETTINGS_KEYS = {
     "extra_body",
     "extra_headers",
@@ -240,7 +240,7 @@ async def _run_agent(agent: Agent, prompt: list[Any], settings: ModelSettings, s
         async with agent.run_stream(prompt, model_settings=settings) as result:
             async for _text in result.stream_text():
                 pass
-            return result
+            return result.result
 
     return await agent.run(prompt, model_settings=settings)
 
@@ -309,6 +309,12 @@ async def call_vision_model(
             media_type=mime_type,
         )
         settings, unsupported_params = _model_settings(model.params)
+        workspace_id = os.environ.get("ANTHROPIC_WORKSPACE_ID")
+        if model.id.startswith("anthropic:") and workspace_id:
+            settings["extra_headers"] = {
+                "anthropic-workspace-id": workspace_id,
+                **(settings.get("extra_headers") or {}),
+            }
 
         result = None
         for attempt in range(_MAX_ATTEMPTS):

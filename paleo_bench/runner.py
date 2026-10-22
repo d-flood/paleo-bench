@@ -13,7 +13,7 @@ from .metrics import (
     compute_metrics,
     normalize_for_comparison,
 )
-from .vision import call_vision_model
+from .vision import VisionResponse, call_vision_model
 
 
 @dataclass

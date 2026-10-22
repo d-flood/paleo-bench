@@ -17,92 +17,172 @@ system = "You are an expert at reading handwritten text."
 user = "Transcribe the handwritten text in this image exactly as written. Output only the transcription, nothing else."
 
 [[models]]
-id = "anthropic:claude-sonnet-4-6"
-label = "sonnet-4.6-no-thinking"
+id = "anthropic:claude-opus-5-5"
+label = "Opus 5.5 (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
 
 [[models]]
-id = "anthropic:claude-opus-4-7"
-label = "opus-4.7-thinking"
+id = "openai-chat:gpt-6-astra"
+label = "GPT-6 Astra (low)"
 max_tokens = 16000
-# Optional PydanticAI request timeout in seconds for slower vision/reasoning models.
-timeout = 300
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "google:gemini-4-argon"
+label = "Gemini 4 Argon (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "anthropic:claude-sonnet-5-5"
+label = "Sonnet 5.5 (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "openai-chat:gpt-6.1-sol"
+label = "GPT-6.1 Sol (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "google:gemini-3.8-flash"
+label = "Gemini 3.8 Flash (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "anthropic:claude-haiku-5-5"
+label = "Haiku 5.5 (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "openai-chat:gpt-6-luna"
+label = "GPT-6 Luna (low)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+
+[[models]]
+id = "anthropic:claude-opus-5-5"
+label = "Opus 5.5 (high)"
+max_tokens = 16000
+timeout = 600
 thinking = "high"
 
 [[models]]
-id = "openai-chat:gpt-5.5"
-label = "gpt-5.5-low"
-thinking = "low"
+id = "google:gemini-4-argon"
+label = "Gemini 4 Argon (high)"
+max_tokens = 16000
+timeout = 600
+thinking = "high"
 
 [[models]]
-id = "openai-chat:gpt-5.4-mini"
-label = "gpt-5.4-mini-low"
-thinking = "low"
+id = "anthropic:claude-sonnet-5-5"
+label = "Sonnet 5.5 (high)"
+max_tokens = 16000
+timeout = 600
+thinking = "high"
 
 [[models]]
-id = "google:gemini-3.1-pro-preview"
-label = "gemini-3.1-pro-low"
-thinking = "low"
+id = "openai-chat:gpt-6.1-sol"
+label = "GPT-6.1 Sol (high)"
+max_tokens = 16000
+timeout = 600
+thinking = "high"
 
 [[models]]
-id = "google:gemini-3.5-flash"
-label = "gemini-3.5-flash-low"
-thinking = "low"
+id = "google:gemini-3.8-flash"
+label = "Gemini 3.8 Flash (high)"
+max_tokens = 16000
+timeout = 600
+thinking = "high"
 
 [[models]]
-id = "openrouter:qwen/qwen3.6-plus"
-label = "Qwen 3.6 Plus"
-# Must set OPENROUTER_API_KEY in .env
-input_token_cost = 0.000000325
-output_token_cost = 0.00000195
+id = "anthropic:claude-haiku-5-5"
+label = "Haiku 5.5 (high)"
+max_tokens = 16000
+timeout = 600
+thinking = "high"
+
+[[models]]
+id = "openai-chat:gpt-6-luna"
+label = "GPT-6 Luna (high)"
+max_tokens = 16000
+timeout = 600
+thinking = "high"
+
+[[models]]
+id = "openrouter:qwen/qwen3.8-27b"
+label = "Qwen 3.8 27B"
+input_token_cost = 0.000000040000
+output_token_cost = 0.000001350000
 image_max_bytes = 900000
 image_max_dimension = 3000
-timeout = 300
+max_tokens = 16000
+timeout = 600
 
 [[models]]
-id = "openrouter:x-ai/grok-4.3"
-label = "Grok 4.3"
-input_token_cost = 0.00000125
-output_token_cost = 0.0000025
+id = "openrouter:moonshotai/kimi-k3"
+label = "Kimi K3 (no thinking)"
+input_token_cost = 0.000000239000
+output_token_cost = 0.000011936000
 image_max_bytes = 900000
 image_max_dimension = 3000
-timeout = 300
+max_tokens = 16000
+timeout = 600
+extra_body = { reasoning = { effort = "none" } }
 
 [[models]]
-id = "openrouter:moonshotai/kimi-k2.6"
-label = "Kimi K2.6"
-input_token_cost = 0.00000075
-output_token_cost = 0.0000035
-extra_body = { provider = { order = ["DeepInfra", "Novita", "Moonshot AI", "SiliconFlow"], allow_fallbacks = true } }
+id = "openrouter:deepseek/deepseek-v4.1-flash-1017"
+label = "DeepSeek V4.1 Flash 1017 (no thinking)"
+input_token_cost = 0.000000150000
+output_token_cost = 0.000000600000
 image_max_bytes = 900000
 image_max_dimension = 3000
-timeout = 300
+max_tokens = 16000
+timeout = 600
+extra_body = { reasoning = { effort = "none" } }
 
 [[models]]
-id = "openrouter:meta-llama/llama-4-maverick"
-label = "Llama 4 Maverick"
-input_token_cost = 0.00000015
-output_token_cost = 0.0000006
+id = "openrouter:z-ai/glm-5.3-flash"
+label = "GLM 5.3 Flash"
+input_token_cost = 0.000000005200
+output_token_cost = 0.000000198500
 image_max_bytes = 900000
 image_max_dimension = 3000
-timeout = 300
+max_tokens = 16000
+timeout = 600
 
 [[models]]
-id = "openrouter:meta-llama/llama-4-scout"
-label = "Llama 4 Scout"
-input_token_cost = 0.00000008
-output_token_cost = 0.0000003
+id = "openrouter:nvidia/nemotron-3.5-super-vl"
+label = "Nemotron 3.5 Super VL (no thinking)"
+input_token_cost = 0.000000150000
+output_token_cost = 0.000000500000
 image_max_bytes = 900000
 image_max_dimension = 3000
-timeout = 300
+max_tokens = 16000
+timeout = 600
+extra_body = { reasoning = { enabled = false } }
 
 [[models]]
-id = "openrouter:qwen/qwen3.6-35b-a3b"
-label = "Qwen 3.6 35B A3B"
-input_token_cost = 0.00000015
-output_token_cost = 0.000001
+id = "openrouter:meta/muse-spark-open"
+label = "Muse Spark Open"
+input_token_cost = 0.000001250000
+output_token_cost = 0.000004250000
 image_max_bytes = 900000
 image_max_dimension = 3000
-timeout = 300
+max_tokens = 16000
+timeout = 600
 
 [[groups]]
 name = "Byzantine Greek"

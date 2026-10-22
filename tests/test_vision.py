@@ -85,20 +85,17 @@ class FakeAgent:
 
 class FakeStreamResult:
     def __init__(self, result):
-        self._result = result
+        self.result = result
 
     async def __aenter__(self):
-        return self._result
+        return self
 
     async def __aexit__(self, *_args):
         return None
 
 
-async def _stream_text(_self):
-    yield "transcription"
-
-
-FakeResult.stream_text = _stream_text
+    async def stream_text(self):
+        yield self.result.output
 
 
 async def _no_sleep(_delay: float) -> None:
@@ -165,6 +162,24 @@ class TestVisionModelCall(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(response.error)
         self.assertEqual(FakeAgent.calls[0]["model_settings"]["timeout"], 300)
 
+    async def test_sends_anthropic_workspace_header(self) -> None:
+        model = ModelConfig(
+            id="anthropic:claude-opus-5-5",
+            label="opus",
+            params={"extra_headers": {"custom-header": "value"}},
+        )
+        with (
+            self._patch_agent(),
+            patch.dict("os.environ", {"ANTHROPIC_WORKSPACE_ID": "wrkspc_test"}),
+        ):
+            response = await call_vision_model(model, self.image_path, self.prompts)
+
+        self.assertIsNone(response.error)
+        self.assertEqual(
+            FakeAgent.calls[0]["model_settings"]["extra_headers"],
+            {"anthropic-workspace-id": "wrkspc_test", "custom-header": "value"},
+        )
+
     async def test_uses_configured_cost_when_provider_cost_missing(self) -> None:
         model = ModelConfig(
             id="openrouter:test/model",
@@ -195,7 +210,7 @@ class TestVisionModelCall(unittest.IsolatedAsyncioTestCase):
     async def test_streams_google_models(self) -> None:
         with self._patch_streaming_agent(FakeResult()):
             response = await call_vision_model(
-                ModelConfig(id="google-gla:gemini-3.5-flash", label="gemini"),
+                ModelConfig(id="google:gemini-4-argon", label="gemini"),
                 self.image_path,
                 self.prompts,
             )
