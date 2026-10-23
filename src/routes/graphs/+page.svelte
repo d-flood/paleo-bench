@@ -2,6 +2,7 @@
   import { resolve } from '$app/paths';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import Meta from '#lib/components/Meta.svelte';
   import Scatter from '#lib/components/Scatter.svelte';
   import {
     FAMILIES,
@@ -122,7 +123,10 @@
   );
 </script>
 
-<svelte:head><title>Graphs, Paleo Bench</title></svelte:head>
+<Meta
+  title="Graphs, Paleo Bench"
+  description="Score against cost and time for {rows.length} model configurations transcribing Byzantine Greek manuscripts."
+/>
 
 <svelte:window onhashchange={fromHash} />
 

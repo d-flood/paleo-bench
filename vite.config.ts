@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [
     sveltekit({
       adapter: adapter(),
-      paths: { base },
+      paths: { base, origin: 'https://d-flood.github.io' },
+      inlineStyleThreshold: 20_000,
       prerender: {
         handleMissingId: ({ path, message }) => {
           if (!selectionRoutes.includes(path)) throw new Error(message);

@@ -5,6 +5,7 @@
   import CaretLeftIcon from 'phosphor-svelte/lib/CaretLeftIcon';
   import CaretRightIcon from 'phosphor-svelte/lib/CaretRightIcon';
   import MarkedScript from '#lib/components/MarkedScript.svelte';
+  import Meta from '#lib/components/Meta.svelte';
   import TranscriptionKey from '#lib/components/TranscriptionKey.svelte';
   import Viewer from '#lib/components/Viewer.svelte';
   import {
@@ -87,7 +88,10 @@
   }
 </script>
 
-<svelte:head><title>Image & transcription, Paleo Bench</title></svelte:head>
+<Meta
+  title="Image & transcription, Paleo Bench"
+  description="Each model's transcription of a Byzantine Greek manuscript folio beside the image, marked against the human committee transcription."
+/>
 
 <svelte:window onhashchange={fromHash} />
 

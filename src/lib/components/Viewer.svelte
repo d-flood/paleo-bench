@@ -1,4 +1,5 @@
 <script lang="ts">
+  import 'triiiceratops/style.css';
   import { TriiiceratopsViewer } from 'triiiceratops/svelte';
   import type { Sample } from '#lib/bench.js';
   import { folioView } from '#lib/iiif.js';

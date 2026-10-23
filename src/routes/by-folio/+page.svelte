@@ -2,6 +2,7 @@
   import { resolve } from '$app/paths';
   import { onMount } from 'svelte';
   import CaretDownIcon from 'phosphor-svelte/lib/CaretDownIcon';
+  import Meta from '#lib/components/Meta.svelte';
 
   import {
     buildRows,
@@ -86,7 +87,10 @@
   const link = (r: Row, p: number) => resolve('transcriptions') + scriptHash(r, p);
 </script>
 
-<svelte:head><title>By folio, Paleo Bench</title></svelte:head>
+<Meta
+  title="By folio, Paleo Bench"
+  description="Scores for {rows.length} model configurations on each of {S.length} Byzantine Greek manuscript folios, from colour images and microfilm."
+/>
 
 <section class="lead">
   <h1>By folio</h1>

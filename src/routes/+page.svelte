@@ -5,6 +5,7 @@
   import CaretUpIcon from 'phosphor-svelte/lib/CaretUpIcon';
   import MagnifyingGlassIcon from 'phosphor-svelte/lib/MagnifyingGlassIcon';
   import Mark from '#lib/components/Mark.svelte';
+  import Meta from '#lib/components/Meta.svelte';
   import {
     PROVIDERS,
     buildRows,
@@ -145,13 +146,10 @@
   });
 </script>
 
-<svelte:head>
-  <title>Paleo Bench</title>
-  <meta
-    name="description"
-    content="How well {rows.length} model configurations transcribe Byzantine Greek manuscripts."
-  />
-</svelte:head>
+<Meta
+  title="Paleo Bench"
+  description="How well {rows.length} model configurations transcribe Byzantine Greek manuscripts."
+/>
 
 {#snippet who_link(r: Row)}<a class="hi" href={href(r)}>{r.m.label}</a>{/snippet}
 

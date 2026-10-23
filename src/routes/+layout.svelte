@@ -6,6 +6,7 @@
   import { theme, type ThemePref } from '#lib/theme.svelte.js';
   import { onMount } from 'svelte';
   import DownloadSimpleIcon from 'phosphor-svelte/lib/DownloadSimpleIcon';
+  import GithubLogoIcon from 'phosphor-svelte/lib/GithubLogoIcon';
   import MonitorIcon from 'phosphor-svelte/lib/MonitorIcon';
   import MoonIcon from 'phosphor-svelte/lib/MoonIcon';
   import SunIcon from 'phosphor-svelte/lib/SunIcon';
@@ -33,6 +34,9 @@
     page.url.pathname.replace(/\/$/, '') === href.replace(/\/$/, '');
   const wide = $derived(current(resolve('transcriptions')));
 
+  const CARD_ALT =
+    'Paleo Bench: a Greek manuscript transcription marked in red pen, with a circled score';
+
   const THEMES: { pref: ThemePref; name: string; icon: typeof SunIcon }[] = [
     { pref: 'system', name: 'System', icon: MonitorIcon },
     { pref: 'light', name: 'Light', icon: SunIcon },
@@ -42,7 +46,18 @@
   onMount(() => theme.init());
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+  <link rel="icon" href={favicon} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Paleo Bench" />
+  <meta property="og:image" content={new URL(asset('og.png'), page.url.href).href} />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={CARD_ALT} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:image:alt" content={CARD_ALT} />
+</svelte:head>
 
 <div class="wrap" class:wide>
   <header class="mast">
@@ -96,6 +111,12 @@
       <li>
         Data: <a href={asset('results.json')} download
           ><DownloadSimpleIcon class="ico" aria-hidden="true" />results.json</a
+        >
+      </li>
+      <li>By <a href="https://davidaflood.com">David A. Flood</a></li>
+      <li>
+        Code: <a href="https://github.com/d-flood/paleo-bench"
+          ><GithubLogoIcon class="ico" aria-hidden="true" />d-flood/paleo-bench</a
         >
       </li>
     </ul>
@@ -189,6 +210,8 @@
   }
 
   .pagefoot {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 12rem;
     margin-top: 34px;
     padding-top: 14px;
     border-top: 1px solid var(--edge);
