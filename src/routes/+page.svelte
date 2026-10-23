@@ -56,6 +56,8 @@
   const ranking = $derived(rank(rows, st.zero));
   const v = (r: Row) => (st.zero ? r.zero : r.std);
   const href = (r: Row) => resolve('transcriptions') + scriptHash(r, 0);
+  const costPerImage = (r: Row) =>
+    r.m.cost > 0 && r.attempted > 0 ? r.m.cost / r.attempted : null;
 
   const COLS = [
     { k: 'pos', name: 'Position', cls: 'pos' },
@@ -75,7 +77,7 @@
       mark: st.zero ? 'failed folios count 0' : 'mean of folios run',
       col: colourPapers && `folios ${colourPapers}`,
       mic: microfilmPapers && `folios ${microfilmPapers}`,
-      cost: 'all folios',
+      cost: 'per image',
       time: 'all folios'
     })[k] ?? '';
 
@@ -94,7 +96,7 @@
       case 'sat':
         return r.sat;
       case 'cost':
-        return r.m.cost > 0 ? r.m.cost : null;
+        return costPerImage(r);
       case 'time':
         return r.m.latency;
       default:
@@ -130,7 +132,9 @@
   const lead = $derived.by(() => {
     const ok = rows.filter((r) => v(r).mark != null);
     const nine = ok.filter((r) => v(r).mark! >= 90);
-    const cheap = nine.filter((r) => r.m.cost > 0).sort((a, b) => a.m.cost - b.m.cost)[0];
+    const cheap = nine
+      .filter((r) => costPerImage(r) != null)
+      .sort((a, b) => costPerImage(a)! - costPerImage(b)!)[0];
     const fast = [...nine].sort((a, b) => a.m.latency - b.m.latency)[0];
     const drop = ok
       .filter((r) => v(r).colour != null && v(r).colour! >= 85 && v(r).micro != null)
@@ -157,11 +161,15 @@
   <h1>Results</h1>
   <ul class="points">
     <li>
-      Top: {@render who_link(lead.top)}, score {fmt1(v(lead.top).mark)}, {fmtCost(lead.top.m.cost)},
+      Top: {@render who_link(lead.top)}, score {fmt1(v(lead.top).mark)}, {fmtCost(
+        costPerImage(lead.top)
+      )} per image,
       {fmtTime(lead.top.m.latency, true)}
     </li>
     {#if lead.cheap}
-      <li>Cheapest at 90+: {@render who_link(lead.cheap)}, {fmtCost(lead.cheap.m.cost)}</li>
+      <li>
+        Cheapest at 90+: {@render who_link(lead.cheap)}, {fmtCost(costPerImage(lead.cheap))} per image
+      </li>
     {/if}
     {#if lead.fast}
       <li>Fastest at 90+: {@render who_link(lead.fast)}, {fmtTime(lead.fast.m.latency, true)}</li>
@@ -237,6 +245,7 @@
       <tbody>
         {#each shown as r (r.i)}
           {@const x = v(r)}
+          {@const cost = costPerImage(r)}
           <tr>
             <td class="pos">{ranking.label(r.i)}</td>
             <td class="cand tl">
@@ -266,9 +275,8 @@
                   >{/if}{/if}
             </td>
             <td
-              >{#if r.m.cost > 0}{fmtCost(r.m.cost)}{:else}<span
-                  class="mk na"
-                  title="No cost recorded">–</span
+              >{#if cost != null}{fmtCost(cost)}{:else}<span class="mk na" title="No cost recorded"
+                  >–</span
                 >{/if}</td
             >
             <td class="c-time">{fmtTime(r.m.latency)}</td>
