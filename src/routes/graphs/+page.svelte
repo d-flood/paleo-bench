@@ -125,7 +125,7 @@
 
 <Meta
   title="Graphs, Paleo Bench"
-  description="Score against cost and time for {rows.length} model configurations transcribing Byzantine Greek manuscripts."
+  description="Weigh transcription scores against cost and time for {rows.length} model configurations reading Byzantine Greek manuscripts."
 />
 
 <svelte:window onhashchange={fromHash} />

@@ -148,7 +148,7 @@
 
 <Meta
   title="Paleo Bench"
-  description="How well {rows.length} model configurations transcribe Byzantine Greek manuscripts."
+  description="Compare how well {rows.length} model configurations transcribe Byzantine Greek manuscripts against a human committee transcription."
 />
 
 {#snippet who_link(r: Row)}<a class="hi" href={href(r)}>{r.m.label}</a>{/snippet}

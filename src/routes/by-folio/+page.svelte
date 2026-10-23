@@ -89,7 +89,7 @@
 
 <Meta
   title="By folio, Paleo Bench"
-  description="Scores for {rows.length} model configurations on each of {S.length} Byzantine Greek manuscript folios, from colour images and microfilm."
+  description="Compare scores for {rows.length} model configurations on each of {S.length} Byzantine Greek manuscript folios, from colour images and microfilm."
 />
 
 <section class="lead">

@@ -90,7 +90,7 @@
 
 <Meta
   title="Image & transcription, Paleo Bench"
-  description="Each model's transcription of a Byzantine Greek manuscript folio beside the image, marked against the human committee transcription."
+  description="Read each model's transcription of a Byzantine Greek folio beside the image and see where it departs from the human committee transcription."
 />
 
 <svelte:window onhashchange={fromHash} />
