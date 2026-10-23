@@ -26,6 +26,7 @@ class SampleResult:
     ground_truth_text: str
     model_id: str
     sample_side: str = ""
+    sample_microfilm: bool = False
     model_output: str = ""
     error: str | None = None
     metrics: MetricScores | None = None
@@ -257,6 +258,7 @@ async def run_benchmark(
             sample_label=sample.label,
             image_url=sample.image_url,
             sample_side=sample.side or "",
+            sample_microfilm=sample.microfilm,
             ground_truth_path=str(sample.ground_truth),
             ground_truth_text=gt_text,
             model_id=model.label,

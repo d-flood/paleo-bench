@@ -1,43 +1,68 @@
-/**
- * Build a IIIF Presentation API v3 manifest from an array of info.json URLs.
- * Each info.json URL becomes a canvas in the manifest.
- */
-export function buildManifest(
-  items: { label: string; infoJsonUrl: string }[],
-  manifestLabel = 'Paleo Bench Images'
-) {
-  return {
+import type { Sample } from './bench';
+
+interface ImageInfo {
+  id?: string;
+  '@id'?: string;
+  type?: string;
+  profile?: unknown;
+  width: number;
+  height: number;
+}
+
+const infoCache = new Map<string, Promise<ImageInfo>>();
+
+function imageInfo(url: string): Promise<ImageInfo> {
+  if (!infoCache.has(url)) {
+    infoCache.set(
+      url,
+      fetch(url).then((r) => {
+        if (!r.ok) throw new Error(`Image information returned ${r.status}`);
+        return r.json();
+      })
+    );
+  }
+  return infoCache.get(url)!;
+}
+
+export async function folioView(sample: Sample, label: string) {
+  const info = await imageInfo(sample.image);
+  // CSNTM answers info.json only at the plain URL; its tokenized id serves the image itself.
+  const service = sample.image.replace(/\/info\.json$/, '');
+  const resolved = (info.id ?? info['@id'] ?? service).replace(/\/$/, '');
+  const { width, height } = info;
+  const id = `urn:paleo-bench:${sample.id}`;
+  const manifest = {
     '@context': 'http://iiif.io/api/presentation/3/context.json',
-    id: 'urn:paleo-bench:manifest',
+    id,
     type: 'Manifest',
-    label: { en: [manifestLabel] },
-    items: items.map((item, i) => {
-      const serviceUrl = item.infoJsonUrl.replace(/\/info\.json$/, '');
-      return {
-        id: `urn:paleo-bench:canvas:${i}`,
+    label: { none: [label] },
+    items: [
+      {
+        id: `${id}:canvas`,
         type: 'Canvas',
-        label: { en: [item.label] },
-        width: 4000,
-        height: 6000,
+        width,
+        height,
         items: [
           {
-            id: `urn:paleo-bench:canvas:${i}:page`,
+            id: `${id}:page`,
             type: 'AnnotationPage',
             items: [
               {
-                id: `urn:paleo-bench:canvas:${i}:page:annotation`,
+                id: `${id}:image`,
                 type: 'Annotation',
                 motivation: 'painting',
-                target: `urn:paleo-bench:canvas:${i}`,
+                target: `${id}:canvas`,
                 body: {
-                  id: `${serviceUrl}/full/max/0/default.jpg`,
+                  id: `${resolved}/full/max/0/default.jpg`,
                   type: 'Image',
                   format: 'image/jpeg',
+                  width,
+                  height,
                   service: [
                     {
-                      id: serviceUrl,
-                      type: 'ImageService3',
-                      profile: 'level2'
+                      id: service,
+                      type: info.type ?? (info['@id'] ? 'ImageService2' : 'ImageService3'),
+                      profile: info.profile
                     }
                   ]
                 }
@@ -45,14 +70,15 @@ export function buildManifest(
             ]
           }
         ]
-      };
-    })
+      }
+    ]
   };
-}
-
-/**
- * Build a single-canvas manifest for one info.json URL.
- */
-export function buildSingleManifest(label: string, infoJsonUrl: string) {
-  return buildManifest([{ label, infoJsonUrl }], label);
+  const half = Math.round(width / 2);
+  const region =
+    sample.side === 'verso'
+      ? { x: 0, y: 0, width: half, height }
+      : sample.side === 'recto'
+        ? { x: half, y: 0, width: width - half, height }
+        : null;
+  return { id, manifest, region };
 }

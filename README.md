@@ -4,23 +4,22 @@ Static SvelteKit site for viewing benchmark output stored in `static/results.jso
 
 At build/dev startup, `scripts/split-results-for-site.mjs` derives lightweight site artifacts:
 
-- `static/site-data/summary.json`
-- `static/site-data/compare-index.json`
-- `static/site-data/samples/*.json`
+- `static/site-data/summary.json`: models, folios and per-folio metrics for the results, graphs and by-folio pages
+- `static/site-data/folio/*.json`: ground truth and every model's transcription for one folio, loaded by the image & transcription page
 
-This keeps the initial HTML/data payload small while preserving an interactive compare view.
+Scoring strips accents and punctuation, ignores capitalization, reads every sigma form as σ, folds Greek letter variants (ϑ, ϐ, ϰ, ϱ, ϕ, ϖ, ϵ) to their usual forms, expands ϛ, ȣ and ϗ to στ, ου and και, and maps Latin or Cyrillic look-alike letters inside Greek words to Greek. Stored transcriptions keep their original case and sigma forms. Mark a sample with `microfilm = true` in the config to report it separately from colour images.
 
 ## Local development
 
 ```sh
-bun install --frozen-lockfile
-bun run dev
+pnpm install --frozen-lockfile
+pnpm dev
 ```
 
 ## Build
 
 ```sh
-bun run build
+pnpm build
 ```
 
 The build runs `scripts/split-results-for-site.mjs` before `vite build`, generating
@@ -77,7 +76,7 @@ needed in GitHub Actions; deployment builds the saved static results.
 Benchmark execution is manual. The runner merges new results into
 `static/results.json`, preserving saved runs. After running the benchmark locally:
 
-1. Run `bun run gen:site-data` (or run `bun run build`, which generates site data automatically).
+1. Run `pnpm gen:site-data` (or run `pnpm build`, which generates site data automatically).
 2. Commit the updated `static/results.json` and generated `static/site-data/*`.
 3. Push to `main` to trigger deployment.
 

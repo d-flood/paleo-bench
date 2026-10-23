@@ -7,7 +7,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
-from .config import BenchConfig
+from .config import BenchConfig, SampleConfig
 from .metrics import MetricScores, aggregate_metrics, compute_metrics, normalize_for_comparison
 from .runner import BenchmarkResult, ResultKey, make_result_key
 
@@ -27,7 +27,12 @@ def _build_json(result: BenchmarkResult) -> dict:
                     "user": config.prompts.user,
                 },
                 "models": [
-                    {"label": m.label, "id": m.id, "params": m.params}
+                    {
+                        "label": m.label,
+                        "id": m.id,
+                        "params": m.params,
+                        **({"open_weights": True} if m.open_weights else {}),
+                    }
                     for m in config.models
                 ],
                 "groups": [
@@ -66,6 +71,8 @@ def _build_json(result: BenchmarkResult) -> dict:
         }
         if sr.sample_side:
             entry["side"] = sr.sample_side
+        if sr.sample_microfilm:
+            entry["microfilm"] = True
         output["results"].append(entry)
 
     return output
@@ -142,8 +149,6 @@ def _metric_scores_from_row(row: dict[str, Any]) -> MetricScores | None:
         return MetricScores(
             cer=float(metrics["cer"]),
             wer=float(metrics["wer"]),
-            cer_case_insensitive=float(metrics["cer_case_insensitive"]),
-            wer_case_insensitive=float(metrics["wer_case_insensitive"]),
             levenshtein_distance=int(metrics["levenshtein_distance"]),
             normalized_levenshtein_similarity=float(
                 metrics["normalized_levenshtein_similarity"]
@@ -296,12 +301,12 @@ def _resolve_ground_truth_path(path_value: str | Path, *, config_dir: Path) -> s
     return str(path.resolve())
 
 
-def _build_sample_order_index(
+def _build_sample_index(
     config: BenchConfig,
     *,
     config_dir: Path,
-) -> dict[tuple[str, str, str, str, str], int]:
-    order_index: dict[tuple[str, str, str, str, str], int] = {}
+) -> dict[tuple[str, str, str, str, str], tuple[int, SampleConfig]]:
+    index: dict[tuple[str, str, str, str, str], tuple[int, SampleConfig]] = {}
     sample_order = 0
     for group in config.groups:
         for sample in group.samples:
@@ -312,9 +317,9 @@ def _build_sample_order_index(
                 sample.side or "",
                 _resolve_ground_truth_path(sample.ground_truth, config_dir=config_dir),
             )
-            order_index[key] = sample_order
+            index[key] = (sample_order, sample)
             sample_order += 1
-    return order_index
+    return index
 
 
 def recompute_comparisons(
@@ -325,9 +330,7 @@ def recompute_comparisons(
 ) -> tuple[int, int]:
     recomputed_rows = 0
     skipped_rows = 0
-    sample_order_index = (
-        _build_sample_order_index(config, config_dir=config_dir) if config is not None else {}
-    )
+    sample_index = _build_sample_index(config, config_dir=config_dir) if config is not None else {}
 
     for row in data.get("results", []):
         group_name = row.get("group")
@@ -336,7 +339,7 @@ def recompute_comparisons(
         side = row.get("side") or ""
         gt_path_value = row.get("ground_truth_file")
         if (
-            sample_order_index
+            sample_index
             and isinstance(group_name, str)
             and isinstance(label, str)
             and isinstance(image, str)
@@ -351,9 +354,13 @@ def recompute_comparisons(
                 side,
                 _resolve_ground_truth_path(gt_path_value, config_dir=config_dir),
             )
-            sample_order = sample_order_index.get(key)
-            if sample_order is not None:
-                row["sample_order"] = sample_order
+            indexed = sample_index.get(key)
+            if indexed is not None:
+                row["sample_order"], sample = indexed
+                if sample.microfilm:
+                    row["microfilm"] = True
+                else:
+                    row.pop("microfilm", None)
 
         error = row.get("error")
         output = row.get("model_output")
@@ -380,6 +387,17 @@ def recompute_comparisons(
         row["ground_truth_text"] = normalize_for_comparison(ground_truth_text)
         row["metrics"] = asdict(compute_metrics(ground_truth_text, output))
         recomputed_rows += 1
+
+    if config is not None:
+        open_weights = {m.label: m.open_weights for m in config.models}
+        for model in data.get("benchmark", {}).get("config", {}).get("models", []):
+            label = model.get("label")
+            if label not in open_weights:
+                continue
+            if open_weights[label]:
+                model["open_weights"] = True
+            else:
+                model.pop("open_weights", None)
 
     model_labels = {
         str(model.get("label"))

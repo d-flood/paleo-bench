@@ -145,6 +145,7 @@ thinking = "high"
 [[models]]
 id = "openrouter:qwen/qwen3.8-27b"
 label = "Qwen 3.8 27B"
+open_weights = true
 input_token_cost = 0.000000040000
 output_token_cost = 0.000001350000
 image_max_bytes = 900000
@@ -155,6 +156,7 @@ timeout = 600
 [[models]]
 id = "openrouter:moonshotai/kimi-k3"
 label = "Kimi K3 (no thinking)"
+open_weights = true
 input_token_cost = 0.000000239000
 output_token_cost = 0.000011936000
 image_max_bytes = 900000
@@ -166,6 +168,7 @@ extra_body = { reasoning = { effort = "none" } }
 [[models]]
 id = "openrouter:deepseek/deepseek-v4.1-flash-1017"
 label = "DeepSeek V4.1 Flash 1017 (no thinking)"
+open_weights = true
 input_token_cost = 0.000000150000
 output_token_cost = 0.000000600000
 image_max_bytes = 900000
@@ -177,6 +180,7 @@ extra_body = { reasoning = { effort = "none" } }
 [[models]]
 id = "openrouter:z-ai/glm-5.3-flash"
 label = "GLM 5.3 Flash"
+open_weights = true
 input_token_cost = 0.000000005200
 output_token_cost = 0.000000198500
 image_max_bytes = 900000
@@ -187,6 +191,7 @@ timeout = 600
 [[models]]
 id = "openrouter:nvidia/nemotron-3.5-super-vl"
 label = "Nemotron 3.5 Super VL (no thinking)"
+open_weights = true
 input_token_cost = 0.000000150000
 output_token_cost = 0.000000500000
 image_max_bytes = 900000
@@ -198,6 +203,7 @@ extra_body = { reasoning = { enabled = false } }
 [[models]]
 id = "openrouter:meta/muse-spark-open"
 label = "Muse Spark Open"
+open_weights = true
 input_token_cost = 0.000001250000
 output_token_cost = 0.000004250000
 image_max_bytes = 900000
@@ -238,9 +244,11 @@ label = "GA 1, 72v, Rom 1:2–18"
 image = "https://collections.csntm.org/image-service/iiif/MNTGRCGA1/default/M_NT_GRC_GA1_0080/M_NT_GRC_GA1_0080/info.json"
 ground_truth = "data/grk_byz/GA1_72v.txt"
 side = "verso"
+microfilm = true
 
 [[groups.samples]]
 label = "GA 1, 73r, Rom 1:2–18"
 image = "https://collections.csntm.org/image-service/iiif/MNTGRCGA1/default/M_NT_GRC_GA1_0080/M_NT_GRC_GA1_0080/info.json"
 ground_truth = "data/grk_byz/GA1_73r.txt"
 side = "recto"
+microfilm = true

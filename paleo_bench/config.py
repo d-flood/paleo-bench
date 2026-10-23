@@ -14,6 +14,7 @@ class ModelConfig:
     id: str
     label: str = ""
     params: dict = field(default_factory=dict)
+    open_weights: bool = False
 
 
 @dataclass
@@ -22,6 +23,7 @@ class SampleConfig:
     ground_truth: Path
     label: str = ""
     side: Literal["verso", "recto"] | None = None
+    microfilm: bool = False
     cached_image: Path | None = None
 
 
@@ -91,8 +93,15 @@ def load_config(path: "str | Path") -> BenchConfig:
         if "id" not in m:
             raise ConfigError("Each [[models]] entry requires an 'id' field")
         label = m.get("label", m["id"])
-        params = {k: v for k, v in m.items() if k not in ("id", "label")}
-        models.append(ModelConfig(id=m["id"], label=label, params=params))
+        open_weights = m.get("open_weights", False)
+        if not isinstance(open_weights, bool):
+            raise ConfigError(
+                f"Model '{label}' has invalid open_weights '{open_weights}'; expected true or false"
+            )
+        params = {k: v for k, v in m.items() if k not in ("id", "label", "open_weights")}
+        models.append(
+            ModelConfig(id=m["id"], label=label, params=params, open_weights=open_weights)
+        )
 
     labels = [m.label for m in models]
     if len(labels) != len(set(labels)):
@@ -134,12 +143,18 @@ def load_config(path: "str | Path") -> BenchConfig:
                     raise ConfigError(
                         f"Sample in group '{g['name']}' has invalid side '{side}'; expected 'verso' or 'recto'"
                     )
+            microfilm = s.get("microfilm", False)
+            if not isinstance(microfilm, bool):
+                raise ConfigError(
+                    f"Sample in group '{g['name']}' has invalid microfilm '{microfilm}'; expected true or false"
+                )
             samples.append(
                 SampleConfig(
                     image_url=image_url,
                     ground_truth=gt_path,
                     label=label,
                     side=side,
+                    microfilm=microfilm,
                 )
             )
         groups.append(GroupConfig(name=g["name"], samples=samples))

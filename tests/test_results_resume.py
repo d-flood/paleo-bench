@@ -235,8 +235,6 @@ class TestResultsResume(unittest.TestCase):
                     "metrics": {
                         "cer": 0.1,
                         "wer": 0.2,
-                        "cer_case_insensitive": 0.1,
-                        "wer_case_insensitive": 0.2,
                         "levenshtein_distance": 3,
                         "normalized_levenshtein_similarity": 0.9,
                         "char_count_reference": 10,
@@ -376,6 +374,80 @@ class TestResultsResume(unittest.TestCase):
             recompute_comparisons(data, config_dir=tmp_path, config=config)
 
         self.assertEqual(data["results"][0]["sample_order"], 0)
+
+    def test_recompute_comparisons_backfills_microfilm_from_config(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            (tmp_path / "gt.txt").write_text("alpha beta", encoding="utf-8")
+            samples = [
+                SampleConfig(
+                    image_url="https://example.org/iiif/a/info.json",
+                    ground_truth=Path("gt.txt"),
+                    label=label,
+                    microfilm=microfilm,
+                )
+                for label, microfilm in (("film", True), ("colour", False))
+            ]
+            config = BenchConfig(
+                name="Test",
+                output=Path("results.json"),
+                max_concurrency=1,
+                prompts=PromptsConfig(system="s", user="u"),
+                models=[ModelConfig(id="provider/model-a", label="model-a")],
+                groups=[GroupConfig(name="g1", samples=samples)],
+            )
+            row = {
+                "group": "g1",
+                "image": "https://example.org/iiif/a/info.json",
+                "ground_truth_file": "gt.txt",
+                "model": "model-a",
+                "model_output": "alpha gamma",
+                "error": None,
+                "metrics": None,
+            }
+            data = {
+                "benchmark": {"config": {"models": [{"label": "model-a", "id": "provider/model-a", "params": {}}]}},
+                "results": [{**row, "label": "film"}, {**row, "label": "colour", "microfilm": True}],
+            }
+
+            recompute_comparisons(data, config_dir=tmp_path, config=config)
+
+        self.assertTrue(data["results"][0]["microfilm"])
+        self.assertNotIn("microfilm", data["results"][1])
+
+    def test_recompute_comparisons_refreshes_open_weights_from_config(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            tmp_path = Path(tmp_dir)
+            config = BenchConfig(
+                name="Test",
+                output=Path("results.json"),
+                max_concurrency=1,
+                prompts=PromptsConfig(system="s", user="u"),
+                models=[
+                    ModelConfig(id="provider/open", label="open", open_weights=True),
+                    ModelConfig(id="provider/closed", label="closed"),
+                ],
+                groups=[GroupConfig(name="g1", samples=[])],
+            )
+            data = {
+                "benchmark": {
+                    "config": {
+                        "models": [
+                            {"label": "open", "id": "provider/open", "params": {}},
+                            {"label": "closed", "id": "provider/closed", "params": {}, "open_weights": True},
+                            {"label": "legacy", "id": "provider/legacy", "params": {}, "open_weights": True},
+                        ]
+                    }
+                },
+                "results": [],
+            }
+
+            recompute_comparisons(data, config_dir=tmp_path, config=config)
+
+        models = data["benchmark"]["config"]["models"]
+        self.assertTrue(models[0]["open_weights"])
+        self.assertNotIn("open_weights", models[1])
+        self.assertTrue(models[2]["open_weights"])
 
 
 if __name__ == "__main__":

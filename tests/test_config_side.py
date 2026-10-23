@@ -76,6 +76,46 @@ class TestConfigSide(unittest.TestCase):
         self.assertEqual(config.provider_cooldown_seconds["openai"], 10.0)
         self.assertEqual(config.provider_cooldown_seconds["gemini"], 10.0)
 
+    def test_load_config_reads_microfilm_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            flagged = load_config(_write_config(Path(tmp_dir), "microfilm = true"))
+            plain = load_config(_write_config(Path(tmp_dir), None))
+        self.assertTrue(flagged.groups[0].samples[0].microfilm)
+        self.assertFalse(plain.groups[0].samples[0].microfilm)
+
+    def test_load_config_reads_open_weights_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = _write_config(Path(tmp_dir), None)
+            plain = load_config(path)
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    'label = "model-a"', 'label = "model-a"\nopen_weights = true'
+                ),
+                encoding="utf-8",
+            )
+            flagged = load_config(path)
+        self.assertFalse(plain.models[0].open_weights)
+        self.assertTrue(flagged.models[0].open_weights)
+        self.assertNotIn("open_weights", flagged.models[0].params)
+
+    def test_load_config_rejects_non_boolean_open_weights(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = _write_config(Path(tmp_dir), None)
+            path.write_text(
+                path.read_text(encoding="utf-8").replace(
+                    'label = "model-a"', 'label = "model-a"\nopen_weights = "yes"'
+                ),
+                encoding="utf-8",
+            )
+            with self.assertRaises(ConfigError):
+                load_config(path)
+
+    def test_load_config_rejects_non_boolean_microfilm(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            path = _write_config(Path(tmp_dir), 'microfilm = "yes"')
+            with self.assertRaises(ConfigError):
+                load_config(path)
+
 
 if __name__ == "__main__":
     unittest.main()
