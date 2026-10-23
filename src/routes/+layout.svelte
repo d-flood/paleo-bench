@@ -48,6 +48,7 @@
 
 <svelte:head>
   <link rel="icon" href={favicon} />
+  <meta name="author" content="David A. Flood" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Paleo Bench" />
   <meta property="og:image" content={new URL(asset('og.png'), page.url.href).href} />
