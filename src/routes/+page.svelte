@@ -128,26 +128,6 @@
     st.dir = st.sort === k ? -st.dir : dir;
     st.sort = k;
   }
-
-  const lead = $derived.by(() => {
-    const ok = rows.filter((r) => v(r).mark != null);
-    const nine = ok.filter((r) => v(r).mark! >= 90);
-    const cheap = nine
-      .filter((r) => costPerImage(r) != null)
-      .sort((a, b) => costPerImage(a)! - costPerImage(b)!)[0];
-    const fast = [...nine].sort((a, b) => a.m.latency - b.m.latency)[0];
-    const drop = ok
-      .filter((r) => v(r).colour != null && v(r).colour! >= 85 && v(r).micro != null)
-      .sort((a, b) => v(b).colour! - v(b).micro! - (v(a).colour! - v(a).micro!))[0];
-    return {
-      top: ranking.order[0],
-      cheap,
-      fast,
-      drop,
-      colour90: ok.filter((r) => (v(r).colour ?? 0) >= 90).length,
-      micro90: ok.filter((r) => (v(r).micro ?? 0) >= 90).length
-    };
-  });
 </script>
 
 <Meta
@@ -155,36 +135,8 @@
   description="Compare how well {rows.length} model configurations transcribe Byzantine Greek manuscripts against a human committee transcription."
 />
 
-{#snippet who_link(r: Row)}<a class="hi" href={href(r)}>{r.m.label}</a>{/snippet}
-
-<section class="lead" aria-live="polite">
+<section class="lead">
   <h1>Results</h1>
-  <ul class="points">
-    <li>
-      Top: {@render who_link(lead.top)}, score {fmt1(v(lead.top).mark)}, {fmtCost(
-        costPerImage(lead.top)
-      )} per image,
-      {fmtTime(lead.top.m.latency, true)}
-    </li>
-    {#if lead.cheap}
-      <li>
-        Cheapest at 90+: {@render who_link(lead.cheap)}, {fmtCost(costPerImage(lead.cheap))} per image
-      </li>
-    {/if}
-    {#if lead.fast}
-      <li>Fastest at 90+: {@render who_link(lead.fast)}, {fmtTime(lead.fast.m.latency, true)}</li>
-    {/if}
-    {#if lead.drop}
-      <li>
-        At 90+: {lead.colour90} models on colour images, {lead.micro90} on microfilm
-      </li>
-      <li>
-        Biggest microfilm drop: {@render who_link(lead.drop)}, {fmt0(v(lead.drop).colour)} to {fmt0(
-          v(lead.drop).micro
-        )}
-      </li>
-    {/if}
-  </ul>
 </section>
 
 <div class="controls" role="group" aria-label="Filter the models">
@@ -297,19 +249,6 @@
 </p>
 
 <style>
-  .hi {
-    text-decoration: none;
-    background: linear-gradient(transparent 45%, var(--hi) 45%, var(--hi) 92%, transparent 92%);
-    padding: 0 0.12em;
-    margin: 0 -0.12em;
-    box-decoration-break: clone;
-  }
-
-  .hi:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
   .search {
     position: relative;
     display: flex;
