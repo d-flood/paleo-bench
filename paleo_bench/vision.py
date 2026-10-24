@@ -49,7 +49,9 @@ _MODEL_SETTINGS_KEYS = {
 }
 _IMAGE_SETTINGS_KEYS = {"image_max_bytes", "image_max_dimension"}
 _COST_SETTINGS_KEYS = {"input_token_cost", "output_token_cost"}
-_SUPPORTED_MODEL_PARAM_KEYS = _MODEL_SETTINGS_KEYS | _IMAGE_SETTINGS_KEYS | _COST_SETTINGS_KEYS
+_SUPPORTED_MODEL_PARAM_KEYS = (
+    _MODEL_SETTINGS_KEYS | _IMAGE_SETTINGS_KEYS | _COST_SETTINGS_KEYS | {"pipeline"}
+)
 
 
 @dataclass
@@ -211,7 +213,7 @@ _OPENCODE_GO_BASE_URL = "https://opencode.ai/zen/go/v1"
 _OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
 
-def _make_agent(model_id: str, system_prompt: str) -> Agent:
+def _make_agent(model_id: str, system_prompt: str, output_type: Any = str) -> Agent:
     if model_id.startswith("opencode-go:"):
         model_name = model_id.split(":", 1)[1]
         pydantic_model = OpenAIChatModel(
@@ -221,7 +223,7 @@ def _make_agent(model_id: str, system_prompt: str) -> Agent:
                 api_key=os.environ.get("OPENCODE_GO_API_KEY"),
             ),
         )
-        return Agent(pydantic_model, system_prompt=system_prompt)
+        return Agent(pydantic_model, system_prompt=system_prompt, output_type=output_type)
     if model_id.startswith("openrouter:"):
         model_name = model_id.split(":", 1)[1]
         pydantic_model = OpenAIChatModel(
@@ -231,8 +233,8 @@ def _make_agent(model_id: str, system_prompt: str) -> Agent:
                 api_key=os.environ.get("OPENROUTER_API_KEY"),
             ),
         )
-        return Agent(pydantic_model, system_prompt=system_prompt)
-    return Agent(model_id, system_prompt=system_prompt)
+        return Agent(pydantic_model, system_prompt=system_prompt, output_type=output_type)
+    return Agent(model_id, system_prompt=system_prompt, output_type=output_type)
 
 
 async def _run_agent(agent: Agent, prompt: list[Any], settings: ModelSettings, stream: bool) -> Any:
@@ -286,6 +288,126 @@ def _format_model_error(
     return "; ".join(parts)
 
 
+def _image_content(model: ModelConfig, image_path: Path) -> BinaryContent:
+    image_max_bytes, image_max_dimension = _image_limits(model.params)
+    b64_data, mime_type = _encode_image(
+        image_path,
+        max_bytes=image_max_bytes,
+        max_dimension=image_max_dimension,
+    )
+    print(
+        f"  IMAGE [{model.label}] encoded {len(b64_data):,} base64 chars "
+        f"as {mime_type}",
+        file=sys.stderr,
+    )
+    return BinaryContent(
+        data=base64.b64decode(b64_data),
+        media_type=mime_type,
+    )
+
+
+def _request_settings(model: ModelConfig) -> ModelSettings:
+    settings, _unsupported = _model_settings(model.params)
+    workspace_id = os.environ.get("ANTHROPIC_WORKSPACE_ID")
+    if model.id.startswith("anthropic:") and workspace_id:
+        settings["extra_headers"] = {
+            "anthropic-workspace-id": workspace_id,
+            **(settings.get("extra_headers") or {}),
+        }
+    return settings
+
+
+async def _request(
+    model: ModelConfig,
+    system_prompt: str,
+    prompt: list[Any],
+    settings: ModelSettings,
+    start: float,
+    output_type: Any = str,
+) -> Any:
+    for attempt in range(_MAX_ATTEMPTS):
+        try:
+            agent = _make_agent(model.id, system_prompt, output_type)
+            async with agent:
+                timeout_seconds = _settings_timeout_seconds(settings)
+                print(
+                    f"  REQUEST [{model.label}] attempt {attempt + 1}/{_MAX_ATTEMPTS} "
+                    f"with hard timeout {timeout_seconds:g}s",
+                    file=sys.stderr,
+                )
+                try:
+                    result = await asyncio.wait_for(
+                        _run_agent(
+                            agent,
+                            prompt,
+                            settings,
+                            output_type is str and _should_stream_model(model.id),
+                        ),
+                        timeout=timeout_seconds,
+                    )
+                except asyncio.TimeoutError as e:
+                    raise HardRequestTimeoutError(
+                        f"request exceeded hard timeout of {timeout_seconds:g}s"
+                    ) from e
+                print(
+                    f"  RESPONSE [{model.label}] received after "
+                    f"{time.monotonic() - start:.1f}s",
+                    file=sys.stderr,
+                )
+            return result
+        except Exception as e:
+            if not _is_retryable_error(e) or attempt == _MAX_ATTEMPTS - 1:
+                raise
+            delay = 2**attempt
+            print(
+                f"  RETRY [{model.label}] attempt {attempt + 2}/{_MAX_ATTEMPTS} "
+                f"after {type(e).__name__}: {e}",
+                file=sys.stderr,
+            )
+            await asyncio.sleep(delay)
+
+
+def _vision_response(
+    model: ModelConfig,
+    text: str,
+    results: list[Any],
+    start: float,
+) -> VisionResponse:
+    response = VisionResponse(
+        text=text,
+        latency_seconds=round(time.monotonic() - start, 3),
+        model_id=model.label,
+    )
+    for result in results:
+        usage = _result_usage(result)
+        input_tokens = _usage_value(usage, "input_tokens", "request_tokens")
+        output_tokens = _usage_value(usage, "output_tokens", "response_tokens")
+        response.input_tokens += input_tokens
+        response.output_tokens += output_tokens
+        response.total_tokens += (
+            _usage_value(usage, "total_tokens") or input_tokens + output_tokens
+        )
+        response.cost += _result_cost(result) or _configured_cost(
+            model.params,
+            input_tokens,
+            output_tokens,
+        )
+    return response
+
+
+def _error_response(model: ModelConfig, exc: Exception, start: float) -> VisionResponse:
+    unsupported_params = sorted(
+        k for k in model.params if k not in _SUPPORTED_MODEL_PARAM_KEYS
+    )
+    error = _format_model_error(exc, model, unsupported_params)
+    print(f"  ERROR [{model.label}]: {error}", file=sys.stderr)
+    return VisionResponse(
+        model_id=model.label,
+        latency_seconds=round(time.monotonic() - start, 3),
+        error=error,
+    )
+
+
 async def call_vision_model(
     model: ModelConfig,
     image_path: Path,
@@ -293,98 +415,16 @@ async def call_vision_model(
 ) -> VisionResponse:
     start = time.monotonic()
     try:
-        image_max_bytes, image_max_dimension = _image_limits(model.params)
-        b64_data, mime_type = _encode_image(
-            image_path,
-            max_bytes=image_max_bytes,
-            max_dimension=image_max_dimension,
+        image_content = _image_content(model, image_path)
+        result = await _request(
+            model,
+            prompts.system,
+            [prompts.user, image_content],
+            _request_settings(model),
+            start,
         )
-        print(
-            f"  IMAGE [{model.label}] encoded {len(b64_data):,} base64 chars "
-            f"as {mime_type}",
-            file=sys.stderr,
-        )
-        image_content = BinaryContent(
-            data=base64.b64decode(b64_data),
-            media_type=mime_type,
-        )
-        settings, unsupported_params = _model_settings(model.params)
-        workspace_id = os.environ.get("ANTHROPIC_WORKSPACE_ID")
-        if model.id.startswith("anthropic:") and workspace_id:
-            settings["extra_headers"] = {
-                "anthropic-workspace-id": workspace_id,
-                **(settings.get("extra_headers") or {}),
-            }
-
-        result = None
-        for attempt in range(_MAX_ATTEMPTS):
-            try:
-                agent = _make_agent(model.id, prompts.system)
-                async with agent:
-                    timeout_seconds = _settings_timeout_seconds(settings)
-                    print(
-                        f"  REQUEST [{model.label}] attempt {attempt + 1}/{_MAX_ATTEMPTS} "
-                        f"with hard timeout {timeout_seconds:g}s",
-                        file=sys.stderr,
-                    )
-                    try:
-                        result = await asyncio.wait_for(
-                            _run_agent(
-                                agent,
-                                [prompts.user, image_content],
-                                settings,
-                                _should_stream_model(model.id),
-                            ),
-                            timeout=timeout_seconds,
-                        )
-                    except asyncio.TimeoutError as e:
-                        raise HardRequestTimeoutError(
-                            f"request exceeded hard timeout of {timeout_seconds:g}s"
-                        ) from e
-                    print(
-                        f"  RESPONSE [{model.label}] received after "
-                        f"{time.monotonic() - start:.1f}s",
-                        file=sys.stderr,
-                    )
-                break
-            except Exception as e:
-                if not _is_retryable_error(e) or attempt == _MAX_ATTEMPTS - 1:
-                    raise
-                delay = 2**attempt
-                print(
-                    f"  RETRY [{model.label}] attempt {attempt + 2}/{_MAX_ATTEMPTS} "
-                    f"after {type(e).__name__}: {e}",
-                    file=sys.stderr,
-                )
-                await asyncio.sleep(delay)
-
-        latency = time.monotonic() - start
-
-        usage = _result_usage(result)
-        input_tokens = _usage_value(usage, "input_tokens", "request_tokens")
-        output_tokens = _usage_value(usage, "output_tokens", "response_tokens")
-        cost = _result_cost(result) or _configured_cost(
-            model.params,
-            input_tokens,
-            output_tokens,
-        )
-        return VisionResponse(
-            text=str(getattr(result, "output", "") or ""),
-            input_tokens=input_tokens,
-            output_tokens=output_tokens,
-            total_tokens=_usage_value(usage, "total_tokens") or input_tokens + output_tokens,
-            cost=cost,
-            latency_seconds=round(latency, 3),
-            model_id=model.label,
+        return _vision_response(
+            model, str(getattr(result, "output", "") or ""), [result], start
         )
     except Exception as e:
-        unsupported_params = sorted(
-            k for k in model.params if k not in _SUPPORTED_MODEL_PARAM_KEYS
-        )
-        error = _format_model_error(e, model, unsupported_params)
-        print(f"  ERROR [{model.label}]: {error}", file=sys.stderr)
-        return VisionResponse(
-            model_id=model.label,
-            latency_seconds=round(time.monotonic() - start, 3),
-            error=error,
-        )
+        return _error_response(model, e, start)

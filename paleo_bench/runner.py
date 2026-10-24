@@ -13,6 +13,7 @@ from .metrics import (
     compute_metrics,
     normalize_for_comparison,
 )
+from .pipeline import call_vote_pipeline
 from .vision import VisionResponse, call_vision_model
 
 
@@ -27,6 +28,7 @@ class SampleResult:
     model_id: str
     sample_side: str = ""
     sample_microfilm: bool = False
+    sample_lectionary: bool = False
     model_output: str = ""
     error: str | None = None
     metrics: MetricScores | None = None
@@ -184,7 +186,7 @@ async def run_benchmark(
     failed_models: set[str] = set()
     lock = asyncio.Lock()
 
-    async def call_with_provider_cooldown(model, image_path):
+    async def call_with_provider_cooldown(model, sample):
         provider = _provider_from_model_id(model.id)
         provider_lock = provider_locks[provider]
         print(
@@ -212,7 +214,11 @@ async def run_benchmark(
                 f"  CALL [{provider}] sending request to {model.label}",
                 file=sys.stderr,
             )
-            return await call_vision_model(model, image_path, config.prompts)
+            if "pipeline" in model.params:
+                return await call_vote_pipeline(
+                    model, sample.cached_image, config.prompts, config.pipeline, sample.lectionary
+                )
+            return await call_vision_model(model, sample.cached_image, config.prompts)
 
     async def process(group, sample, model, gt_text, sample_order):
         nonlocal started, completed
@@ -238,7 +244,7 @@ async def run_benchmark(
             print(f"  SKIP [{model.label}] {skip_error}", file=sys.stderr)
             response = VisionResponse(model_id=model.label, error=skip_error)
         else:
-            response = await call_with_provider_cooldown(model, sample.cached_image)
+            response = await call_with_provider_cooldown(model, sample)
             if response.error:
                 async with lock:
                     failed_models.add(model.label)
@@ -259,6 +265,7 @@ async def run_benchmark(
             image_url=sample.image_url,
             sample_side=sample.side or "",
             sample_microfilm=sample.microfilm,
+            sample_lectionary=sample.lectionary,
             ground_truth_path=str(sample.ground_truth),
             ground_truth_text=gt_text,
             model_id=model.label,

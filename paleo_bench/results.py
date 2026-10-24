@@ -26,6 +26,7 @@ def _build_json(result: BenchmarkResult) -> dict:
                     "system": config.prompts.system,
                     "user": config.prompts.user,
                 },
+                **({"pipeline": asdict(config.pipeline)} if config.pipeline else {}),
                 "models": [
                     {
                         "label": m.label,
@@ -73,6 +74,8 @@ def _build_json(result: BenchmarkResult) -> dict:
             entry["side"] = sr.sample_side
         if sr.sample_microfilm:
             entry["microfilm"] = True
+        if sr.sample_lectionary:
+            entry["lectionary"] = True
         output["results"].append(entry)
 
     return output
@@ -361,6 +364,10 @@ def recompute_comparisons(
                     row["microfilm"] = True
                 else:
                     row.pop("microfilm", None)
+                if sample.lectionary:
+                    row["lectionary"] = True
+                else:
+                    row.pop("lectionary", None)
 
         error = row.get("error")
         output = row.get("model_output")

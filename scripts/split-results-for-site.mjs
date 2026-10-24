@@ -56,7 +56,7 @@ const results = data.results ?? [];
 const models = configModels
   .map((m) => {
     const s = summaries[m.label] ?? {};
-    const thinking = /\((low|high|thinking|no thinking)\)$/.exec(m.label)?.[1] ?? null;
+    const thinking = /\((low|high|thinking|no thinking|multi-step)\)$/.exec(m.label)?.[1] ?? null;
     const prefix = String(m.id ?? '').split(/[:/]/)[0];
     return {
       label: m.label,
@@ -85,6 +85,7 @@ for (const row of results) {
       label: row.label ?? '',
       ...splitLabel(row.label ?? ''),
       microfilm: row.microfilm === true,
+      lectionary: row.lectionary === true,
       side: row.side ?? null,
       image: row.image ?? '',
       order: Number.isFinite(row.sample_order) ? row.sample_order : Infinity,

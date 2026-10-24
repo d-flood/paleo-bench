@@ -24,6 +24,7 @@ class SampleConfig:
     label: str = ""
     side: Literal["verso", "recto"] | None = None
     microfilm: bool = False
+    lectionary: bool = False
     cached_image: Path | None = None
 
 
@@ -40,6 +41,14 @@ class PromptsConfig:
 
 
 @dataclass
+class PipelineConfig:
+    continuous_notes: str
+    lectionary_notes: str
+    check_system: str
+    check_user: str
+
+
+@dataclass
 class BenchConfig:
     name: str
     output: Path
@@ -48,6 +57,7 @@ class BenchConfig:
     models: list[ModelConfig]
     groups: list[GroupConfig]
     provider_cooldown_seconds: dict[str, float] = field(default_factory=dict)
+    pipeline: PipelineConfig | None = None
 
 
 def load_config(path: "str | Path") -> BenchConfig:
@@ -84,6 +94,20 @@ def load_config(path: "str | Path") -> BenchConfig:
             raise ConfigError(f"Missing prompts.{key}")
     prompts = PromptsConfig(system=prompts_raw["system"], user=prompts_raw["user"])
 
+    # [pipeline]
+    pipeline = None
+    pipeline_raw = raw.get("pipeline")
+    if pipeline_raw is not None:
+        for key in ("continuous_notes", "lectionary_notes", "check_system", "check_user"):
+            if key not in pipeline_raw:
+                raise ConfigError(f"Missing pipeline.{key}")
+        pipeline = PipelineConfig(
+            continuous_notes=pipeline_raw["continuous_notes"],
+            lectionary_notes=pipeline_raw["lectionary_notes"],
+            check_system=pipeline_raw["check_system"],
+            check_user=pipeline_raw["check_user"],
+        )
+
     # [[models]]
     models_raw = raw.get("models")
     if not models_raw:
@@ -99,6 +123,16 @@ def load_config(path: "str | Path") -> BenchConfig:
                 f"Model '{label}' has invalid open_weights '{open_weights}'; expected true or false"
             )
         params = {k: v for k, v in m.items() if k not in ("id", "label", "open_weights")}
+        if "pipeline" in params:
+            if pipeline is None:
+                raise ConfigError(f"Model '{label}' uses a pipeline but [pipeline] is missing")
+            spec = params["pipeline"] if isinstance(params["pipeline"], dict) else {}
+            checks = spec.get("checks")
+            votes = spec.get("votes")
+            if not isinstance(checks, int) or not isinstance(votes, int) or not 1 <= votes <= checks:
+                raise ConfigError(
+                    f"Model '{label}' needs pipeline checks and votes with 1 <= votes <= checks"
+                )
         models.append(
             ModelConfig(id=m["id"], label=label, params=params, open_weights=open_weights)
         )
@@ -148,6 +182,11 @@ def load_config(path: "str | Path") -> BenchConfig:
                 raise ConfigError(
                     f"Sample in group '{g['name']}' has invalid microfilm '{microfilm}'; expected true or false"
                 )
+            lectionary = s.get("lectionary", False)
+            if not isinstance(lectionary, bool):
+                raise ConfigError(
+                    f"Sample in group '{g['name']}' has invalid lectionary '{lectionary}'; expected true or false"
+                )
             samples.append(
                 SampleConfig(
                     image_url=image_url,
@@ -155,6 +194,7 @@ def load_config(path: "str | Path") -> BenchConfig:
                     label=label,
                     side=side,
                     microfilm=microfilm,
+                    lectionary=lectionary,
                 )
             )
         groups.append(GroupConfig(name=g["name"], samples=samples))
@@ -167,4 +207,5 @@ def load_config(path: "str | Path") -> BenchConfig:
         prompts=prompts,
         models=models,
         groups=groups,
+        pipeline=pipeline,
     )

@@ -375,7 +375,7 @@ class TestResultsResume(unittest.TestCase):
 
         self.assertEqual(data["results"][0]["sample_order"], 0)
 
-    def test_recompute_comparisons_backfills_microfilm_from_config(self) -> None:
+    def test_recompute_comparisons_backfills_sample_flags_from_config(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:
             tmp_path = Path(tmp_dir)
             (tmp_path / "gt.txt").write_text("alpha beta", encoding="utf-8")
@@ -384,9 +384,10 @@ class TestResultsResume(unittest.TestCase):
                     image_url="https://example.org/iiif/a/info.json",
                     ground_truth=Path("gt.txt"),
                     label=label,
-                    microfilm=microfilm,
+                    microfilm=flag,
+                    lectionary=flag,
                 )
-                for label, microfilm in (("film", True), ("colour", False))
+                for label, flag in (("film", True), ("colour", False))
             ]
             config = BenchConfig(
                 name="Test",
@@ -407,13 +408,18 @@ class TestResultsResume(unittest.TestCase):
             }
             data = {
                 "benchmark": {"config": {"models": [{"label": "model-a", "id": "provider/model-a", "params": {}}]}},
-                "results": [{**row, "label": "film"}, {**row, "label": "colour", "microfilm": True}],
+                "results": [
+                    {**row, "label": "film"},
+                    {**row, "label": "colour", "microfilm": True, "lectionary": True},
+                ],
             }
 
             recompute_comparisons(data, config_dir=tmp_path, config=config)
 
         self.assertTrue(data["results"][0]["microfilm"])
+        self.assertTrue(data["results"][0]["lectionary"])
         self.assertNotIn("microfilm", data["results"][1])
+        self.assertNotIn("lectionary", data["results"][1])
 
     def test_recompute_comparisons_refreshes_open_weights_from_config(self) -> None:
         with tempfile.TemporaryDirectory() as tmp_dir:

@@ -37,6 +37,12 @@ def main() -> int:
         action="store_true",
         help="Recompute metrics/summaries from existing output using current ground-truth files",
     )
+    parser.add_argument(
+        "--model",
+        action="append",
+        metavar="LABEL",
+        help="Run only the model with this label; repeat for several",
+    )
     args = parser.parse_args()
 
     load_dotenv()
@@ -46,6 +52,13 @@ def main() -> int:
     except ConfigError as e:
         print(f"Config error: {e}", file=sys.stderr)
         return 1
+
+    if args.model:
+        unknown = sorted(set(args.model) - {m.label for m in config.models})
+        if unknown:
+            print(f"Config error: unknown model label(s): {', '.join(unknown)}", file=sys.stderr)
+            return 1
+        config.models = [m for m in config.models if m.label in args.model]
 
     if args.output:
         config.output = Path(args.output)

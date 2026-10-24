@@ -102,6 +102,7 @@
       <li>ϛ, ȣ and ϗ count as στ, ου and και</li>
       <li>Latin or Cyrillic look-alikes inside Greek words count as Greek</li>
       <li>Means skip failed folios</li>
+      <li>Ground truth keeps rubrics on GA L60 and GA L587 but omits a faded one on GA L2010</li>
     </ul>
     <ul class="points">
       <li>Time: summed request time, timeouts included</li>

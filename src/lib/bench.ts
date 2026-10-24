@@ -1,7 +1,7 @@
 import { asset } from '$app/paths';
 import type { AssetPath } from '$app/types';
 
-export type Thinking = 'low' | 'high' | 'thinking' | 'no thinking' | null;
+export type Thinking = 'low' | 'high' | 'thinking' | 'no thinking' | 'multi-step' | null;
 
 export interface Model {
   label: string;
@@ -35,6 +35,7 @@ export interface Sample {
   folio: string;
   passage: string;
   microfilm: boolean;
+  lectionary: boolean;
   side: 'verso' | 'recto' | null;
   image: string;
   chars: number | null;
@@ -86,7 +87,8 @@ const THINK: Record<string, string> = {
   low: 'low thinking',
   high: 'high thinking',
   thinking: 'thinking on',
-  'no thinking': 'thinking off'
+  'no thinking': 'thinking off',
+  'multi-step': 'low-thinking draft, medium-thinking checks'
 };
 export function reason(err: string | null | undefined): string {
   let m = err?.match(/hard timeout of (\d+)\s*s/i);

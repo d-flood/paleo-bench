@@ -52,12 +52,15 @@ uv run python -m paleo_bench --config config.toml --dry-run
 uv run python -m paleo_bench --config config.toml
 ```
 
+Add `--model "<label>"` (repeatable) to run only those models.
+
 The October 2026 configuration includes:
 
 - Claude Opus, Sonnet, and Haiku 5.5 ([Anthropic models](https://platform.claude.com/docs/en/models/overview)).
 - GPT-6 Astra, GPT-6.1 Sol, and GPT-6 Luna ([OpenAI Docs](https://developers.openai.com/api/docs/models)).
 - [Gemini 4 Argon](https://ai.google.dev/gemini-api/docs/models/gemini-4-argon) and [Gemini 3.8 Flash](https://ai.google.dev/gemini-api/docs/models/gemini-3.8-flash).
 - Open weights: [Kimi K3](https://huggingface.co/moonshotai/Kimi-K3), [GLM 5.3 Flash](https://huggingface.co/zai-org/GLM-5.3-Flash), [DeepSeek V4.1 Flash 1017](https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash-1017), [Qwen 3.8 27B](https://huggingface.co/Qwen/Qwen3.8-27B), [Nemotron 3.5 Super VL](https://huggingface.co/nvidia/NVIDIA-Nemotron-3.5-Super-VL-120B-A12B-BF16), and [Muse Spark Open](https://research.meta.ai/blog/muse-spark-open), hosted through [OpenRouter](https://openrouter.ai/api/v1/models).
+- A multi-step Argon pipeline: a low-thinking draft with a `[pipeline]` prompt for lectionaries (samples marked `lectionary = true`) or continuous text, then three medium-thinking checks of the draft's words by ID, keeping corrections at least two checks agree on.
 
 Direct-provider models run at low and high thinking levels, except Astra, which
 runs at low after three high-thinking requests timed out at 20 minutes. Its

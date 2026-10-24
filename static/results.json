@@ -1,14 +1,34 @@
 {
   "benchmark": {
     "name": "Paleo Benchmark Run",
-    "timestamp": "2026-10-22T21:57:35.606072+00:00",
-    "total_duration_seconds": 1820.104,
+    "timestamp": "2026-10-24T16:46:23.391269+00:00",
+    "total_duration_seconds": 110.521,
     "config": {
       "prompts": {
         "system": "You are an expert at reading handwritten text. \nBe exeedingly exact and precise in your transcription. \nDo not attempt to correct or interpret the text in any way. \nTranscribe the text exactly as it appears in the image, \nincluding any errors, abbreviations, or unusual characters. \nFocus solely on accurately capturing the handwritten content \nwithout adding any additional information or context.\n\nBe mindful to use the proper sigma if it is the final letter of a word.\n\nIf you encounter a correction, transcribe it like this: \"{first hand text / corrector text}\".\nMark corrections with curly braces and include whole words, not just individual letters.\n\nFor multiple columns, transcribe the text one column at a time. \nIdentify columns as \"Column 1\", \"Column 2\", etc. \nand transcribe the text in each column separately, \nmaintaining the original order of the columns.\nAdd a line break between both the column labels and the transcribed text.\nDo not identify a column if there is only one column of text.\n\n**NEVER include any explanation, commentary, or additional information in your response.\nOutput only the transcription, nothing else.**\nDo not transcribe diacritics like breathing marks, accents, or iota subscripts.\n",
         "user": "Transcribe the handwritten text in this image exactly as written."
       },
+      "pipeline": {
+        "continuous_notes": "Transcribe only the main text block. Do not transcribe chapter numbers or titles, marginal notes, lection notes or anything else written in the margins or outside the text block.\nWrite only what is on the page. Never complete, continue or supply text from memory, even when you recognise the passage.\nThe scribe's spelling often departs from the standard: ι, η, υ, ει and οι are often interchanged, as are ο and ω, and ε and αι. Keep the scribe's spelling.\n",
+        "lectionary_notes": "Transcribe every line of the text block, including rubrics, lection titles and liturgical headings written within it.\nLections often stop in mid-verse, followed directly by a rubric or the next lection's title. Write only the words on the page: never finish a verse, and never complete, continue or supply text from memory, even when you recognise the passage.\nDo not transcribe crosses, ekphonetic signs or other marks. Write the και abbreviation as και.\nThe scribe's spelling often departs from the standard: ι, η, υ, ει and οι are often interchanged, as are ο and ω, and ε and αι. Keep the scribe's spelling.\n",
+        "check_system": "You are an expert palaeographer of Byzantine Greek minuscule. Be exceedingly exact. Ignore accents, breathings, iota subscripts and punctuation.",
+        "check_user": "Below is a draft transcription of the page in the image, as JSON. Each key is a word ID, L<line>.<position>, and each value is the draft's reading of that word.\n\nThe draft was made by a reader who knows this text well. Such readers tend to restore the standard spelling where the scribe wrote something else, especially in familiar words. They also sometimes invent misspellings where the scribe wrote the standard form. Catch both.\n\nWork line by line. For each word, find it on the page and compare each vowel in the draft with the letter shape in the image:\n- ο (one small loop) or ω (two bowls side by side)\n- ι (single short stroke), η (h-shaped or Η-shaped), υ (u- or v-shaped), ει, οι\n- ε or αι\nCheck consonants too, but most errors are in the vowels.\n\nReport a word only when the page clearly shows different letters from the draft. If the page is unclear, keep the draft's reading.\nFor each correction, give the scribe's letters as text, and in \"change\" name the letters that differ, for example \"ι→η\".\nCorrect letters only. Do not expand or contract abbreviations or nomina sacra, and do not change where words divide.\nIf a draft word is not on the page at all, give an empty string as text.\nReturn an empty list if every word is correct.\n\nDraft:\n"
+      },
       "models": [
+        {
+          "label": "Gemini 4 Argon (multi-step)",
+          "id": "google:gemini-4-argon",
+          "params": {
+            "max_tokens": 16000,
+            "timeout": 600,
+            "thinking": "low",
+            "pipeline": {
+              "checks": 3,
+              "votes": 2,
+              "check_thinking": "medium"
+            }
+          }
+        },
         {
           "label": "Opus 5.5 (low)",
           "id": "anthropic:claude-opus-5-5",
@@ -1351,7 +1371,8 @@
         "cost": 0.036445000000000005,
         "latency_seconds": 51.927
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1426,7 +1447,8 @@
         "cost": 0.007268,
         "latency_seconds": 22.491
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1451,7 +1473,8 @@
         "cost": 0.021987,
         "latency_seconds": 46.504
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1476,7 +1499,8 @@
         "cost": 0.016758000000000002,
         "latency_seconds": 30.929
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1501,7 +1525,8 @@
         "cost": 0.036565,
         "latency_seconds": 51.995
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1526,7 +1551,8 @@
         "cost": 0.0020235,
         "latency_seconds": 13.356
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1551,7 +1577,8 @@
         "cost": 0.007264,
         "latency_seconds": 19.77
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1576,7 +1603,8 @@
         "cost": 0.0248885,
         "latency_seconds": 34.067
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1601,7 +1629,8 @@
         "cost": 0.010674,
         "latency_seconds": 12.585
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1626,7 +1655,8 @@
         "cost": 0.071634,
         "latency_seconds": 76.901
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1676,7 +1706,8 @@
         "cost": 0.014202000000000001,
         "latency_seconds": 11.215
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1701,7 +1732,8 @@
         "cost": 0.0026595,
         "latency_seconds": 5.373
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1726,7 +1758,8 @@
         "cost": 0.0063815,
         "latency_seconds": 51.946
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1751,7 +1784,8 @@
         "cost": 0.0396975,
         "latency_seconds": 77.87
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1776,7 +1810,8 @@
         "cost": 0.054543299999999996,
         "latency_seconds": 84.153
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1801,7 +1836,8 @@
         "cost": 0.161886,
         "latency_seconds": 132.108
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1826,7 +1862,8 @@
         "cost": 0.027745,
         "latency_seconds": 39.198
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1851,7 +1888,8 @@
         "cost": 0.28167000000000003,
         "latency_seconds": 225.692
       },
-      "sample_order": 2
+      "sample_order": 2,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1876,7 +1914,8 @@
         "cost": 0.006048,
         "latency_seconds": 16.969
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1901,7 +1940,8 @@
         "cost": 0.016617,
         "latency_seconds": 32.127
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1926,7 +1966,8 @@
         "cost": 0.014301000000000001,
         "latency_seconds": 20.477
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1951,7 +1992,8 @@
         "cost": 0.027594,
         "latency_seconds": 34.795
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -1976,7 +2018,8 @@
         "cost": 0.023163000000000003,
         "latency_seconds": 33.041
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2001,7 +2044,8 @@
         "cost": 0.005679999999999999,
         "latency_seconds": 14.457
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2026,7 +2070,8 @@
         "cost": 0.0026390000000000003,
         "latency_seconds": 19.75
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2051,7 +2096,8 @@
         "cost": 0.008742,
         "latency_seconds": 9.165
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2076,7 +2122,8 @@
         "cost": 0.0021555000000000003,
         "latency_seconds": 4.754
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2101,7 +2148,8 @@
         "cost": 0.010026,
         "latency_seconds": 10.106
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2126,7 +2174,8 @@
         "cost": 0.028365,
         "latency_seconds": 108.265
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2151,7 +2200,8 @@
         "cost": 0.008407,
         "latency_seconds": 62.573
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2176,7 +2226,8 @@
         "cost": 0.084371,
         "latency_seconds": 105.431
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2201,7 +2252,8 @@
         "cost": 0.106482,
         "latency_seconds": 88.06
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2226,7 +2278,8 @@
         "cost": 0.0347175,
         "latency_seconds": 63.408
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2251,7 +2304,8 @@
         "cost": 0.159834,
         "latency_seconds": 123.293
       },
-      "sample_order": 4
+      "sample_order": 4,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2276,7 +2330,8 @@
         "cost": 0.005693,
         "latency_seconds": 21.527
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2301,7 +2356,8 @@
         "cost": 0.017007,
         "latency_seconds": 43.489
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2326,7 +2382,8 @@
         "cost": 0.029345000000000003,
         "latency_seconds": 47.189
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2351,7 +2408,8 @@
         "cost": 0.029290000000000004,
         "latency_seconds": 44.024
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2376,7 +2434,8 @@
         "cost": 0.013423000000000001,
         "latency_seconds": 24.5
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2401,7 +2460,8 @@
         "cost": 0.002013,
         "latency_seconds": 15.398
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2426,7 +2486,8 @@
         "cost": 0.006392,
         "latency_seconds": 19.547
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2451,7 +2512,8 @@
         "cost": 0.019201,
         "latency_seconds": 33.869
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2476,7 +2538,8 @@
         "cost": 0.059514000000000004,
         "latency_seconds": 75.656
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2501,7 +2564,8 @@
         "cost": 0.008922,
         "latency_seconds": 25.157
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2526,7 +2590,8 @@
         "cost": 0.0022245,
         "latency_seconds": 12.697
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2551,7 +2616,8 @@
         "cost": 0.010386,
         "latency_seconds": 15.375
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2576,7 +2642,8 @@
         "cost": 0.102305,
         "latency_seconds": 123.996
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2601,7 +2668,8 @@
         "cost": 0.0381885,
         "latency_seconds": 88.562
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2626,7 +2694,8 @@
         "cost": 0.009639000000000002,
         "latency_seconds": 125.529
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2678,7 +2747,8 @@
         "cost": 0.154866,
         "latency_seconds": 133.266
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -2892,7 +2962,8 @@
         "cost": 0.21201,
         "latency_seconds": 187.299
       },
-      "sample_order": 3
+      "sample_order": 3,
+      "lectionary": true
     },
     {
       "group": "Byzantine Greek",
@@ -3969,7 +4040,8 @@
         "output_tokens": 1057,
         "cost": 0.03815,
         "latency_seconds": 53.669
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -3994,7 +4066,8 @@
         "output_tokens": 658,
         "cost": 0,
         "latency_seconds": 5.009
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -4019,7 +4092,8 @@
         "output_tokens": 763,
         "cost": 0.033115,
         "latency_seconds": 39.92
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -4044,7 +4118,8 @@
         "output_tokens": 828,
         "cost": 0.032425,
         "latency_seconds": 42.586
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -4069,7 +4144,8 @@
         "output_tokens": 18799,
         "cost": 0,
         "latency_seconds": 84.711
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -4094,7 +4170,8 @@
         "output_tokens": 878,
         "cost": 0.00548475,
         "latency_seconds": 10.104
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4119,7 +4196,8 @@
         "output_tokens": 769,
         "cost": 0.04513,
         "latency_seconds": 36.791
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4144,7 +4222,8 @@
         "output_tokens": 2875,
         "cost": 0,
         "latency_seconds": 19.589
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -4169,7 +4248,8 @@
         "output_tokens": 11248,
         "cost": 0.05214975,
         "latency_seconds": 86.251
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4194,7 +4274,8 @@
         "output_tokens": 864,
         "cost": 0.047505,
         "latency_seconds": 42.12
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4219,7 +4300,8 @@
         "output_tokens": 10026,
         "cost": 0,
         "latency_seconds": 54.876
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4244,7 +4326,8 @@
         "output_tokens": 651,
         "cost": 0.07179,
         "latency_seconds": 37.508
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -4269,7 +4352,8 @@
         "output_tokens": 785,
         "cost": 0.04553,
         "latency_seconds": 39.355
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -4294,7 +4378,8 @@
         "output_tokens": 4942,
         "cost": 0,
         "latency_seconds": 29.996
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4319,7 +4404,8 @@
         "output_tokens": 705,
         "cost": 0.0054,
         "latency_seconds": 16.535
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -4344,7 +4430,8 @@
         "output_tokens": 780,
         "cost": 0.045405,
         "latency_seconds": 38.894
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -4369,7 +4456,8 @@
         "output_tokens": 22745,
         "cost": 0,
         "latency_seconds": 115.892
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -4394,7 +4482,8 @@
         "output_tokens": 13592,
         "cost": 0.0633915,
         "latency_seconds": 103.896
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -4473,7 +4562,8 @@
         "output_tokens": 1147,
         "cost": 0.08667,
         "latency_seconds": 54.718
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -4552,7 +4642,8 @@
         "output_tokens": 786,
         "cost": 0.0057645,
         "latency_seconds": 12.506
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 6,
@@ -4631,7 +4722,8 @@
         "output_tokens": 11972,
         "cost": 0.0548919,
         "latency_seconds": 96.991
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 6,
@@ -5097,7 +5189,8 @@
         "output_tokens": 6443,
         "cost": 0.013127075,
         "latency_seconds": 79.762
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 1,
@@ -5165,7 +5258,8 @@
         "output_tokens": 1403,
         "cost": 0.005850000000000001,
         "latency_seconds": 31.42
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -5190,7 +5284,8 @@
         "output_tokens": 723,
         "cost": 0.00082365,
         "latency_seconds": 13.176
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -5215,7 +5310,8 @@
         "output_tokens": 628,
         "cost": 0.00039632000000000003,
         "latency_seconds": 16.945
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -5240,7 +5336,8 @@
         "output_tokens": 6725,
         "cost": 0.014021800000000001,
         "latency_seconds": 75.825
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -5265,7 +5362,8 @@
         "output_tokens": 1463,
         "cost": 0.0071600000000000006,
         "latency_seconds": 24.991
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 1,
@@ -5315,7 +5413,8 @@
         "output_tokens": 32073,
         "cost": 0.11391449999999999,
         "latency_seconds": 404.808
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -5340,7 +5439,8 @@
         "output_tokens": 336,
         "cost": 0.00030872,
         "latency_seconds": 10.916
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -5365,7 +5465,8 @@
         "output_tokens": 2676,
         "cost": 0.0029361,
         "latency_seconds": 26.766
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -5390,7 +5491,8 @@
         "output_tokens": 5466,
         "cost": 0.0060035999999999996,
         "latency_seconds": 63.078
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -5415,7 +5517,8 @@
         "output_tokens": 1179,
         "cost": 0.006450000000000001,
         "latency_seconds": 40.074
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -5440,7 +5543,8 @@
         "output_tokens": 33433,
         "cost": 0.12037175,
         "latency_seconds": 350.74
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -5465,7 +5569,8 @@
         "output_tokens": 1115,
         "cost": 0.00105885,
         "latency_seconds": 86.66
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -5490,7 +5595,8 @@
         "output_tokens": 424,
         "cost": 0.00064425,
         "latency_seconds": 11.001
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -5515,7 +5621,8 @@
         "output_tokens": 605,
         "cost": 0.00038942,
         "latency_seconds": 21.525
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -5540,7 +5647,8 @@
         "output_tokens": 15567,
         "cost": 0.0312637,
         "latency_seconds": 152.018
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -5673,7 +5781,8 @@
         "output_tokens": 39048,
         "cost": 0.14002425000000002,
         "latency_seconds": 532.043
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -5698,7 +5807,8 @@
         "output_tokens": 5004,
         "cost": 0.0055416,
         "latency_seconds": 82.264
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -6207,7 +6317,8 @@
         "output_tokens": 4371,
         "cost": 0.00597169,
         "latency_seconds": 42.414
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -6232,7 +6343,8 @@
         "output_tokens": 2415,
         "cost": 0.04314,
         "latency_seconds": 48.675
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -6257,7 +6369,8 @@
         "output_tokens": 159,
         "cost": 0.0001326,
         "latency_seconds": 8.898
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -6275,7 +6388,8 @@
         "output_tokens": 0,
         "cost": 0.0,
         "latency_seconds": 131.527
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 1,
@@ -6318,7 +6432,8 @@
         "output_tokens": 0,
         "cost": 0.0,
         "latency_seconds": 387.104
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -6343,7 +6458,8 @@
         "output_tokens": 4953,
         "cost": 0.02396525,
         "latency_seconds": 66.369
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -6368,7 +6484,8 @@
         "output_tokens": 7020,
         "cost": 0.0044052,
         "latency_seconds": 35.306
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -6393,7 +6510,8 @@
         "output_tokens": 187,
         "cost": 0.0001466,
         "latency_seconds": 15.658
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -6418,7 +6536,8 @@
         "output_tokens": 11150,
         "cost": 0.00611335,
         "latency_seconds": 20.483
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -6443,7 +6562,8 @@
         "output_tokens": 3078,
         "cost": 0.00430014,
         "latency_seconds": 140.356
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -6468,7 +6588,8 @@
         "output_tokens": 4534,
         "cost": 0.0248495,
         "latency_seconds": 36.103
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -6493,7 +6614,8 @@
         "output_tokens": 1125,
         "cost": 0.00166359,
         "latency_seconds": 26.099
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -6518,7 +6640,8 @@
         "output_tokens": 14282,
         "cost": 0.008762399999999998,
         "latency_seconds": 67.66
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -6543,7 +6666,8 @@
         "output_tokens": 243,
         "cost": 0.0001746,
         "latency_seconds": 10.144
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -6568,7 +6692,8 @@
         "output_tokens": 5732,
         "cost": 0.100245,
         "latency_seconds": 104.79
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -6593,7 +6718,8 @@
         "output_tokens": 1916,
         "cost": 0.013722999999999999,
         "latency_seconds": 12.566
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -6611,7 +6737,8 @@
         "output_tokens": 0,
         "cost": 0.0,
         "latency_seconds": 309.149
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -6717,7 +6844,8 @@
         "output_tokens": 15860,
         "cost": 0.00846835,
         "latency_seconds": 139.77
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -7114,7 +7242,8 @@
         "output_tokens": 888,
         "cost": 0.0007105499999999999,
         "latency_seconds": 8.192
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -7139,7 +7268,8 @@
         "output_tokens": 925,
         "cost": 0.020577,
         "latency_seconds": 20.957
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -7164,7 +7294,8 @@
         "output_tokens": 715,
         "cost": 0.024777,
         "latency_seconds": 14.793
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -7189,7 +7320,8 @@
         "output_tokens": 1318,
         "cost": 0.00098025,
         "latency_seconds": 13.882
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -7214,7 +7346,8 @@
         "output_tokens": 578,
         "cost": 0.0008273499999999999,
         "latency_seconds": 7.806
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -7239,7 +7372,8 @@
         "output_tokens": 708,
         "cost": 0.024672,
         "latency_seconds": 14.598
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -7264,7 +7398,8 @@
         "output_tokens": 563,
         "cost": 0.0005272499999999999,
         "latency_seconds": 5.83
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -7289,7 +7424,8 @@
         "output_tokens": 16000,
         "cost": 0.00826565,
         "latency_seconds": 60.767
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -7395,7 +7531,8 @@
         "output_tokens": 16000,
         "cost": 0.00853835,
         "latency_seconds": 48.148
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -7901,7 +8038,8 @@
         "output_tokens": 599,
         "cost": 0.008794,
         "latency_seconds": 10.671
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -7926,7 +8064,8 @@
         "output_tokens": 642,
         "cost": 0.0034365,
         "latency_seconds": 8.199
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 1,
@@ -7976,7 +8115,8 @@
         "output_tokens": 8158,
         "cost": 0.084384,
         "latency_seconds": 136.064
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -8001,7 +8141,8 @@
         "output_tokens": 15993,
         "cost": 0.06100275,
         "latency_seconds": 116.904
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -8026,7 +8167,8 @@
         "output_tokens": 1413,
         "cost": 0.09109,
         "latency_seconds": 55.539
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8051,7 +8193,8 @@
         "output_tokens": 500,
         "cost": 0.007834,
         "latency_seconds": 28.8
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8076,7 +8219,8 @@
         "output_tokens": 517,
         "cost": 0.002979,
         "latency_seconds": 11.388
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -8101,7 +8245,8 @@
         "output_tokens": 597,
         "cost": 0.0005029,
         "latency_seconds": 6.83
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -8126,7 +8271,8 @@
         "output_tokens": 703,
         "cost": 0.011118,
         "latency_seconds": 31.058
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 1,
@@ -8176,7 +8322,8 @@
         "output_tokens": 6233,
         "cost": 0.065164,
         "latency_seconds": 87.183
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -8201,7 +8348,8 @@
         "output_tokens": 6203,
         "cost": 0.0033059,
         "latency_seconds": 59.008
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8226,7 +8374,8 @@
         "output_tokens": 478,
         "cost": 0.007614,
         "latency_seconds": 12.376
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8251,7 +8400,8 @@
         "output_tokens": 15901,
         "cost": 0.060669,
         "latency_seconds": 125.209
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8276,7 +8426,8 @@
         "output_tokens": 517,
         "cost": 0.002979,
         "latency_seconds": 11.368
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8301,7 +8452,8 @@
         "output_tokens": 604,
         "cost": 0.31498,
         "latency_seconds": 28.139
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8326,7 +8478,8 @@
         "output_tokens": 584,
         "cost": 0.062796,
         "latency_seconds": 26.629
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8351,7 +8504,8 @@
         "output_tokens": 369,
         "cost": 0.0030323,
         "latency_seconds": 11.051
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8376,7 +8530,8 @@
         "output_tokens": 6470,
         "cost": 0.067534,
         "latency_seconds": 71.725
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8401,7 +8556,8 @@
         "output_tokens": 15882,
         "cost": 0.06059775,
         "latency_seconds": 124.117
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -8453,7 +8609,8 @@
         "output_tokens": 3277,
         "cost": 0.0044863,
         "latency_seconds": 37.342
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -8505,7 +8662,8 @@
         "output_tokens": 550,
         "cost": 0.31228,
         "latency_seconds": 22.102
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -8550,7 +8708,8 @@
         "output_tokens": 0,
         "cost": 0.0,
         "latency_seconds": 1800.139
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8575,7 +8734,8 @@
         "output_tokens": 534,
         "cost": 0.062296,
         "latency_seconds": 21.478
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8600,7 +8760,8 @@
         "output_tokens": 594,
         "cost": 0.0031448,
         "latency_seconds": 11.524
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 6,
@@ -8706,7 +8867,8 @@
         "output_tokens": 8296,
         "cost": 0.00308646,
         "latency_seconds": 87.171
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -8731,7 +8893,8 @@
         "output_tokens": 11294,
         "cost": 0.1251472,
         "latency_seconds": 250.012
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -8756,7 +8919,8 @@
         "output_tokens": 11907,
         "cost": 0.176026,
         "latency_seconds": 255.183
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -9373,7 +9537,8 @@
         "output_tokens": 979,
         "cost": 0.028948,
         "latency_seconds": 12.168
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 1,
@@ -9423,7 +9588,8 @@
         "output_tokens": 1037,
         "cost": 0.015054,
         "latency_seconds": 12.708
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -9448,7 +9614,8 @@
         "output_tokens": 924,
         "cost": 0.0006962,
         "latency_seconds": 6.489
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -9473,7 +9640,8 @@
         "output_tokens": 597,
         "cost": 0.010654,
         "latency_seconds": 7.78
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -9498,7 +9666,8 @@
         "output_tokens": 1993,
         "cost": 0.0012307,
         "latency_seconds": 11.69
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -9523,7 +9692,8 @@
         "output_tokens": 763,
         "cost": 0.035972,
         "latency_seconds": 12.093
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -9548,7 +9718,8 @@
         "output_tokens": 775,
         "cost": 0.018106,
         "latency_seconds": 11.651
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 2,
@@ -9573,7 +9744,8 @@
         "output_tokens": 6332,
         "cost": 0.136008,
         "latency_seconds": 56.824
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -9598,7 +9770,8 @@
         "output_tokens": 1364,
         "cost": 0.0011998,
         "latency_seconds": 11.661
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -9623,7 +9796,8 @@
         "output_tokens": 783,
         "cost": 0.018186,
         "latency_seconds": 11.881
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -9648,7 +9822,8 @@
         "output_tokens": 2534,
         "cost": 0.071392,
         "latency_seconds": 25.945
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -9673,7 +9848,8 @@
         "output_tokens": 742,
         "cost": 0.035552,
         "latency_seconds": 11.661
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 3,
@@ -9698,7 +9874,8 @@
         "output_tokens": 6528,
         "cost": 0.0037818,
         "latency_seconds": 28.069
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -9723,7 +9900,8 @@
         "output_tokens": 721,
         "cost": 0.017566,
         "latency_seconds": 11.653
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -9748,7 +9926,8 @@
         "output_tokens": 787,
         "cost": 0.0009113,
         "latency_seconds": 8.986
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -9773,7 +9952,8 @@
         "output_tokens": 754,
         "cost": 0.017896,
         "latency_seconds": 11.662
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 4,
@@ -9798,7 +9978,8 @@
         "output_tokens": 2022,
         "cost": 0.061152,
         "latency_seconds": 21.673
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -9904,7 +10085,8 @@
         "output_tokens": 9444,
         "cost": 0.0052398,
         "latency_seconds": 39.118
-      }
+      },
+      "lectionary": true
     },
     {
       "sample_order": 5,
@@ -10148,333 +10330,215 @@
       },
       "side": "recto",
       "microfilm": true
+    },
+    {
+      "sample_order": 2,
+      "group": "Byzantine Greek",
+      "label": "GA L60, 64r, Rom 12:9–19",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCL60/default/M_NT_GRC_L60_0139/M_NT_GRC_L60_0139/info.json",
+      "ground_truth_file": "data/grk_byz/GAL60_64r.txt",
+      "ground_truth_text": "κριτος αποστιγουνταις τω πονιρον κολλομενοι τω\nαγαθω τη φηλαδελφια ης αλληλους φηλοστοργοι τη\nτημη αλληλους προηγουμενοι τη σπουδη μη οκνηροι\nτω πνι ζεωντες τω κω δουλευωντες τη ελπι\nδι χαιρονταις τη θληψι υπομενοντες τη προσευ\nχη προσκαρτερουντες ταις χριαις των αγιον κοι\nνονουντες την φιλοξενιαν διοκοντες ευλογιτε\nτους διοκοντας ημας υμας ευλογηται και μη καταρασ\nθαι χαιρειν μετα χαιρωντων και κλαιειν μετα κλαι\nοντον τω αυτω εις αλληλους φρονουντες αλλα τοις τα\nπινοις συναπαγομενοι μη γινεσθαι φρονιμοι παρ ε\nαυτοις μηδενη κακων αντι κακου αποδιδωντες\nπρονοουμενοι καλα ενοπιον παντον ανων η δυνα\nτον τω εξ υμων μετα παν παντων ανων ειρινευων\nτες μη εκδικουντες αιαυτους αγαπιτοι αλλα δοτε\nτοπον τι οργη γεγραπται γαρ εμοι εκδικησης\nεγω ανταποδωσω λεγει κς κατα ματθαιον\nτω καιρω εκεινω εμβας ο ις εις πλοιον διεπε\nρασεν και ηλθεν εις την ιδιαν πολην και ιδου προσε\nφερον αυτω παραλυτικων επι κληνης βεβλημε\nνον και ιδων ο ις την πιστιν αυτων ειπεν τω παρα\nλυτικω θαρση ταικνων αφεωνται σοι αι αμαρτιαι\nσου και ιδου τοινες των γραμματαιων ειπων εν εαυ\nτοις ουτος βλασφημη και ιδων ο ις τας ενθυμησεις\nαυτων ειπεν ινατι ενθυμεισθαι πονηρα εν ταις καρ\nδιαις ημων τι γαρ εστιν ευκοποτερον ειπην αφε\nωνται σου αι αμαρτιαι σου η ειπην εγειρε και περι\nπατι ινα δε ιδιται οτι εξουσιαν εχι ο υς του ανου επι\nτης γης αφηεναι αμαρτιας τοτε λεγει τω παραλυτικω",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "κριτος αποστιγουνταις τω πονηρον κολλομενοι τω\nαγαθω τη φιλαδελφια εις αλληλους φιλοστοργοι τη\nτιμη αλληλους προηγουμενοι τη σπουδη μη οκνηροι\nτω πνι ζεοντες τω κω δουλευοντες τη ελπι\nδη χαιρονταις τω θλιψι υπομενοντες τη προσευ\nχη προσκαρτερουντες ταις χριαις των αγιον κοι\nνονουντες την φιλοξενιαν διοκοντες ευλογιτε\nτους διοκοντας υμας ευλογηται και μη καταρα\nθαι χαιρην μετα χαιρωντων και κλαιειν μετα κλε\nοντον τω αυτω εις αλληλους φρονουντες αλλα τοις τα\nπινοις συναπαγομενοι μη γινεσθαι φρονιμοι παρ ε\nαυτοις μηδενη κακων αντι κακου αποδιδωντες\nπρονοουμενοι καλα ενοπιον παντον ανων η δυνα\nτον τω εξ υμων μετα πανπαντων ανων ηρινευων\nτες μη εκδικουνται εαυτους αγαπητοι αλλα δοτε\nτοπον τι οργη γεγραπται γαρ εμοι εκδικησις\nεγω ανταποδωσω λεγη κς εκ τ ματθ\nΤω καιρω εκηνω εμβας ο ις εις πλοιον διεπε\nρασεν και ηλθεν εις την ιδιαν πολην και ιδου προσε\nφερον αυτω παραλυτικων επι κληνης βεβλημε\nνον και ιδον ο ις την πιστιν αυτων ειπεν τω παρα\nλυτικω θαρση ταικνον αφεωνται σοι αι αμαρτιαι\nσου και ιδου τοινες των γραμματαιων ειπον εν εαυ\nτοις ουτος βλασφημη και ιδων ο ις τας ενθυμησης\nαυτων ειπεν ινα τι ενθυμησθαι πονηρα εν ταις καρ\nδιαις υμων τι γαρ εστιν ευκοποτερον ειπην αφε\nωνται σου αι αμαρτιαι σου η ειπην εγειρε και περι\nπατη ινα δε ειδιται οτι εξουσιαν εχι ο υς του ανου επι\nτης γης αφηεναι αμαρτιας τοτε λεγη τω παραλυτικω",
+      "error": null,
+      "metrics": {
+        "cer": 0.03982300884955752,
+        "wer": 0.185,
+        "levenshtein_distance": 54,
+        "normalized_levenshtein_similarity": 0.9601769911504425,
+        "char_count_reference": 1356,
+        "word_count_reference": 228
+      },
+      "response_metadata": {
+        "input_tokens": 15034,
+        "output_tokens": 2207,
+        "cost": 0.052138,
+        "latency_seconds": 25.663
+      },
+      "lectionary": true
+    },
+    {
+      "sample_order": 0,
+      "group": "Byzantine Greek",
+      "label": "GA 2523, 190r, Rom 5:18–6:13",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCGA2523/default/M_NT_GRC_GA2523_0190a/M_NT_GRC_GA2523_0190a/info.json",
+      "ground_truth_file": "data/grk_byz/GA2523_190r.txt",
+      "ground_truth_text": "ενος ιυ χυ αρα ουν ως δι ενος παραπτωματος εις παντας\nανους εις κατακριμα ουτως και δι ενος δικαιωματος εις παν\nτας ανους εις δικαιωσιν ζωης ωσπερ γαρ δια της παρακο\nης του ενος ανου αμαρτωλοι κατεσταθησαν οι πολλοι ουτως\nκαι δια της υπακοης του ενος δικαιοι κατασταθησονται\nοι πολλοι νομος δε παρεισηλθεν ινα πλεοναση το παραπτωμα\nου δε επλεονασεν η αμαρτια υπερεπερισσευσεν η χαρις\nινα ωσπερ εβασιλευσεν η αμαρτια εν τω θανατω ουτως και η\nχαρις βασιλευσει δια δικαιοσυνης εις ζωην αιωνιον δια\nιυ χυ του κυ ημων τι ουν ερουμεν επιμενουμεν τη αμαρτια\nινα η χαρις πλεοναση μη γενοιτο οιτινες απεθανομεν τη\nαμαρτια πως ετι ζησωμεν εν αυτη η αγνοειτε οτι\nοσοι εβαπτισθημεν εις χν ιν εις τον θανατον αυτου εβαπτισ\nθημεν συνεταφημεν ουν αυτω δια του βαπτισματος εις τον θα\nνατον ινα ωσπερ ηγερθη χς εκ νεκρων δια της δοξης του πρς ου\nτω και ημεις εν καινοτητι ζωης περιπατησωμεν ει γαρ συμφυ\nτοι γεγοναμεν τω ομοιωματι του θανατου αυτου αλλα και της\nαναστασεως εσομεθα τουτο γινωσκοντες οτι ο παλαιος\nημων ανος συνεστρωθη ινα καταργηση το σωμα της αμαρτιας\nτου μηκετι δουλευειν ημας τη αμαρτια ο γαρ αποθανων δε\nδικαιωται απο της αμαρτιας ει δε απεθανομεν συν χω πιστευο\nμεν οτι και συζησομεν αυτω ειδοτες οτι χς εγερθεις εκ νεκρων\nουκ ετι αποθνησκει θανατος αυτου ουκ ετι κυριευει ο γαρ α\nπεθανε τη αμαρτια απεθανεν εφαπαξ ο δε ζη ζη τω θω\nουτως και υμεις λογιζεσθε εαυτους νεκρους μεν ειναι\nτη αμαρτια ζωντας δε τω θω εν χω ιυ τω κω ημων μη ουν\nβασιλευετω η αμαρτια εν τω θνητω ημων σωματι εις το υπα\nκουειν αυτη εν ταις επιθυμιαις αυτου μηδε παριστανετε",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "ενος ιυ χυ αρα ουν ως δι ενος παραπτωματος εις παντας\nανους εις κατακριμα ουτως και δι ενος δικαιωματος εις παν\nτας ανους εις δικαιωσιν ζωης ωσπερ γαρ δια της παρακο\nης του ενος ανου αμαρτωλοι κατεσταθησαν οι πολλοι ουτως\nκαι δια της υπακοης του ενος δικαιοι κατασταθησονται\nοι πολλοι νομος δε παρεισηλθεν ινα πλεοναση το παραπτωμα\nου δε επλεονασεν η αμαρτια υπερεπερισσευσεν η χαρις\nινα ωσπερ εβασιλευσεν η αμαρτια εν τω θανατω ουτως και η\nχαρις βασιλευση δια δικαιοσυνης εις ζωην αιωνιον δια\nιυ χυ του κυ ημων τι ουν ερουμεν επιμενουμεν τη αμαρτια\nινα η χαρις πλεοναση μη γενοιτο οιτινες απεθανομεν τη\nαμαρτια πως ετι ζησωμεν εν αυτη η αγνοειτε οτι\nοσοι εβαπτισθημεν εις χν ιν εις τον θανατον αυτου εβαπτισ\nθημεν συνεταφημεν ουν αυτω δια του βαπτισματος εις τον θα\nνατον ινα ωσπερ ηγερθη χς εκ νεκρων δια της δοξης του πρς ου\nτω και ημεις εν καινοτητι ζωης περιπατησωμεν ει γαρ συμφυ\nτοι γεγοναμεν τω ομοιωματι του θανατου αυτου αλλα και της\nαναστασεως εσομεθα τουτο γινωσκοντες οτι ο παλαιος\nημων ανος συνεστρωθη ινα καταργηση το σωμα της αμαρτιας\nτου μηκετι δουλευειν ημας τη αμαρτια ο γαρ αποθανων δε\nδικαιωται απο της αμαρτιας ει δε απεθανομεν συν χω πιστευο\nμεν οτι και συζησομεν αυτω ειδοτες οτι χς εγερθεις εκ νεκρων\nουκετι αποθνησκει θανατος αυτου ουκετι κυριευει ο γαρ α\nπεθανε τη αμαρτια απεθανεν εφαπαξ ο δε ζη ζη τω θω\nουτως και υμεις λογιζεσθε εαυτους νεκρους μεν ειναι\nτη αμαρτια ζωντας δε τω θω εν χω ιυ τω κω ημων μη ουν\nβασιλευετω η αμαρτια εν τω θνητω υμων σωματι εις το υπα\nκουειν αυτην εν ταις επιθυμιαις αυτου μηδε παριστανετε",
+      "error": null,
+      "metrics": {
+        "cer": 0.0038684719535783366,
+        "wer": 0.028112449799196786,
+        "levenshtein_distance": 6,
+        "normalized_levenshtein_similarity": 0.9961315280464217,
+        "char_count_reference": 1551,
+        "word_count_reference": 276
+      },
+      "response_metadata": {
+        "input_tokens": 16691,
+        "output_tokens": 944,
+        "cost": 0.042822,
+        "latency_seconds": 51.713
+      }
+    },
+    {
+      "sample_order": 1,
+      "group": "Byzantine Greek",
+      "label": "GA 2523, 195v, Rom 12:1–17",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCGA2523/default/M_NT_GRC_GA2523_0195b/M_NT_GRC_GA2523_0195b/info.json",
+      "ground_truth_file": "data/grk_byz/GA2523_195v.txt",
+      "ground_truth_text": "παρακαλω ουν υμας αδελφοι δια των οικτιρμων του θυ πα\nραστησαι τα σωματα υμων θυσιαν ζωσαν αγιαν ευαρεστον\nτω θω την λογικην λατρειαν υμων και μη συσχηματιζεσθαι\nτω αιωνι τουτω αλλα μεταμορφουσθαι τη ανακαινωσει του\nνοος υμων εις το δοκιμαζειν υμας τι το θελημα του θυ\nτο αγαθον και ευαρεστον και τελειον λεγω γαρ δια της χαριτος\nτης δοθησης μοι παντι τω οντι εν υμιν μη υπερφρονειν πα\nρ ο δη φρονειν αλλα φρονειν εις το σοφρονειν εκαστω ως ο θς\nεμερισε μετρον πιστεως καθαπερ γαρ εν ενι σωματι\nπολλα μελη εχομεν τα δε μελη παντα ου την αυτην εχει\nπραξιν ουτως οι πολλοι εν σωμα εσμεν εν χω ο δε καθεις\nαλληλων μελη εχοντες δε χαρισματα κατα την χα\nριν την δοθεισαν ημιν διαφορα ειτε προφητειαν κατα την\nαναλογιαν της πιστεως ειτε διακονιαν εν τη διακονια ει\nτε ο διδασκων εν τη διδασκαλια ειτε ο παρακαλων εν τη\nπαρακλησει ο μεταδιδους εν απλοτητι ο προισταμενος\nεν σπουδη ο ελεων εν ιλαροτητι η αγαπη ανυποκριτος α\nποστυγουντες το πονηρον κολλωμενοι τω αγαθω τη φιλα\nδελφια εις αλληλους φιλοστοργοι τη τιμη αλληλους προηγου\nμενοι τη σπουδη μη οκνηροι τω πνι ζεοντες τω κω δουλευ\nοντες τη ελπιδι χαιροντες τη θλιψει υπομενοντες τη προ\nσευχη προσκαρτερουντες ταις χρειαις των αγιων κοινωνουν\nτες την φιλοξενιαν διωκοντες ευλογειτε τους διωκοντας\nυμας ευλογειτε και μη καταρασθε χαιρειν μετα\nχαιροντων και κλαιειν μετα κλαιοντων το αυτο εις αλληλους φρονουν\nτες μη τα υψηλα φρονουντες αλλα τοις ταπεινοις συνα\nπαγομενοι μη γινεσθε φρονιμοι παρ εαυτοις μηδενι κακον αν\nτι κακου αποδιδοντες προνοουμενοι καλα ενωπιον των",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "Παρακαλω ουν υμας αδελφοι δια των οικτιρμων του θυ πα\nραστησαι τα σωματα υμων θυσιαν ζωσαν αγιαν ευαρεστον\nτω θω την λογικην λατρειαν υμων και μη συσχηματιζεσθαι\nτω αιωνι τουτω αλλα μεταμορφουσθαι τη ανακαινωσει του\nνοος υμων εις το δοκιμαζειν υμας τι το θελημα του θυ\nτο αγαθον και ευαρεστον και τελειον λεγω γαρ δια της χαριτος\nτης δοθεισης μοι παντι τω οντι εν υμιν μη υπερφρονειν πα\nρ ο δει φρονειν αλλα φρονειν εις το σοφρονειν εκαστω ως ο θς\nεμερισε μετρον πιστεως καθαπερ γρ εν ενι σωματι\nπολλα μελη εχομεν τα δε μελη παντα ου την αυτην εχει\nπραξιν ουτως οι πολλοι εν σωμα εσμεν εν χω ο δε καθ εις\nαλληλων μελη Εχοντες χαρισματα κατα την χα\nριν την δοθεισαν ημιν διαφορα ειτε προφητειαν κατα την\nαναλογιαν της πιστεως ειτε διακονιαν εν τη διακονια ει\nτε ο διδασκων εν τη διδασκαλια ειτε ο παρακαλων εν τη\nπαρακλησει ο μεταδιδους εν απλοτητι ο προισταμενος\nεν σπουδη ο ελεων εν ιλαροτητι η αγαπη ανυποκριτος α\nποστυγουντες το πονηρον κολλωμενοι τω αγαθω τη φιλα\nδελφια εις αλληλους φιλοστοργοι τη τιμη αλληλους προηγου\nμενοι τη σπουδη μη οκνηροι τω πνι ζεοντες τω κω δουλευ\nοντες τη ελπιδι χαιροντες τη θλιψει υπομενοντες τη προσ\nευχη προσκαρτερουντες ταις χρειαις των αγιων κοινωνουν\nτες την φιλοξενιαν διωκοντες ευλογειτε τους διωκοντας\nυμας ευλογειτε και μη καταρασθε χαιρειν μετα\nχαιροντων και κλαιειν μετα κλαιοντων το αυτο εις αλληλους φρονουν\nτες μη τα υψηλα φρονουντες αλλα τοις ταπεινοις συνα\nπαγομενοι μη γινεσθε φρονιμοι παρ εαυτοις μηδενι κακον αν\nτι κακου αποδιδοντες προνοουμενοι καλα ενωπιον των",
+      "error": null,
+      "metrics": {
+        "cer": 0.007251153592617007,
+        "wer": 0.030303030303030304,
+        "levenshtein_distance": 11,
+        "normalized_levenshtein_similarity": 0.992748846407383,
+        "char_count_reference": 1517,
+        "word_count_reference": 258
+      },
+      "response_metadata": {
+        "input_tokens": 16091,
+        "output_tokens": 712,
+        "cost": 0.039302000000000004,
+        "latency_seconds": 48.473
+      }
+    },
+    {
+      "sample_order": 4,
+      "group": "Byzantine Greek",
+      "label": "GA L2010, 40v, Rom 14:17–18, 15:7–15",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCL2010/default/M_NT_GRC_L2010_0040b/M_NT_GRC_L2010_0040b/info.json",
+      "ground_truth_file": "data/grk_byz/GAL2010_40v.txt",
+      "ground_truth_text": "ου γαρ εστιν η βασιλεια του θυ βρωσις και ποσις\nαλλα δικαιοσυνη και χαρα εν πνι αγιω ο\nγαρ εν τουτοις δουλευων τω χω ευαρεστος τω\nθω και δοκιμος τοις ανοις\nαδελφοι προσλαμβανεσθε αλληλους καθως\nκαι ο χς προσελαβετο ημας εις δοξαν θυ λεγω\nδε χν ιν διακονον γεγενησθαι περιτομης\nυπερ αληθειας θυ εις το βεβαιωσαι τας ε\nπαγγελιας των πρων τα δε εθνη υπερ ε\nλεους δοξασαι τον θν καθως γεγραπται\nδια τουτο εξομολογησομαι σοι εν εθνεσι και\nτω ονοματι σου ψαλλω και παλιν λεγει\nευφρανθητε εθνη μετα του λαου αυτου και\nπαλιν αινειτε τον κν παντα τα εθνη επαι\nνεσατε αυτον παντες οι λαοι και παλιν\nησαιας λεγει εσται η ριζα του ιεσσαι και ο ανι\nσταμενος αρχειν εθνων επ αυτω εθνη ελπι\nουσιν ο δε θς της ελπιδος πληρωσαι υμας\nπασης χαρας και ευφροσυνης εν τω πι\nστευειν εις το περισσευειν υμας εν τη ελπιδι εν δυνα\nμει πνς αγιου πεπεισμαι δε αδελφοι μου και αυτος\nεγω περι υμων οτι και αυτοι μεστοι εστε αγαθοσυνης\nπεπληρωμενοι πασης γνωσεως δυναμενοι\nκαι αλλους νουθετειν τολμηροτερον δε εγραψα\nυμιν αδελφοι απο μερους ως επαναμιμνη\nσκων υμας δια την χαριν την δοθεισαν μοι υπο",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "ου γαρ εστιν η βασιλεια του θυ βρωσις και ποσις\nαλλα δικαιοσυνη και χαρα εν πνι αγιω ο\nγαρ εν τουτοις δουλευων τω χω ευαρεστος τω\nθω και δοκιμος τοις ανοις προς ρωμ\nαδελφοι προσλαμβανεσθε αλληλους καθως\nκαι ο χς προσελαβετο υμας εις δοξαν θυ λεγω\nδε χν ιν διακονον γεγενησθαι περιτομης\nυπερ αληθειας θυ εις το βεβαιωσαι τας ε\nπαγγελιας των πρων τα δε εθνη υπερ ε\nλεους δοξασαι τον θν καθως γεγραπται\nδια τουτο εξομολογησομαι σοι εν εθνεσι και\nτω ονοματι σου ψαλλω και παλιν λεγει\nευφρανθητε εθνη μετα του λαου αυτου και\nπαλιν αινειτε τον κν παντα τα εθνη επαι\nνεσατε αυτον παντες οι λαοι και παλιν\nησαιας λεγει εσται η ριζα του ιεσσαι και ο ανι\nσταμενος αρχειν εθνων επ αυτω εθνη ελπι\nουσιν ο δε θς της ελπιδος πληρωσαι υμας\nπασης χαρας και ευφροσυνης εν τω πι\nστευειν εις το περισσευειν υμας εν τη ελπιδι εν δυνα\nμει πνς αγιου πεπεισμαι δε αδελφοι μου και αυτος\nεγω περι υμων οτι και αυτοι μεστοι εστε αγαθοσυνης\nπεπληρωμενοι πασης γνωσεως δυναμενοι\nκαι αλλους νουθετειν τολμηροτερον δε εγραψα\nυμιν αδελφοι απο μερους ως επαναμιμνη\nσκων υμας δια την χαριν την δοθεισαν μοι υπο",
+      "error": null,
+      "metrics": {
+        "cer": 0.009363295880149813,
+        "wer": 0.023809523809523808,
+        "levenshtein_distance": 10,
+        "normalized_levenshtein_similarity": 0.9907149489322191,
+        "char_count_reference": 1068,
+        "word_count_reference": 193
+      },
+      "response_metadata": {
+        "input_tokens": 13753,
+        "output_tokens": 572,
+        "cost": 0.033226,
+        "latency_seconds": 37.033
+      },
+      "lectionary": true
+    },
+    {
+      "sample_order": 3,
+      "group": "Byzantine Greek",
+      "label": "GA L587, p. 66, Rom 1:16–25",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCL587/default/M_NT_GRC_L587_0033b/M_NT_GRC_L587_0033b/info.json",
+      "ground_truth_file": "data/grk_byz/GAL587_p66.txt",
+      "ground_truth_text": "Column 1\n\nτε πρωτον και ελληνι\nδικαιοσυνη γαρ θυ εν αυ\nτω αποκαλυπτεται εκ\nπιστεως εις πιστιν καθως\nγεγραπται ο δε δικαιος\nαλλ ηχ πλα τα ελεη σ κε εις τ\nτη δ μετα την ν\nπροκειμ ηχ πλ β σωσον κε τον λα\nστχ προς σε κε κεκραζομαι\nπρ ρωμαιους\nαδελφοι αποκαλυπτεται\nοργη θυ απ ουνου επι πα\nσαν ασεβειαν και αδικι\nαν ανων των την αλη\nθειαν εν αδικια κατεχον\nτων διοτι το γνωστον\nτου θυ φανερον εστιν εν\nαυτοις ο γαρ θς αυτοις\nεφανερωσε τα γαρ αο\nρατα αυτου απο κτισεως\nκοσμου τοις ποιημασι\nνοουμενα καθοραται\nη τε αιδιος αυτου δυναμις\n\nColumn 2\n\nκαι θειοτης εις το ειναι\nαυτους αναπολογητους\nδιοτι γνωντες τον θν ου\nχ ως θν εδοξασαν η ευχαριστη\nσαν αλλ εματαιωθησαν\nεν τοις διαλογισμοις αυτων\nκαι εσκοτισθη η ασυνετος\nαυτων καρδια φασκον\nτες ειναι σοφοι εμωρανθη\nσαν και ηλλαξαν την δο\nξαν του αφθαρτου θυ\nεν ομοιωματι εικονος\nφθαρτου ανου και πετει\nνων και τετραποδων και\nερπετων διο και πα\nρεδωκεν αυτους ο θς\nεν ταις επιθυμιαις των\nκαρδιων αυτων εις α\nκαθαρσιαν του ατιμα\nζεσθαι τα σωματα αυτων\nεν εαυτοις οιτινες μετηλ\nλαξαν την αληθειαν του\nθυ εν τω ψευδει και εσε\nβασθησαν και ελατρευσαν",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "Column 1\n\nτε πρωτον και ελληνι\nδικαιοσυνη γαρ θυ εν αυ\nτω αποκαλυπτεται εκ\nπιστεως εις πιστιν καθως\nγεγραπται ο δε δικαιος\nεκ πιστεως ζησεται\nαλλ ηπ τ α τα ελεη σου κε εις ο\nτη δ μετα την ν\nπροκειμ ηχ πλ β σωσον κε τον λαο\nστιχ προς σε κε κεκραξομ\nπρος ρωμαιους\nαδελφοι αποκαλυπτεται\nοργη θυ απ ουνου επι πα\nσαν ασεβειαν και αδικι\nαν ανων των την αλη\nθειαν εν αδικια κατεχον\nτων διοτι το γνωστον\nτου θυ φανερον εστιν εν\nαυτοις ο γαρ θς αυτοις\nεφανερωσε τα γαρ αο\nρατα αυτου απο κτισεως\nκοσμου τοις ποιημασι\nνοουμενα καθοραται\nη τε αιδιος αυτου δυναμις\n\nColumn 2\n\nκαι θειοτης εις το ειναι\nαυτους αναπολογητους\nδιοτι γνοντες τον θν ου\nχ ως θν εδοξασαν η ευχαριστη\nσαν αλλ εματαιωθησαν\nεν τοις διαλογισμοις αυτων\nκαι εσκοτισθη η ασυνετος\nαυτων καρδια φασκον\nτες ειναι σοφοι εμωρανθη\nσαν και ηλλαξαν την δο\nξαν του αφθαρτου θυ\nεν ομοιωματι εικονος\nφθαρτου ανου και πετει\nνων και τετραποδων και\nερπετων διο και πα\nρεδωκεν αυτους ο θς\nεν ταις επιθυμιαις των\nκαρδιων αυτων εις α\nκαθαρσιαν του ατιμα\nζεσθαι τα σωματα αυτων\nεν εαυτοις οιτινες μετηλ\nλαξαν την αληθειαν του\nθυ εν τω ψευδει και εσε\nβασθησαν και ελατρευσαν",
+      "error": null,
+      "metrics": {
+        "cer": 0.03035878564857406,
+        "wer": 0.07006369426751592,
+        "levenshtein_distance": 33,
+        "normalized_levenshtein_similarity": 0.9702702702702702,
+        "char_count_reference": 1087,
+        "word_count_reference": 202
+      },
+      "response_metadata": {
+        "input_tokens": 14032,
+        "output_tokens": 750,
+        "cost": 0.0315683,
+        "latency_seconds": 46.065
+      },
+      "lectionary": true
+    },
+    {
+      "sample_order": 5,
+      "group": "Byzantine Greek",
+      "label": "GA 1, 72v, Rom 1:2–18",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCGA1/default/M_NT_GRC_GA1_0080/M_NT_GRC_GA1_0080/info.json",
+      "ground_truth_file": "data/grk_byz/GA1_72v.txt",
+      "ground_truth_text": "εν γραφαις αγιαις περι του υιου αυτου του\nγενομενου εκ σπερματος δαδ κατα σαρ\nκα του ορισθεντος υου θεου εν δυναμει\nκατα πνα αγιωσυνης εξ αναστασεως νε\nκρων ιυ χυ του κυ ημων δι ου ελαβομεν\nχαριν και αποστολην εις υπακοην πιστεως\nεν πασιν τοις εθνεσιν υπερ του ονοματος\nαυτου εν οις εστε και υμεις κλητοι ιυ χυ\nπασι τοις ουσιν εν ρωμη αγαπητοις θυ κλη\nτοις αγιοις χαρις υμιν\nκαι ειρηνη απο θυ πατρος ημων και κυ ιυ χυ\nπρωτον μεν ευχαριστω τω θω μου δια ιυ χυ\nυπερ παντων υμων οτι η πιστις υμων\nκαταγγελλεται εν ολω τω κοσμω μαρτυς\nγαρ μου εστιν ο θς ω λατρευω εν τω πνι μου\nεν τω ευαγγελιω του υιου αυτου ως αδιαλει\nπτως μνειαν υμων ποιουμαι παντοτε ε\nπι των προσευχων μου δεομενος ει πως\nηδη ποτε ευοδωθησομαι εν τω θεληματι\nτου θυ ελθειν προς υμας επιποθω γαρ ιδειν\nυμας ινα τι μεταδω χαρισμα υμιν πνικον\nεις το στηριχθηναι υμας τουτο δε εστι συμπα\nρακληθηναι εν υμιν δια της εν αλληλοις\nπιστεως υμων τε και εμου\nου θελω δε υμας αγνοειν αδελφοι οτι πολ\nλακις προεθεμην ελθειν προς υμας και\nεκωλυθην αχρις του δευρο ινα τινα\nκαρπον σχω και εν υμιν καθως και εν τοις\nλοιποις εθνεσιν ελλησι τε και βαρβαροις\nσοφοις τε και ανοητοις οφειλετης ειμι ουτως\nτο κατ εμε προθυμον και υμιν τοις εν ρωμη\nευαγγελισασθαι ου γαρ επαισχυνομαι το ευαγ\nγελιον του χυ δυναμις γαρ θυ εστιν εις σριαν\nπαντι τω πιστευοντι ιουδαιω τε πρωτον\nκαι ελληνι δικαιοσυνη γαρ θυ εν αυτω απο\nκαλυπτεται εκ πιστεως εις πιστιν κα\nθως γεγραπται ο δε δικαιος εκ πι\nστεως ζησεται αποκαλυπτεται",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "εν γραφαις αγιαις περι του υιου αυτου του\nγενομενου εκ σπερματος δαδ κατα σαρ\nκα του ορισθεντος υιου θεου εν δυναμει\nκατα πνα αγιοσυνης εξ αναστασεως νε\nκρων ιυ χυ του κυ ημων δι ου ελαβομεν\nχαριν και αποστολην εις υπακοην πιστεως\nεν πασιν τοις εθνεσιν υπερ του ονοματος\nαυτου εν οις εστε και υμεις κλητοι ιυ χυ\nπασι τοις ουσιν εν ρωμη αγαπητοις θυ κλη\nτοις αγιοις χαρις υμιν\nκαι ειρηνη απο θυ πατρος ημων και κυ ιυ χυ\nπρωτον μεν ευχαριστω τω θω δια ιυ χυ\nυπερ παντων υμων οτι η πιστις υμων\nκαταγγελλεται εν ολω τω κοσμω μαρτυς\nγαρ μου εστιν ο θς ω λατρευω εν τω πνι μου\nεν τω ευαγγελιω του υιου αυτου ως αδιαλει\nπτως μνειαν υμων ποιουμαι παντοτε ε\nπι των προσευχων μου δεομενος ει πω\nς ηδη ποτε ευοδωθησομαι εν τω θεληματι\nτου θυ ελθειν προς υμας επιποθω γαρ ιδειν\nυμας ινα τι μεταδω χαρισμα υμιν πνικον\nεις το στηριχθηναι υμας τουτο δε εστιν συμπα\nρακληθηναι εν υμιν δια της εν αλληλοις\nπιστεως υμων τε και εμου\nου θελω δε υμας αγνοειν αδελφοι οτι πολ\nλακις προεθεμην ελθειν προς υμας και\nεκωλυθην αχρισ του δευρο ινα τινα\nκαρπον σχω και εν υμιν καθως και εν τοις\nλοιποις εθνεσιν ελλησιν τε και βαρβαροις\nσοφοις τε και ανοητοις οφειλετης ειμι ουτως\nτο κατ εμε προθυμον και υμιν τοις εν ρωμη\nευαγγελισασθαι ου γαρ επαισχυνομαι το ευαγ\nγελιον του χυ δυναμις γαρ θυ εστιν εις σριαν\nπαντι τω πιστευοντι ιουδαιω τε πρωτον\nκαι ελληνι δικαιοσυνη γαρ θυ εν αυτω απο\nκαλυπτεται εκ πιστεως εις πιστιν κα\nθως γεγραπται ο δε δικαιος εκ πι\nστεως ζησεται αποκαλυπτεται",
+      "error": null,
+      "metrics": {
+        "cer": 0.006868131868131868,
+        "wer": 0.029914529914529916,
+        "levenshtein_distance": 10,
+        "normalized_levenshtein_similarity": 0.9931318681318682,
+        "char_count_reference": 1456,
+        "word_count_reference": 271
+      },
+      "response_metadata": {
+        "input_tokens": 16409,
+        "output_tokens": 1161,
+        "cost": 0.0388933,
+        "latency_seconds": 38.39
+      },
+      "side": "verso",
+      "microfilm": true
+    },
+    {
+      "sample_order": 6,
+      "group": "Byzantine Greek",
+      "label": "GA 1, 73r, Rom 1:2–18",
+      "image": "https://collections.csntm.org/image-service/iiif/MNTGRCGA1/default/M_NT_GRC_GA1_0080/M_NT_GRC_GA1_0080/info.json",
+      "ground_truth_file": "data/grk_byz/GA1_73r.txt",
+      "ground_truth_text": "γαρ οργη θυ απ ουνου επι πασαν ασεβειαν\nκαι αδικιαν ανων των την αληθειαν εν α\nδικια κατεχοντων διοτι το γνωστον του\nθυ φανερον εστιν εν αυτοις ο γαρ θς αυτοις\nεφανερωσε τα γαρ αορατα αυτου απο\nκτισεως κοσμου τοις ποιημασι νοουμενα\nκαθοραται η τε αιδιος αυτου δυναμις και\nθειοτης εις το ειναι αυτους αναπολογητους\nδιοτι γνοντες τον θν ουχ ως θν εδοξασαν\nη ευχαριστησαν αλλ εματαιωθησαν εν τοις\nδιαλογισμοις αυτων και εσκοτισθη η ασυ\nνετος αυτων καρδια φασκοντες ειναι σοφοι\nεμωρανθησαν και ηλλαξαν την δοξαν του α\nφθαρτου θυ εν ομοιωματι εικονος φθαρτου\nανου και πετεινων και τετραποδων και\nερπετων διο και παρεδωκεν αυτους ο\nθς εν ταις επιθυμιαις των καρδιων αυτων\nεις ακαθαρσιαν του ατιμαζεσθαι τα σω\nματα αυτων εν εαυτοις οιτινες μετηλλαξαν\nτην αληθειαν του θυ εν τω ψευδει και εσε\nβασθησαν και ελατρευσαν τη κτισει παρα\nτον κτισαντα ος εστιν ευλογητος εις τους αι\nωνας αμην δια τουτο παρεδωκεν αυτους\nο θς εις παθη ατιμιας αι τε γαρ θηλειαι\nαυτων μετηλλαξαν την φυσικην χρησιν εις\nτην παρα φυσιν ομοιως τε και οι αρρενες\nαφεντες την φυσικην χρησιν της θηλειας\nεξεκαυθησαν εν τη ορεξει αυτων εις αλληλους\nαρσενες εν αρσεσι την ασχημοσυνην κατερ\nγαζομενοι και την αντιμισθιαν ην εδει της\nπλανης αυτων εν εαυτοις απολαμβανοντες\nκαι καθως ουκ εδοκιμασαν τον θν εχειν εν\nεπιγνωσει παρεδωκεν αυτους ο θς εις αδο\nκιμον νουν ποιειν τα μη καθηκοντα πε\nπληρωμενους παση αδικια πορνεια\nπονηρια πλεονεξια κακια μεστους φθο\nνου φονου εριδος δολου κακοηθειας\nψιθυριστας καταλαλους θεοστυγεις",
+      "model": "Gemini 4 Argon (multi-step)",
+      "model_output": "γαρ οργη θυ απ ουνου επι πασαν ασεβειαν\nκαι αδικιαν ανων των την αληθειαν εν α\nδικια κατεχοντων διοτι το γνωστον του\nθυ φανερον εστιν εν αυτοις ο γαρ θς αυτοις\nεφανερωσε τα γαρ αορατα αυτου απο\nκτισεως κοσμου τοις ποιημασι νοουμενα\nκαθοραται η τε αιδιος αυτου δυναμις και\nθειοτης εις το ειναι αυτους αναπολογητους\nδιοτι γνοντες τον θν ουχ ως θν εδοξασαν\nη ηυχαριστησαν αλλ εματαιωθησαν εν τοις\nδιαλογισμοις αυτων και εσκοτισθη η ασυ\nνετος αυτων καρδια φασκοντες ειναι σοφοι\nεμωρανθησαν και ηλλαξαν την δοξαν του α\nφθαρτου θυ εν ομοιωματι εικονος φθαρτου\nανου και πετεινων και τετραποδων και\nερπετων διο και παρεδωκεν αυτους ο\nθς εν ταις επιθυμιαις της καρδιας αυτων\nεις ακαθαρσιαν του ατιμαζεσθαι τα σω\nματα αυτων εν εαυτοις οιτινες μετηλλαξαν\nτην αληθειαν του θυ εν τω ψευδει και εσε\nβασθησαν και ελατρευσεν τη κτισει παρα\nτον κτισαντα ος εστιν ευλογητος εις τους αι\nωνας αμην δια τουτο παρεδωκεν αυτους\nο θς εις παθη ατιμιας αι τε γαρ θηλειαι\nαυτων μετηλλαξαν την φυσικην χρησιν εις\nτην παρα φυσιν ομοιως τε και οι αρρενες\nαφεντες την φυσικην χρησιν της θηλειας\nεξεκαυθησαν εν τη ορεξει αυτων εις αλληλους\nαρσενες εν αρσεσι την ασχημοσυνην κατερ\nγαζομενοι και την αντιμισθιαν ην εδει της\nπλανης αυτων εν εαυτοις απολαμβανοντες\nΚαι καθως ουκ εδοκιμασαν τον θν εχειν εν\nεπιγνωσει παρεδωκεν αυτους ο θς εις αδο\nκιμον νουν ποιειν τα μη καθηκοντα πε\nπληρωμενους πασης αδικιας πορνειας\nπονηριας πλεονεξιας κακιας μεστους φθο\nνου φονου εριδος δολου κακοηθειας\nψιθυριστας καταλαλους θεοστυγεις",
+      "error": null,
+      "metrics": {
+        "cer": 0.008102633355840648,
+        "wer": 0.04285714285714286,
+        "levenshtein_distance": 12,
+        "normalized_levenshtein_similarity": 0.991930060524546,
+        "char_count_reference": 1481,
+        "word_count_reference": 247
+      },
+      "response_metadata": {
+        "input_tokens": 15749,
+        "output_tokens": 1017,
+        "cost": 0.041668,
+        "latency_seconds": 21.719
+      },
+      "side": "recto",
+      "microfilm": true
     }
   ],
   "model_summaries": {
-    "Opus 5.5 (high)": {
-      "cer_mean": 0.050165605239430706,
-      "cer_median": 0.05427782888684453,
-      "cer_min": 0.006554307116104869,
-      "cer_max": 0.09821428571428571,
-      "wer_mean": 0.1554589248218725,
-      "wer_median": 0.1581196581196581,
-      "wer_min": 0.023809523809523808,
-      "wer_max": 0.32,
-      "normalized_levenshtein_similarity_mean": 0.9515970784783249,
-      "normalized_levenshtein_similarity_median": 0.9470377019748654,
-      "normalized_levenshtein_similarity_min": 0.909148665819568,
-      "normalized_levenshtein_similarity_max": 0.9934456928838952,
-      "levenshtein_distance_mean": 69.28571428571429,
-      "levenshtein_distance_median": 59,
-      "levenshtein_distance_min": 7,
-      "levenshtein_distance_max": 143,
+    "Sonnet 4.6": {
+      "cer_mean": 0.3415215668959658,
+      "cer_median": 0.19595216191352346,
+      "cer_min": 0.06789716545814106,
+      "cer_max": 0.7224848075624578,
+      "wer_mean": 0.8654469558491835,
+      "wer_median": 0.9036144578313253,
+      "wer_min": 0.23376623376623376,
+      "wer_max": 1.564102564102564,
+      "normalized_levenshtein_similarity_mean": 0.673622221819798,
+      "normalized_levenshtein_similarity_median": 0.8040478380864765,
+      "normalized_levenshtein_similarity_min": 0.30474333983105917,
+      "normalized_levenshtein_similarity_max": 0.9321028345418589,
+      "levenshtein_distance_mean": 477,
+      "levenshtein_distance_median": 242,
+      "levenshtein_distance_min": 103,
+      "levenshtein_distance_max": 1070,
       "samples_evaluated": 7,
       "samples_failed": 0,
-      "total_input_tokens": 33286,
-      "total_output_tokens": 30547,
-      "total_tokens": 63833,
-      "total_cost": 0.744084,
-      "total_latency_seconds": 285.179
-    },
-    "Grok 4.3": {
-      "cer_mean": 0.7545450114276243,
-      "cer_median": 0.5068997240110396,
-      "cer_min": 0.1984179301252472,
-      "cer_max": 2.196488858879136,
-      "wer_mean": 1.4965999343800083,
-      "wer_median": 1.3975903614457832,
-      "wer_min": 0.5367965367965368,
-      "wer_max": 3.0428571428571427,
-      "normalized_levenshtein_similarity_mean": 0.4669710311004201,
-      "normalized_levenshtein_similarity_median": 0.49310027598896045,
-      "normalized_levenshtein_similarity_min": 0.17749683944374206,
-      "normalized_levenshtein_similarity_max": 0.8009228740936059,
-      "levenshtein_distance_mean": 1051.5714285714287,
-      "levenshtein_distance_median": 630,
-      "levenshtein_distance_min": 302,
-      "levenshtein_distance_max": 3253,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 18722,
-      "total_output_tokens": 11939,
-      "total_tokens": 30661,
-      "total_cost": 0.05325,
-      "total_latency_seconds": 257.607
-    },
-    "GPT-5 Mini (low)": {
-      "cer_mean": 0.6247299071558644,
-      "cer_median": 0.5707964601769911,
-      "cer_min": 0.47846441947565543,
-      "cer_max": 0.9682646860229575,
-      "wer_mean": 0.9536386691426322,
-      "wer_median": 0.9558232931726908,
-      "wer_min": 0.8869047619047619,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.37593830916707277,
-      "normalized_levenshtein_similarity_median": 0.42920353982300885,
-      "normalized_levenshtein_similarity_min": 0.03241053342336264,
-      "normalized_levenshtein_similarity_max": 0.5215355805243446,
-      "levenshtein_distance_mean": 863.7142857142857,
-      "levenshtein_distance_median": 774,
-      "levenshtein_distance_min": 511,
-      "levenshtein_distance_max": 1433,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 14244,
-      "total_output_tokens": 6347,
-      "total_tokens": 20591,
-      "total_cost": 0.016255,
-      "total_latency_seconds": 117.994
-    },
-    "Nemotron 3.5 Super VL": {
-      "cer_mean": 0.7392888487463175,
-      "cer_median": 0.7415730337078652,
-      "cer_min": 0.5547378104875805,
-      "cer_max": 0.9215557020435069,
-      "wer_mean": 1.0076435418792107,
-      "wer_median": 0.9956709956709957,
-      "wer_min": 0.9617834394904459,
-      "wer_max": 1.0654761904761905,
-      "normalized_levenshtein_similarity_mean": 0.26071115125368244,
-      "normalized_levenshtein_similarity_median": 0.2584269662921348,
-      "normalized_levenshtein_similarity_min": 0.0784442979564931,
-      "normalized_levenshtein_similarity_max": 0.44526218951241947,
-      "levenshtein_distance_mean": 931,
-      "levenshtein_distance_median": 792,
-      "levenshtein_distance_min": 603,
-      "levenshtein_distance_max": 1398,
-      "samples_evaluated": 3,
-      "samples_failed": 4,
-      "total_input_tokens": 10767,
-      "total_output_tokens": 39793,
-      "total_tokens": 50560,
-      "total_cost": 0.021512,
-      "total_latency_seconds": 1029.427
-    },
-    "Gemini 3.1 Pro (high)": {
-      "cer_mean": 0.08962292329484489,
-      "cer_median": 0.05401755570560432,
-      "cer_min": 0.0046816479400749065,
-      "cer_max": 0.22566371681415928,
-      "wer_mean": 0.2540392302443784,
-      "wer_median": 0.14285714285714285,
-      "wer_min": 0.011904761904761904,
-      "wer_max": 0.995,
-      "normalized_levenshtein_similarity_mean": 0.9147802816780994,
-      "normalized_levenshtein_similarity_median": 0.9479843953185956,
-      "normalized_levenshtein_similarity_min": 0.7743362831858407,
-      "normalized_levenshtein_similarity_max": 0.9953183520599251,
-      "levenshtein_distance_mean": 124.14285714285714,
-      "levenshtein_distance_median": 80,
-      "levenshtein_distance_min": 5,
-      "levenshtein_distance_max": 306,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9549,
-      "total_output_tokens": 111409,
-      "total_tokens": 120958,
-      "total_cost": 1.356006,
-      "total_latency_seconds": 1182.521
-    },
-    "GPT-5.5 (low)": {
-      "cer_mean": 0.5316248858563725,
-      "cer_median": 0.49557522123893805,
-      "cer_min": 0.03295978905735003,
-      "cer_max": 1.0,
-      "wer_mean": 0.748252877911549,
-      "wer_median": 0.9076305220883534,
-      "wer_min": 0.12121212121212122,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.5168292562728514,
-      "normalized_levenshtein_similarity_median": 0.5354185832566698,
-      "normalized_levenshtein_similarity_min": 0.0,
-      "normalized_levenshtein_similarity_max": 0.9670402109426499,
-      "levenshtein_distance_mean": 715.4285714285714,
-      "levenshtein_distance_median": 672,
-      "levenshtein_distance_min": 50,
-      "levenshtein_distance_max": 1481,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 54395,
-      "total_output_tokens": 6099,
-      "total_tokens": 60494,
-      "total_cost": 0.454945,
-      "total_latency_seconds": 298.314
-    },
-    "GPT-6 Astra (low)": {
-      "cer_mean": 0.6224319133125927,
-      "cer_median": 0.05273566249176005,
-      "cer_min": 0.013539651837524178,
-      "cer_max": 1.834478021978022,
-      "wer_mean": 0.8574242641820505,
-      "wer_median": 0.15286624203821655,
-      "wer_min": 0.047619047619047616,
-      "wer_max": 2.3974358974358974,
-      "normalized_levenshtein_similarity_mean": 0.6845083815542958,
-      "normalized_levenshtein_similarity_median": 0.9496221662468514,
-      "normalized_levenshtein_similarity_min": 0.25244892247411144,
-      "normalized_levenshtein_similarity_max": 0.9864951768488746,
-      "levenshtein_distance_mean": 888.8571428571429,
-      "levenshtein_distance_median": 80,
-      "levenshtein_distance_min": 21,
-      "levenshtein_distance_max": 2671,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 127786,
-      "total_output_tokens": 6891,
-      "total_tokens": 134677,
-      "total_cost": 1.62241,
-      "total_latency_seconds": 275.029
-    },
-    "Qwen 3.6 Plus": {
-      "cer_mean": 0.542954178730163,
-      "cer_median": 0.2529898804047838,
-      "cer_min": 0.047462096242584045,
-      "cer_max": 1.6504424778761062,
-      "wer_mean": 1.5901184055903022,
-      "wer_median": 0.7857142857142857,
-      "wer_min": 0.1341991341991342,
-      "wer_max": 6.0,
-      "normalized_levenshtein_similarity_mean": 0.5761246472809747,
-      "normalized_levenshtein_similarity_median": 0.7470101195952161,
-      "normalized_levenshtein_similarity_min": 0.09208924949290065,
-      "normalized_levenshtein_similarity_max": 0.9533678756476685,
-      "levenshtein_distance_mean": 745,
-      "levenshtein_distance_median": 275,
-      "levenshtein_distance_min": 72,
-      "levenshtein_distance_max": 2238,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 18487,
-      "total_output_tokens": 77237,
-      "total_tokens": 95724,
-      "total_cost": 0.15662,
-      "total_latency_seconds": 785.699
-    },
-    "Opus 5.5 (low)": {
-      "cer_mean": 0.09383806419184204,
-      "cer_median": 0.04783808647654094,
-      "cer_min": 0.006447453255963894,
-      "cer_max": 0.3484132343011479,
-      "wer_mean": 0.20983048747226477,
-      "wer_median": 0.16666666666666666,
-      "wer_min": 0.040160642570281124,
-      "wer_max": 0.6,
-      "normalized_levenshtein_similarity_mean": 0.9076327130345979,
-      "normalized_levenshtein_similarity_median": 0.952161913523459,
-      "normalized_levenshtein_similarity_min": 0.6515867656988521,
-      "normalized_levenshtein_similarity_max": 0.9935525467440361,
-      "levenshtein_distance_mean": 133,
-      "levenshtein_distance_median": 52,
-      "levenshtein_distance_min": 10,
-      "levenshtein_distance_max": 516,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33286,
-      "total_output_tokens": 6458,
-      "total_tokens": 39744,
-      "total_cost": 0.262304,
-      "total_latency_seconds": 90.913
-    },
-    "Sonnet 5.5 (low)": {
-      "cer_mean": 0.24878268887714125,
-      "cer_median": 0.08187672493100276,
-      "cer_min": 0.020631850419084462,
-      "cer_max": 0.7690749493585415,
-      "wer_mean": 0.565776135332194,
-      "wer_median": 0.2484076433121019,
-      "wer_min": 0.08333333333333333,
-      "wer_max": 1.9102564102564104,
-      "normalized_levenshtein_similarity_mean": 0.7683793000153117,
-      "normalized_levenshtein_similarity_median": 0.9193109700815957,
-      "normalized_levenshtein_similarity_min": 0.23092505064145852,
-      "normalized_levenshtein_similarity_max": 0.9793681495809156,
-      "levenshtein_distance_mean": 356.57142857142856,
-      "levenshtein_distance_median": 89,
-      "levenshtein_distance_min": 32,
-      "levenshtein_distance_max": 1139,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33286,
-      "total_output_tokens": 6475,
-      "total_tokens": 39761,
-      "total_cost": 0.131322,
-      "total_latency_seconds": 86.089
-    },
-    "Qwen 3.6 35B A3B": {
-      "cer_mean": 0.5515602201557009,
-      "cer_median": 0.5905867182462927,
-      "cer_min": 0.14700065919578115,
-      "cer_max": 0.7728613569321534,
-      "wer_mean": 1.1070643832635567,
-      "wer_median": 1.0063694267515924,
-      "wer_min": 0.4675324675324675,
-      "wer_max": 1.8835341365461848,
-      "normalized_levenshtein_similarity_mean": 0.47677759787858554,
-      "normalized_levenshtein_similarity_median": 0.5005452562704471,
-      "normalized_levenshtein_similarity_min": 0.26093088857545843,
-      "normalized_levenshtein_similarity_max": 0.8529993408042189,
-      "levenshtein_distance_mean": 755.7142857142857,
-      "levenshtein_distance_median": 916,
-      "levenshtein_distance_min": 223,
-      "levenshtein_distance_max": 1076,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 23061,
-      "total_output_tokens": 48172,
-      "total_tokens": 71233,
-      "total_cost": 0.051631,
-      "total_latency_seconds": 429.731
-    },
-    "GPT-5.2 (high)": {
-      "cer_mean": 0.48127586607213546,
-      "cer_median": 0.5066371681415929,
-      "cer_min": 0.035596572181938034,
-      "cer_max": 0.9648885887913572,
-      "wer_mean": 0.7258041190921027,
-      "wer_median": 0.95,
-      "wer_min": 0.22077922077922077,
-      "wer_max": 1.0382165605095541,
-      "normalized_levenshtein_similarity_mean": 0.5456842205216561,
-      "normalized_levenshtein_similarity_median": 0.543733681462141,
-      "normalized_levenshtein_similarity_min": 0.035111411208642807,
-      "normalized_levenshtein_similarity_max": 0.964403427818062,
-      "levenshtein_distance_mean": 651.5714285714286,
-      "levenshtein_distance_median": 687,
-      "levenshtein_distance_min": 54,
-      "levenshtein_distance_max": 1429,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 14244,
-      "total_output_tokens": 35705,
-      "total_tokens": 49949,
-      "total_cost": 0.522378,
-      "total_latency_seconds": 688.268
-    },
-    "Gemini 3 Flash (high)": {
-      "cer_mean": 0.06766052721396514,
-      "cer_median": 0.07359705611775529,
-      "cer_min": 0.015473887814313346,
-      "cer_max": 0.13324175824175824,
-      "wer_mean": 0.19214518590978022,
-      "wer_median": 0.15584415584415584,
-      "wer_min": 0.05952380952380952,
-      "wer_max": 0.375,
-      "normalized_levenshtein_similarity_mean": 0.9357363685495964,
-      "normalized_levenshtein_similarity_median": 0.9304846938775511,
-      "normalized_levenshtein_similarity_min": 0.8811274509803921,
-      "normalized_levenshtein_similarity_max": 0.9845659163987138,
-      "levenshtein_distance_mean": 93,
-      "levenshtein_distance_median": 92,
-      "levenshtein_distance_min": 24,
-      "levenshtein_distance_max": 194,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9549,
-      "total_output_tokens": 97273,
-      "total_tokens": 106822,
-      "total_cost": 0.296593,
-      "total_latency_seconds": 579.726
+      "total_input_tokens": 12951,
+      "total_output_tokens": 7689,
+      "total_tokens": 20640,
+      "total_cost": 0.154188,
+      "total_latency_seconds": 330.902
     },
     "GLM 5.3 Flash": {
       "cer_mean": 0.7516835857414079,
@@ -10501,56 +10565,6 @@
       "total_cost": 0.006096,
       "total_latency_seconds": 156.214
     },
-    "Gemini 3 Flash (low)": {
-      "cer_mean": 0.04823622336457775,
-      "cer_median": 0.024983119513842,
-      "cer_min": 0.008381689232753063,
-      "cer_max": 0.11744505494505494,
-      "wer_mean": 0.1382692497495111,
-      "wer_median": 0.05238095238095238,
-      "wer_min": 0.03463203463203463,
-      "wer_max": 0.355,
-      "normalized_levenshtein_similarity_mean": 0.9538181515224039,
-      "normalized_levenshtein_similarity_median": 0.97556142668428,
-      "normalized_levenshtein_similarity_min": 0.8932584269662921,
-      "normalized_levenshtein_similarity_max": 0.9916183107672469,
-      "levenshtein_distance_mean": 65,
-      "levenshtein_distance_median": 37,
-      "levenshtein_distance_min": 9,
-      "levenshtein_distance_max": 171,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9549,
-      "total_output_tokens": 4610,
-      "total_tokens": 14159,
-      "total_cost": 0.018604,
-      "total_latency_seconds": 50.245
-    },
-    "Haiku 4.5 (thinking)": {
-      "cer_mean": 0.6694640444423975,
-      "cer_median": 0.6642134314627415,
-      "cer_min": 0.4904416611733685,
-      "cer_max": 0.9345037137069547,
-      "wer_mean": 1.4211473335295648,
-      "wer_median": 1.1887550200803212,
-      "wer_min": 0.9567099567099567,
-      "wer_max": 3.0297619047619047,
-      "normalized_levenshtein_similarity_mean": 0.35483540911507067,
-      "normalized_levenshtein_similarity_median": 0.37207547169811317,
-      "normalized_levenshtein_similarity_min": 0.06549628629304527,
-      "normalized_levenshtein_similarity_max": 0.5095583388266315,
-      "levenshtein_distance_mean": 902.5714285714286,
-      "levenshtein_distance_median": 805,
-      "levenshtein_distance_min": 722,
-      "levenshtein_distance_max": 1384,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 13154,
-      "total_output_tokens": 18936,
-      "total_tokens": 32090,
-      "total_cost": 0.107834,
-      "total_latency_seconds": 203.97
-    },
     "Qwen 3.8 27B": {
       "cer_mean": 0.5941440924271654,
       "cer_median": 0.6099290780141844,
@@ -10576,855 +10590,30 @@
       "total_cost": 0.03004,
       "total_latency_seconds": 466.061
     },
-    "Haiku 5.5 (high)": {
-      "cer_mean": 0.3844456407038239,
-      "cer_median": 0.19503219871205152,
-      "cer_min": 0.04878048780487805,
-      "cer_max": 0.8310439560439561,
-      "wer_mean": 0.6309723609297702,
-      "wer_median": 0.6305732484076433,
-      "wer_min": 0.22943722943722944,
-      "wer_max": 0.975,
-      "normalized_levenshtein_similarity_mean": 0.6190408761444354,
-      "normalized_levenshtein_similarity_median": 0.8188034188034188,
-      "normalized_levenshtein_similarity_min": 0.1689560439560439,
-      "normalized_levenshtein_similarity_max": 0.9514435695538058,
-      "levenshtein_distance_mean": 536,
-      "levenshtein_distance_median": 212,
-      "levenshtein_distance_min": 74,
-      "levenshtein_distance_max": 1210,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33286,
-      "total_output_tokens": 31654,
-      "total_tokens": 64940,
-      "total_cost": 0.019156,
-      "total_latency_seconds": 144.256
-    },
-    "Sonnet 4.6": {
-      "cer_mean": 0.3415215668959658,
-      "cer_median": 0.19595216191352346,
-      "cer_min": 0.06789716545814106,
-      "cer_max": 0.7224848075624578,
-      "wer_mean": 0.8654469558491835,
-      "wer_median": 0.9036144578313253,
-      "wer_min": 0.23376623376623376,
-      "wer_max": 1.564102564102564,
-      "normalized_levenshtein_similarity_mean": 0.673622221819798,
-      "normalized_levenshtein_similarity_median": 0.8040478380864765,
-      "normalized_levenshtein_similarity_min": 0.30474333983105917,
-      "normalized_levenshtein_similarity_max": 0.9321028345418589,
-      "levenshtein_distance_mean": 477,
-      "levenshtein_distance_median": 242,
-      "levenshtein_distance_min": 103,
-      "levenshtein_distance_max": 1070,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 12951,
-      "total_output_tokens": 7689,
-      "total_tokens": 20640,
-      "total_cost": 0.154188,
-      "total_latency_seconds": 330.902
-    },
-    "Kimi K3 (no thinking)": {
-      "cer_mean": 0.3454812558579759,
-      "cer_median": 0.16835326586936522,
-      "cer_min": 0.02966381015161503,
-      "cer_max": 0.9844699527346388,
-      "wer_mean": 0.5977322884313906,
-      "wer_median": 0.5414012738853503,
-      "wer_min": 0.09523809523809523,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.6550892042555467,
-      "normalized_levenshtein_similarity_median": 0.8316467341306348,
-      "normalized_levenshtein_similarity_min": 0.015530047265361224,
-      "normalized_levenshtein_similarity_max": 0.9707602339181287,
-      "levenshtein_distance_mean": 487.42857142857144,
-      "levenshtein_distance_median": 183,
-      "levenshtein_distance_min": 45,
-      "levenshtein_distance_max": 1458,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 31315,
-      "total_output_tokens": 5843,
-      "total_tokens": 37158,
-      "total_cost": 0.18159,
-      "total_latency_seconds": 124.847
-    },
-    "Gemini 3.1 Pro (low)": {
-      "cer_mean": 0.0746696559030507,
-      "cer_median": 0.04321404456448346,
-      "cer_min": 0.0046816479400749065,
-      "cer_max": 0.221976401179941,
-      "wer_mean": 0.2599428309879761,
-      "wer_median": 0.12987012987012986,
-      "wer_min": 0.02976190476190476,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.9268024151639502,
-      "normalized_levenshtein_similarity_median": 0.9578947368421052,
-      "normalized_levenshtein_similarity_min": 0.778023598820059,
-      "normalized_levenshtein_similarity_max": 0.9953183520599251,
-      "levenshtein_distance_mean": 102.14285714285714,
-      "levenshtein_distance_median": 64,
-      "levenshtein_distance_min": 5,
-      "levenshtein_distance_max": 301,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9549,
-      "total_output_tokens": 4752,
-      "total_tokens": 14301,
-      "total_cost": 0.076122,
-      "total_latency_seconds": 115.525
-    },
-    "Sonnet 5.5 (high)": {
-      "cer_mean": 0.27951036962116627,
-      "cer_median": 0.08371665133394664,
-      "cer_min": 0.01845748187211602,
-      "cer_max": 0.8136394328156651,
-      "wer_mean": 0.42793283738940796,
-      "wer_median": 0.31210191082802546,
-      "wer_min": 0.07738095238095238,
-      "wer_max": 0.9619047619047619,
-      "normalized_levenshtein_similarity_mean": 0.7206829132368014,
-      "normalized_levenshtein_similarity_median": 0.9173478655767484,
-      "normalized_levenshtein_similarity_min": 0.1863605671843349,
-      "normalized_levenshtein_similarity_max": 0.981542518127884,
-      "levenshtein_distance_mean": 396.42857142857144,
-      "levenshtein_distance_median": 91,
-      "levenshtein_distance_min": 28,
-      "levenshtein_distance_max": 1205,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33286,
-      "total_output_tokens": 5357,
-      "total_tokens": 38643,
-      "total_cost": 0.120142,
-      "total_latency_seconds": 73.697
-    },
-    "GPT-6 Luna (high)": {
-      "cer_mean": 0.9866521729674486,
-      "cer_median": 0.9948377581120944,
-      "cer_min": 0.9443681318681318,
-      "cer_max": 1.0,
-      "wer_mean": 0.9943024321251516,
-      "wer_median": 1.0,
-      "wer_min": 0.9700854700854701,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.014525221067088296,
-      "normalized_levenshtein_similarity_median": 0.005162241887905594,
-      "normalized_levenshtein_similarity_min": 0.0,
-      "normalized_levenshtein_similarity_max": 0.06387362637362637,
-      "levenshtein_distance_mean": 1338.142857142857,
-      "levenshtein_distance_median": 1363,
-      "levenshtein_distance_min": 1065,
-      "levenshtein_distance_max": 1517,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 156282,
-      "total_output_tokens": 34817,
-      "total_tokens": 191099,
-      "total_cost": 0.024181,
-      "total_latency_seconds": 344.236
-    },
-    "Nemotron 3.5 Super VL (no thinking)": {
-      "cer_mean": 7.9975853579106335,
-      "cer_median": 9.911025145067699,
-      "cer_min": 0.6381015161502966,
-      "cer_max": 15.267790262172285,
-      "wer_mean": 12.658276430282525,
-      "wer_median": 11.269076305220883,
-      "wer_min": 0.9653679653679653,
-      "wer_max": 33.51709401709402,
-      "normalized_levenshtein_similarity_mean": 0.1053640272567601,
-      "normalized_levenshtein_similarity_median": 0.050817859013912337,
-      "normalized_levenshtein_similarity_min": 0.004051316677920358,
-      "normalized_levenshtein_similarity_max": 0.36189848384970336,
-      "levenshtein_distance_mean": 10690.142857142857,
-      "levenshtein_distance_median": 15372,
-      "levenshtein_distance_min": 968,
-      "levenshtein_distance_max": 21637,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 22610,
-      "total_output_tokens": 65369,
-      "total_tokens": 87979,
-      "total_cost": 0.036076,
-      "total_latency_seconds": 175.167
-    },
-    "GPT-5.4 Mini (low)": {
-      "cer_mean": 0.5900068404146599,
-      "cer_median": 0.5457227138643068,
-      "cer_min": 0.13579433091628212,
-      "cer_max": 1.0,
-      "wer_mean": 0.8536817714883207,
-      "wer_median": 0.9642857142857143,
-      "wer_min": 0.30303030303030304,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.40999315958534005,
-      "normalized_levenshtein_similarity_median": 0.4542772861356932,
-      "normalized_levenshtein_similarity_min": 0.0,
-      "normalized_levenshtein_similarity_max": 0.8642056690837179,
-      "levenshtein_distance_mean": 797.5714285714286,
-      "levenshtein_distance_median": 769,
-      "levenshtein_distance_min": 206,
-      "levenshtein_distance_max": 1481,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 19985,
-      "total_output_tokens": 6491,
-      "total_tokens": 26476,
-      "total_cost": 0.044198,
-      "total_latency_seconds": 93.315
-    },
-    "DeepSeek V4.1 Flash 1017": {
-      "cer_mean": 0.4147585631357097,
-      "cer_median": 0.4737827715355805,
-      "cer_min": 0.04878048780487805,
-      "cer_max": 0.8771100607697502,
-      "wer_mean": 0.6211910160287107,
-      "wer_median": 0.9166666666666666,
-      "wer_min": 0.13852813852813853,
-      "wer_max": 0.9809523809523809,
-      "normalized_levenshtein_similarity_mean": 0.5989175802352203,
-      "normalized_levenshtein_similarity_median": 0.5561403508771929,
-      "normalized_levenshtein_similarity_min": 0.12288993923024982,
-      "normalized_levenshtein_similarity_max": 0.9517286366601435,
-      "levenshtein_distance_mean": 527.2,
-      "levenshtein_distance_median": 506,
-      "levenshtein_distance_min": 74,
-      "levenshtein_distance_max": 1299,
-      "samples_evaluated": 5,
-      "samples_failed": 2,
-      "total_input_tokens": 6427,
-      "total_output_tokens": 52767,
-      "total_tokens": 59194,
-      "total_cost": 0.032624,
-      "total_latency_seconds": 747.731
-    },
-    "Gemini 3 Pro (high)": {
-      "cer_mean": 0.04579145130292422,
-      "cer_median": 0.04591492234976367,
-      "cer_min": 0.016479894528675015,
-      "cer_max": 0.0803834808259587,
-      "wer_mean": 0.14282350683120276,
-      "wer_median": 0.08928571428571429,
-      "wer_min": 0.06493506493506493,
-      "wer_max": 0.335,
-      "normalized_levenshtein_similarity_mean": 0.9550426169395054,
-      "normalized_levenshtein_similarity_median": 0.9558154645873944,
-      "normalized_levenshtein_similarity_min": 0.9196165191740413,
-      "normalized_levenshtein_similarity_max": 0.983670803396473,
-      "levenshtein_distance_mean": 61.42857142857143,
-      "levenshtein_distance_median": 60,
-      "levenshtein_distance_min": 25,
-      "levenshtein_distance_max": 109,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9549,
-      "total_output_tokens": 98770,
-      "total_tokens": 108319,
-      "total_cost": 1.204338,
-      "total_latency_seconds": 944.107
-    },
-    "GPT-6.1 Sol (high)": {
-      "cer_mean": 0.21051989859707615,
-      "cer_median": 0.05207646671061305,
-      "cer_min": 0.01096067053513862,
-      "cer_max": 0.9054692775151925,
-      "wer_mean": 0.2724426085515027,
-      "wer_median": 0.09956709956709957,
-      "wer_min": 0.03614457831325301,
-      "wer_max": 0.9619047619047619,
-      "normalized_levenshtein_similarity_mean": 0.7904633945107025,
-      "normalized_levenshtein_similarity_median": 0.9501577287066246,
-      "normalized_levenshtein_similarity_min": 0.09453072248480754,
-      "normalized_levenshtein_similarity_max": 0.9890885750962772,
-      "levenshtein_distance_mean": 305.6,
-      "levenshtein_distance_median": 68,
-      "levenshtein_distance_min": 17,
-      "levenshtein_distance_max": 1341,
-      "samples_evaluated": 5,
-      "samples_failed": 2,
-      "total_input_tokens": 119827,
-      "total_output_tokens": 59974,
-      "total_tokens": 179801,
-      "total_cost": 0.749896,
-      "total_latency_seconds": 4979.332
-    },
-    "Gemini 3 Pro (low)": {
-      "cer_mean": 0.05923597355630638,
-      "cer_median": 0.056043214044564485,
-      "cer_min": 0.009363295880149813,
-      "cer_max": 0.1504120879120879,
-      "wer_mean": 0.1573197599997429,
-      "wer_median": 0.13333333333333333,
-      "wer_min": 0.023809523809523808,
-      "wer_max": 0.34,
-      "normalized_levenshtein_similarity_mean": 0.9439565982128486,
-      "normalized_levenshtein_similarity_median": 0.9456806282722513,
-      "normalized_levenshtein_similarity_min": 0.8667883211678832,
-      "normalized_levenshtein_similarity_max": 0.9906367041198502,
-      "levenshtein_distance_mean": 81.28571428571429,
-      "levenshtein_distance_median": 76,
-      "levenshtein_distance_min": 10,
-      "levenshtein_distance_max": 219,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9549,
-      "total_output_tokens": 6078,
-      "total_tokens": 15627,
-      "total_cost": 0.092034,
-      "total_latency_seconds": 107.233
-    },
-    "Llama 4 Maverick": {
-      "cer_mean": 0.8258718937048141,
-      "cer_median": 0.6879432624113475,
-      "cer_min": 0.5449438202247191,
-      "cer_max": 1.8666053357865686,
-      "wer_mean": 1.2678995655633782,
-      "wer_median": 0.961038961038961,
-      "wer_min": 0.9397590361445783,
-      "wer_max": 3.121019108280255,
-      "normalized_levenshtein_similarity_mean": 0.3321439038898832,
-      "normalized_levenshtein_similarity_median": 0.3120567375886525,
-      "normalized_levenshtein_similarity_min": 0.23950524737631185,
-      "normalized_levenshtein_similarity_max": 0.4550561797752809,
-      "levenshtein_distance_mean": 1082.2857142857142,
-      "levenshtein_distance_median": 1023,
-      "levenshtein_distance_min": 582,
-      "levenshtein_distance_max": 2029,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 18193,
-      "total_output_tokens": 5135,
-      "total_tokens": 23328,
-      "total_cost": 0.00581,
-      "total_latency_seconds": 270.816
-    },
-    "Gemini 4 Argon (high)": {
-      "cer_mean": 0.016001693748687033,
-      "cer_median": 0.005273566249176005,
-      "cer_min": 0.0013504388926401081,
-      "cer_max": 0.05825958702064897,
-      "wer_mean": 0.06154864965645851,
-      "wer_median": 0.02976190476190476,
-      "wer_min": 0.004761904761904762,
-      "wer_max": 0.245,
-      "normalized_levenshtein_similarity_mean": 0.9840884315576834,
-      "normalized_levenshtein_similarity_median": 0.994726433750824,
-      "normalized_levenshtein_similarity_min": 0.9417404129793511,
-      "normalized_levenshtein_similarity_max": 0.9986513823331086,
-      "levenshtein_distance_mean": 20.571428571428573,
-      "levenshtein_distance_median": 8,
-      "levenshtein_distance_min": 2,
-      "levenshtein_distance_max": 79,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9874,
-      "total_output_tokens": 54161,
-      "total_tokens": 64035,
-      "total_cost": 0.561358,
-      "total_latency_seconds": 734.537
-    },
-    "Gemini 4 Argon (low)": {
-      "cer_mean": 0.022273731740092884,
-      "cer_median": 0.011865524060646011,
-      "cer_min": 0.0038684719535783366,
-      "cer_max": 0.05457227138643068,
-      "wer_mean": 0.07500091248937407,
-      "wer_median": 0.03418803418803419,
-      "wer_min": 0.025974025974025976,
-      "wer_max": 0.24,
-      "normalized_levenshtein_similarity_mean": 0.9779276537746245,
-      "normalized_levenshtein_similarity_median": 0.9882121807465619,
-      "normalized_levenshtein_similarity_min": 0.9454277286135693,
-      "normalized_levenshtein_similarity_max": 0.9961315280464217,
-      "levenshtein_distance_mean": 29.571428571428573,
-      "levenshtein_distance_median": 18,
-      "levenshtein_distance_min": 6,
-      "levenshtein_distance_max": 74,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9874,
-      "total_output_tokens": 4244,
-      "total_tokens": 14118,
-      "total_cost": 0.062188,
-      "total_latency_seconds": 111.494
-    },
-    "Opus 4.7": {
-      "cer_mean": 0.28318446255433716,
-      "cer_median": 0.07911683532658693,
-      "cer_min": 0.02241265655899802,
-      "cer_max": 0.7218406593406593,
-      "wer_mean": 0.5648547788116618,
-      "wer_median": 0.27388535031847133,
-      "wer_min": 0.06926406926406926,
-      "wer_max": 1.2809523809523808,
-      "normalized_levenshtein_similarity_mean": 0.734288406235809,
-      "normalized_levenshtein_similarity_median": 0.920883164673413,
-      "normalized_levenshtein_similarity_min": 0.3544226044226044,
-      "normalized_levenshtein_similarity_max": 0.977587343441002,
-      "levenshtein_distance_mean": 402.42857142857144,
-      "levenshtein_distance_median": 86,
-      "levenshtein_distance_min": 34,
-      "levenshtein_distance_max": 1051,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33307,
-      "total_output_tokens": 8182,
-      "total_tokens": 41489,
-      "total_cost": 0.371085,
-      "total_latency_seconds": 348.335
-    },
-    "GPT-6.1 Sol (low)": {
-      "cer_mean": 0.30664154937607463,
-      "cer_median": 0.07359705611775529,
-      "cer_min": 0.013539651837524178,
-      "cer_max": 0.9345037137069547,
-      "wer_mean": 0.5250726983981202,
-      "wer_median": 0.2484076433121019,
-      "wer_min": 0.05622489959839357,
-      "wer_max": 1.3714285714285714,
-      "normalized_levenshtein_similarity_mean": 0.7379906248251499,
-      "normalized_levenshtein_similarity_median": 0.9281221922731356,
-      "normalized_levenshtein_similarity_min": 0.2880658436213992,
-      "normalized_levenshtein_similarity_max": 0.9864603481624759,
-      "levenshtein_distance_mean": 437.57142857142856,
-      "levenshtein_distance_median": 80,
-      "levenshtein_distance_min": 21,
-      "levenshtein_distance_max": 1384,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 127786,
-      "total_output_tokens": 5072,
-      "total_tokens": 132858,
-      "total_cost": 0.306292,
-      "total_latency_seconds": 203.486
-    },
-    "GPT-5.2 (low)": {
-      "cer_mean": 0.4686387542045821,
-      "cer_median": 0.2999080036798528,
-      "cer_min": 0.01845748187211602,
-      "cer_max": 1.0,
-      "wer_mean": 0.6485951259275311,
-      "wer_median": 0.8152866242038217,
-      "wer_min": 0.09090909090909091,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.5313629828066989,
-      "normalized_levenshtein_similarity_median": 0.7000919963201472,
-      "normalized_levenshtein_similarity_min": 0.0,
-      "normalized_levenshtein_similarity_max": 0.9815546772068511,
-      "levenshtein_distance_mean": 653.7142857142857,
-      "levenshtein_distance_median": 326,
-      "levenshtein_distance_min": 28,
-      "levenshtein_distance_max": 1481,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 14244,
-      "total_output_tokens": 7095,
-      "total_tokens": 21339,
-      "total_cost": 0.124257,
-      "total_latency_seconds": 168.818
-    },
-    "GPT-6 Luna (low)": {
-      "cer_mean": 0.9674913035455511,
-      "cer_median": 0.9852507374631269,
-      "cer_min": 0.8867041198501873,
-      "cer_max": 1.0,
-      "wer_mean": 0.9855289604256902,
-      "wer_median": 0.995,
-      "wer_min": 0.9285714285714286,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.03503714146076994,
-      "normalized_levenshtein_similarity_median": 0.02472527472527475,
-      "normalized_levenshtein_similarity_min": 0.0,
-      "normalized_levenshtein_similarity_max": 0.11329588014981273,
-      "levenshtein_distance_mean": 1314.142857142857,
-      "levenshtein_distance_median": 1420,
-      "levenshtein_distance_min": 947,
-      "levenshtein_distance_max": 1517,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 133719,
-      "total_output_tokens": 4070,
-      "total_tokens": 137789,
-      "total_cost": 0.012022,
-      "total_latency_seconds": 73.081
-    },
-    "Opus 4.7 (thinking)": {
-      "cer_mean": 0.2945871274862536,
-      "cer_median": 0.07911683532658693,
-      "cer_min": 0.019987105093488073,
-      "cer_max": 0.7657967032967034,
-      "wer_mean": 0.5846785696735267,
-      "wer_median": 0.2484076433121019,
-      "wer_min": 0.08433734939759036,
-      "wer_max": 1.5512820512820513,
-      "normalized_levenshtein_similarity_mean": 0.735265992298143,
-      "normalized_levenshtein_similarity_median": 0.9226618705035972,
-      "normalized_levenshtein_similarity_min": 0.3444165621079046,
-      "normalized_levenshtein_similarity_max": 0.9800128949065119,
-      "levenshtein_distance_mean": 418.14285714285717,
-      "levenshtein_distance_median": 86,
-      "levenshtein_distance_min": 31,
-      "levenshtein_distance_max": 1115,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33307,
-      "total_output_tokens": 7902,
-      "total_tokens": 41209,
-      "total_cost": 0.364085,
-      "total_latency_seconds": 330.147
-    },
-    "Llama 4 Scout": {
-      "cer_mean": 0.7038641187262272,
-      "cer_median": 0.7053394858272907,
-      "cer_min": 0.5599250936329588,
-      "cer_max": 0.8987170830519919,
-      "wer_mean": 0.9660547115503428,
-      "wer_median": 0.9572649572649573,
-      "wer_min": 0.9357429718875502,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.3166721601345346,
-      "normalized_levenshtein_similarity_median": 0.29466051417270933,
-      "normalized_levenshtein_similarity_min": 0.24503686897334087,
-      "normalized_levenshtein_similarity_max": 0.44007490636704116,
-      "levenshtein_distance_mean": 964.5714285714286,
-      "levenshtein_distance_median": 1048,
-      "levenshtein_distance_min": 598,
-      "levenshtein_distance_max": 1331,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 18195,
-      "total_output_tokens": 5890,
-      "total_tokens": 24085,
-      "total_cost": 0.003223,
-      "total_latency_seconds": 153.001
-    },
-    "Gemini 3.5 Flash (high)": {
-      "cer_mean": 0.058879609242168146,
-      "cer_median": 0.04186360567184335,
-      "cer_min": 0.017408123791102514,
-      "cer_max": 0.14285714285714285,
-      "wer_mean": 0.15189625685300834,
-      "wer_median": 0.10119047619047619,
-      "wer_min": 0.060240963855421686,
-      "wer_max": 0.335,
-      "normalized_levenshtein_similarity_mean": 0.9436332307995843,
-      "normalized_levenshtein_similarity_median": 0.9596091205211726,
-      "normalized_levenshtein_similarity_min": 0.8722358722358723,
-      "normalized_levenshtein_similarity_max": 0.982725527831094,
-      "levenshtein_distance_mean": 80.42857142857143,
-      "levenshtein_distance_median": 62,
-      "levenshtein_distance_min": 27,
-      "levenshtein_distance_max": 208,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9556,
-      "total_output_tokens": 116220,
-      "total_tokens": 125776,
-      "total_cost": 0.0,
-      "total_latency_seconds": 578.237
-    },
-    "Opus 4.6": {
-      "cer_mean": 0.29930141786463527,
-      "cer_median": 0.20975160993560257,
-      "cer_min": 0.04962546816479401,
-      "cer_max": 0.6765698852126941,
-      "wer_mean": 0.8926560301796278,
-      "wer_median": 0.7452229299363057,
-      "wer_min": 0.18452380952380953,
-      "wer_max": 1.9238095238095239,
-      "normalized_levenshtein_similarity_mean": 0.7213842259158408,
-      "normalized_levenshtein_similarity_median": 0.7902483900643974,
-      "normalized_levenshtein_similarity_min": 0.3952926976463488,
-      "normalized_levenshtein_similarity_max": 0.950374531835206,
-      "levenshtein_distance_mean": 421,
-      "levenshtein_distance_median": 228,
-      "levenshtein_distance_min": 53,
-      "levenshtein_distance_max": 1002,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 12951,
-      "total_output_tokens": 7474,
-      "total_tokens": 20425,
-      "total_cost": 0.251605,
-      "total_latency_seconds": 349.655
-    },
-    "Muse Spark Open": {
-      "cer_mean": 0.2869868864261943,
-      "cer_median": 0.12327506899724011,
-      "cer_min": 0.016479894528675015,
-      "cer_max": 0.6538461538461539,
-      "wer_mean": 0.5452382355078125,
-      "wer_median": 0.39490445859872614,
-      "wer_min": 0.0735930735930736,
-      "wer_max": 1.0380952380952382,
-      "normalized_levenshtein_similarity_mean": 0.7189262321570995,
-      "normalized_levenshtein_similarity_median": 0.8767249310027598,
-      "normalized_levenshtein_similarity_min": 0.358922558922559,
-      "normalized_levenshtein_similarity_max": 0.9835309617918313,
-      "levenshtein_distance_mean": 402.42857142857144,
-      "levenshtein_distance_median": 134,
-      "levenshtein_distance_min": 25,
-      "levenshtein_distance_max": 952,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 28454,
-      "total_output_tokens": 25514,
-      "total_tokens": 53968,
-      "total_cost": 0.144002,
-      "total_latency_seconds": 279.432
-    },
-    "GPT-5 Mini (high)": {
-      "cer_mean": 0.6942940842484999,
-      "cer_median": 0.5722713864306784,
-      "cer_min": 0.46441947565543074,
-      "cer_max": 1.1201890614449697,
-      "wer_mean": 1.0859396353366775,
-      "wer_median": 0.9678714859437751,
-      "wer_min": 0.9166666666666666,
-      "wer_max": 1.4952380952380953,
-      "normalized_levenshtein_similarity_mean": 0.42310333611371903,
-      "normalized_levenshtein_similarity_median": 0.42772861356932157,
-      "normalized_levenshtein_similarity_min": 0.2928388746803069,
-      "normalized_levenshtein_similarity_max": 0.5355805243445693,
-      "levenshtein_distance_mean": 960.7142857142857,
-      "levenshtein_distance_median": 776,
-      "levenshtein_distance_min": 496,
-      "levenshtein_distance_max": 1659,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 14244,
-      "total_output_tokens": 27783,
-      "total_tokens": 42027,
-      "total_cost": 0.059127,
-      "total_latency_seconds": 496.078
-    },
-    "Kimi K3": {
-      "cer_mean": 0.3580209770314731,
-      "cer_median": 0.28529465380663555,
-      "cer_min": 0.02109426499670402,
-      "cer_max": 0.8433490884537475,
-      "wer_mean": 0.6094203899625587,
-      "wer_median": 0.593347749974256,
-      "wer_min": 0.07792207792207792,
-      "wer_max": 1.13,
-      "normalized_levenshtein_similarity_mean": 0.6668385013203519,
-      "normalized_levenshtein_similarity_median": 0.7222372892650096,
-      "normalized_levenshtein_similarity_min": 0.29074389551391255,
-      "normalized_levenshtein_similarity_max": 0.978905735003296,
-      "levenshtein_distance_mean": 513.3333333333334,
-      "levenshtein_distance_median": 378.5,
-      "levenshtein_distance_min": 32,
-      "levenshtein_distance_max": 1249,
-      "samples_evaluated": 6,
-      "samples_failed": 1,
-      "total_input_tokens": 27057,
-      "total_output_tokens": 37694,
-      "total_tokens": 64751,
-      "total_cost": 0.621007,
-      "total_latency_seconds": 1011.711
-    },
-    "Opus 4.6 (thinking)": {
-      "cer_mean": 0.2779651395434696,
-      "cer_median": 0.20239190432382706,
-      "cer_min": 0.03889255108767304,
-      "cer_max": 0.7035786630654963,
-      "wer_mean": 0.9354011973046802,
-      "wer_median": 0.910828025477707,
-      "wer_min": 0.1645021645021645,
-      "wer_max": 2.6619047619047618,
-      "normalized_levenshtein_similarity_mean": 0.7485139795792255,
-      "normalized_levenshtein_similarity_median": 0.797608095676173,
-      "normalized_levenshtein_similarity_min": 0.43553629469122424,
-      "normalized_levenshtein_similarity_max": 0.9611074489123269,
-      "levenshtein_distance_mean": 390.42857142857144,
-      "levenshtein_distance_median": 220,
-      "levenshtein_distance_min": 59,
-      "levenshtein_distance_max": 1042,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 13154,
-      "total_output_tokens": 7866,
-      "total_tokens": 21020,
-      "total_cost": 0.26242,
-      "total_latency_seconds": 415.131
-    },
-    "Haiku 4.5": {
-      "cer_mean": 0.6302422925381281,
-      "cer_median": 0.5646067415730337,
-      "cer_min": 0.5003295978905735,
-      "cer_max": 0.9203241053342336,
-      "wer_mean": 1.2312176033766307,
-      "wer_median": 1.1244979919678715,
-      "wer_min": 1.0,
-      "wer_max": 1.6923076923076923,
-      "normalized_levenshtein_similarity_mean": 0.36975770746187187,
-      "normalized_levenshtein_similarity_median": 0.4353932584269663,
-      "normalized_levenshtein_similarity_min": 0.07967589466576641,
-      "normalized_levenshtein_similarity_max": 0.4996704021094265,
-      "levenshtein_distance_mean": 859.4285714285714,
-      "levenshtein_distance_median": 759,
+    "Nemotron 3.5 Super VL": {
+      "cer_mean": 0.7392888487463175,
+      "cer_median": 0.7415730337078652,
+      "cer_min": 0.5547378104875805,
+      "cer_max": 0.9215557020435069,
+      "wer_mean": 1.0076435418792107,
+      "wer_median": 0.9956709956709957,
+      "wer_min": 0.9617834394904459,
+      "wer_max": 1.0654761904761905,
+      "normalized_levenshtein_similarity_mean": 0.26071115125368244,
+      "normalized_levenshtein_similarity_median": 0.2584269662921348,
+      "normalized_levenshtein_similarity_min": 0.0784442979564931,
+      "normalized_levenshtein_similarity_max": 0.44526218951241947,
+      "levenshtein_distance_mean": 931,
+      "levenshtein_distance_median": 792,
       "levenshtein_distance_min": 603,
-      "levenshtein_distance_max": 1363,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 12944,
-      "total_output_tokens": 6668,
-      "total_tokens": 19612,
-      "total_cost": 0.046284,
-      "total_latency_seconds": 137.212
-    },
-    "DeepSeek V4.1 Flash 1017 (no thinking)": {
-      "cer_mean": 0.6106825628080355,
-      "cer_median": 0.7376373626373627,
-      "cer_min": 0.06723796967699407,
-      "cer_max": 1.4929101958136395,
-      "wer_mean": 0.8472757038820382,
-      "wer_median": 0.9786324786324786,
-      "wer_min": 0.15584415584415584,
-      "wer_max": 2.038095238095238,
-      "normalized_levenshtein_similarity_mean": 0.537033487839831,
-      "normalized_levenshtein_similarity_median": 0.4101123595505618,
-      "normalized_levenshtein_similarity_min": 0.2623626373626373,
-      "normalized_levenshtein_similarity_max": 0.9337231968810916,
-      "levenshtein_distance_mean": 830.8571428571429,
-      "levenshtein_distance_median": 840,
-      "levenshtein_distance_min": 102,
-      "levenshtein_distance_max": 2211,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 8737,
-      "total_output_tokens": 6716,
-      "total_tokens": 15453,
-      "total_cost": 0.00534,
-      "total_latency_seconds": 77.928
-    },
-    "Kimi K2.6": {
-      "cer_mean": 0.36760879473652003,
-      "cer_median": 0.32425819486394586,
-      "cer_min": 0.04218852999340804,
-      "cer_max": 0.7197802197802198,
-      "wer_mean": 0.6136077180663168,
-      "wer_median": 0.694358507734304,
-      "wer_min": 0.1341991341991342,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.6327696391460091,
-      "normalized_levenshtein_similarity_median": 0.6764600293643188,
-      "normalized_levenshtein_similarity_min": 0.2802197802197802,
-      "normalized_levenshtein_similarity_max": 0.9581151832460733,
-      "levenshtein_distance_mean": 516.6666666666666,
-      "levenshtein_distance_median": 422.0,
-      "levenshtein_distance_min": 64,
-      "levenshtein_distance_max": 1057,
-      "samples_evaluated": 6,
-      "samples_failed": 1,
-      "total_input_tokens": 23920,
-      "total_output_tokens": 212949,
-      "total_tokens": 236869,
-      "total_cost": 0.763261,
-      "total_latency_seconds": 3180.381
-    },
-    "Haiku 5.5 (low)": {
-      "cer_mean": 0.3829212750555723,
-      "cer_median": 0.19756554307116106,
-      "cer_min": 0.04878048780487805,
-      "cer_max": 0.7536873156342183,
-      "wer_mean": 0.6286317003710143,
-      "wer_median": 0.5535714285714286,
-      "wer_min": 0.22943722943722944,
-      "wer_max": 0.98,
-      "normalized_levenshtein_similarity_mean": 0.6181381139039037,
-      "normalized_levenshtein_similarity_median": 0.802434456928839,
-      "normalized_levenshtein_similarity_min": 0.2463126843657817,
-      "normalized_levenshtein_similarity_max": 0.9514435695538058,
-      "levenshtein_distance_mean": 531.8571428571429,
-      "levenshtein_distance_median": 211,
-      "levenshtein_distance_min": 74,
-      "levenshtein_distance_max": 1047,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 33286,
-      "total_output_tokens": 8789,
-      "total_tokens": 42075,
-      "total_cost": 0.007723,
-      "total_latency_seconds": 64.309
-    },
-    "GPT-5.4 Mini (high)": {
-      "cer_mean": 0.7608244870150597,
-      "cer_median": 0.9110486891385767,
-      "cer_min": 0.08108108108108109,
-      "cer_max": 0.9979743416610398,
-      "wer_mean": 0.8609418248682311,
-      "wer_median": 0.9829059829059829,
-      "wer_min": 0.3463203463203463,
-      "wer_max": 1.0,
-      "normalized_levenshtein_similarity_mean": 0.23919837419201204,
-      "normalized_levenshtein_similarity_median": 0.08895131086142327,
-      "normalized_levenshtein_similarity_min": 0.002025658338960179,
-      "normalized_levenshtein_similarity_max": 0.9190789473684211,
-      "levenshtein_distance_mean": 1011.5714285714286,
-      "levenshtein_distance_median": 973,
-      "levenshtein_distance_min": 123,
-      "levenshtein_distance_max": 1478,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 19985,
-      "total_output_tokens": 92482,
-      "total_tokens": 112467,
-      "total_cost": 0.427529,
-      "total_latency_seconds": 695.722
-    },
-    "Sonnet 4.6 (thinking)": {
-      "cer_mean": 0.3847054429804927,
-      "cer_median": 0.33394664213431463,
-      "cer_min": 0.07185234014502308,
-      "cer_max": 0.7116812964213369,
-      "wer_mean": 1.189250643449148,
-      "wer_median": 1.5854700854700854,
-      "wer_min": 0.2554112554112554,
-      "wer_max": 1.7197452229299364,
-      "normalized_levenshtein_similarity_mean": 0.6519552805222426,
-      "normalized_levenshtein_similarity_median": 0.7007419620774938,
-      "normalized_levenshtein_similarity_min": 0.36314199395770397,
-      "normalized_levenshtein_similarity_max": 0.9281476598549769,
-      "levenshtein_distance_mean": 534,
-      "levenshtein_distance_median": 444,
-      "levenshtein_distance_min": 109,
-      "levenshtein_distance_max": 1054,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 13154,
-      "total_output_tokens": 21203,
-      "total_tokens": 34357,
-      "total_cost": 0.357507,
-      "total_latency_seconds": 437.051
-    },
-    "Gemini 3.8 Flash (low)": {
-      "cer_mean": 0.04598703431646782,
-      "cer_median": 0.054945054945054944,
-      "cer_min": 0.012250161186331399,
-      "cer_max": 0.09513274336283185,
-      "wer_mean": 0.13900569058922216,
-      "wer_median": 0.11965811965811966,
-      "wer_min": 0.05357142857142857,
-      "wer_max": 0.33,
-      "normalized_levenshtein_similarity_mean": 0.9549941665417757,
-      "normalized_levenshtein_similarity_median": 0.94750656167979,
-      "normalized_levenshtein_similarity_min": 0.9048672566371682,
-      "normalized_levenshtein_similarity_max": 0.9877498388136686,
-      "levenshtein_distance_mean": 62.285714285714285,
-      "levenshtein_distance_median": 66,
-      "levenshtein_distance_min": 14,
-      "levenshtein_distance_max": 129,
-      "samples_evaluated": 7,
-      "samples_failed": 0,
-      "total_input_tokens": 9664,
-      "total_output_tokens": 4613,
-      "total_tokens": 14277,
-      "total_cost": 0.024547,
-      "total_latency_seconds": 75.975
+      "levenshtein_distance_max": 1398,
+      "samples_evaluated": 3,
+      "samples_failed": 4,
+      "total_input_tokens": 10767,
+      "total_output_tokens": 39793,
+      "total_tokens": 50560,
+      "total_cost": 0.021512,
+      "total_latency_seconds": 1029.427
     },
     "Gemini 3.5 Flash (low)": {
       "cer_mean": 0.051162773173082904,
@@ -11451,30 +10640,355 @@
       "total_cost": 0.016839,
       "total_latency_seconds": 110.398
     },
-    "GPT-4.1": {
-      "cer_mean": 0.5863067577733672,
-      "cer_median": 0.6563670411985019,
-      "cer_min": 0.05075807514831905,
-      "cer_max": 0.8568534773801485,
-      "wer_mean": 0.9077065491999112,
-      "wer_median": 0.9615384615384616,
-      "wer_min": 0.24675324675324675,
-      "wer_max": 1.3047619047619048,
-      "normalized_levenshtein_similarity_mean": 0.43333120255207674,
-      "normalized_levenshtein_similarity_median": 0.34363295880149813,
-      "normalized_levenshtein_similarity_min": 0.2692307692307693,
-      "normalized_levenshtein_similarity_max": 0.9492419248516809,
-      "levenshtein_distance_mean": 788.8571428571429,
-      "levenshtein_distance_median": 880,
-      "levenshtein_distance_min": 77,
-      "levenshtein_distance_max": 1269,
+    "Gemini 3 Pro (high)": {
+      "cer_mean": 0.04579145130292422,
+      "cer_median": 0.04591492234976367,
+      "cer_min": 0.016479894528675015,
+      "cer_max": 0.0803834808259587,
+      "wer_mean": 0.14282350683120276,
+      "wer_median": 0.08928571428571429,
+      "wer_min": 0.06493506493506493,
+      "wer_max": 0.335,
+      "normalized_levenshtein_similarity_mean": 0.9550426169395054,
+      "normalized_levenshtein_similarity_median": 0.9558154645873944,
+      "normalized_levenshtein_similarity_min": 0.9196165191740413,
+      "normalized_levenshtein_similarity_max": 0.983670803396473,
+      "levenshtein_distance_mean": 61.42857142857143,
+      "levenshtein_distance_median": 60,
+      "levenshtein_distance_min": 25,
+      "levenshtein_distance_max": 109,
       "samples_evaluated": 7,
       "samples_failed": 0,
-      "total_input_tokens": 9688,
-      "total_output_tokens": 3820,
-      "total_tokens": 13508,
-      "total_cost": 0.049936,
-      "total_latency_seconds": 118.445
+      "total_input_tokens": 9549,
+      "total_output_tokens": 98770,
+      "total_tokens": 108319,
+      "total_cost": 1.204338,
+      "total_latency_seconds": 944.107
+    },
+    "Opus 4.6 (thinking)": {
+      "cer_mean": 0.2779651395434696,
+      "cer_median": 0.20239190432382706,
+      "cer_min": 0.03889255108767304,
+      "cer_max": 0.7035786630654963,
+      "wer_mean": 0.9354011973046802,
+      "wer_median": 0.910828025477707,
+      "wer_min": 0.1645021645021645,
+      "wer_max": 2.6619047619047618,
+      "normalized_levenshtein_similarity_mean": 0.7485139795792255,
+      "normalized_levenshtein_similarity_median": 0.797608095676173,
+      "normalized_levenshtein_similarity_min": 0.43553629469122424,
+      "normalized_levenshtein_similarity_max": 0.9611074489123269,
+      "levenshtein_distance_mean": 390.42857142857144,
+      "levenshtein_distance_median": 220,
+      "levenshtein_distance_min": 59,
+      "levenshtein_distance_max": 1042,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 13154,
+      "total_output_tokens": 7866,
+      "total_tokens": 21020,
+      "total_cost": 0.26242,
+      "total_latency_seconds": 415.131
+    },
+    "Gemini 4 Argon (multi-step)": {
+      "cer_mean": 0.015090783021207036,
+      "cer_median": 0.008102633355840648,
+      "cer_min": 0.0038684719535783366,
+      "cer_max": 0.03982300884955752,
+      "wer_mean": 0.05858005299299137,
+      "wer_median": 0.030303030303030304,
+      "wer_min": 0.023809523809523808,
+      "wer_max": 0.185,
+      "normalized_levenshtein_similarity_mean": 0.9850149304947359,
+      "normalized_levenshtein_similarity_median": 0.991930060524546,
+      "normalized_levenshtein_similarity_min": 0.9601769911504425,
+      "normalized_levenshtein_similarity_max": 0.9961315280464217,
+      "levenshtein_distance_mean": 19.428571428571427,
+      "levenshtein_distance_median": 11,
+      "levenshtein_distance_min": 6,
+      "levenshtein_distance_max": 54,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 107759,
+      "total_output_tokens": 7363,
+      "total_tokens": 115122,
+      "total_cost": 0.279618,
+      "total_latency_seconds": 269.056
+    },
+    "GPT-5.4 Mini (low)": {
+      "cer_mean": 0.5900068404146599,
+      "cer_median": 0.5457227138643068,
+      "cer_min": 0.13579433091628212,
+      "cer_max": 1.0,
+      "wer_mean": 0.8536817714883207,
+      "wer_median": 0.9642857142857143,
+      "wer_min": 0.30303030303030304,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.40999315958534005,
+      "normalized_levenshtein_similarity_median": 0.4542772861356932,
+      "normalized_levenshtein_similarity_min": 0.0,
+      "normalized_levenshtein_similarity_max": 0.8642056690837179,
+      "levenshtein_distance_mean": 797.5714285714286,
+      "levenshtein_distance_median": 769,
+      "levenshtein_distance_min": 206,
+      "levenshtein_distance_max": 1481,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 19985,
+      "total_output_tokens": 6491,
+      "total_tokens": 26476,
+      "total_cost": 0.044198,
+      "total_latency_seconds": 93.315
+    },
+    "Gemini 3.1 Pro (low)": {
+      "cer_mean": 0.0746696559030507,
+      "cer_median": 0.04321404456448346,
+      "cer_min": 0.0046816479400749065,
+      "cer_max": 0.221976401179941,
+      "wer_mean": 0.2599428309879761,
+      "wer_median": 0.12987012987012986,
+      "wer_min": 0.02976190476190476,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.9268024151639502,
+      "normalized_levenshtein_similarity_median": 0.9578947368421052,
+      "normalized_levenshtein_similarity_min": 0.778023598820059,
+      "normalized_levenshtein_similarity_max": 0.9953183520599251,
+      "levenshtein_distance_mean": 102.14285714285714,
+      "levenshtein_distance_median": 64,
+      "levenshtein_distance_min": 5,
+      "levenshtein_distance_max": 301,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9549,
+      "total_output_tokens": 4752,
+      "total_tokens": 14301,
+      "total_cost": 0.076122,
+      "total_latency_seconds": 115.525
+    },
+    "Haiku 5.5 (low)": {
+      "cer_mean": 0.3829212750555723,
+      "cer_median": 0.19756554307116106,
+      "cer_min": 0.04878048780487805,
+      "cer_max": 0.7536873156342183,
+      "wer_mean": 0.6286317003710143,
+      "wer_median": 0.5535714285714286,
+      "wer_min": 0.22943722943722944,
+      "wer_max": 0.98,
+      "normalized_levenshtein_similarity_mean": 0.6181381139039037,
+      "normalized_levenshtein_similarity_median": 0.802434456928839,
+      "normalized_levenshtein_similarity_min": 0.2463126843657817,
+      "normalized_levenshtein_similarity_max": 0.9514435695538058,
+      "levenshtein_distance_mean": 531.8571428571429,
+      "levenshtein_distance_median": 211,
+      "levenshtein_distance_min": 74,
+      "levenshtein_distance_max": 1047,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33286,
+      "total_output_tokens": 8789,
+      "total_tokens": 42075,
+      "total_cost": 0.007723,
+      "total_latency_seconds": 64.309
+    },
+    "Sonnet 4.6 (thinking)": {
+      "cer_mean": 0.3847054429804927,
+      "cer_median": 0.33394664213431463,
+      "cer_min": 0.07185234014502308,
+      "cer_max": 0.7116812964213369,
+      "wer_mean": 1.189250643449148,
+      "wer_median": 1.5854700854700854,
+      "wer_min": 0.2554112554112554,
+      "wer_max": 1.7197452229299364,
+      "normalized_levenshtein_similarity_mean": 0.6519552805222426,
+      "normalized_levenshtein_similarity_median": 0.7007419620774938,
+      "normalized_levenshtein_similarity_min": 0.36314199395770397,
+      "normalized_levenshtein_similarity_max": 0.9281476598549769,
+      "levenshtein_distance_mean": 534,
+      "levenshtein_distance_median": 444,
+      "levenshtein_distance_min": 109,
+      "levenshtein_distance_max": 1054,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 13154,
+      "total_output_tokens": 21203,
+      "total_tokens": 34357,
+      "total_cost": 0.357507,
+      "total_latency_seconds": 437.051
+    },
+    "Gemini 3.5 Flash (high)": {
+      "cer_mean": 0.058879609242168146,
+      "cer_median": 0.04186360567184335,
+      "cer_min": 0.017408123791102514,
+      "cer_max": 0.14285714285714285,
+      "wer_mean": 0.15189625685300834,
+      "wer_median": 0.10119047619047619,
+      "wer_min": 0.060240963855421686,
+      "wer_max": 0.335,
+      "normalized_levenshtein_similarity_mean": 0.9436332307995843,
+      "normalized_levenshtein_similarity_median": 0.9596091205211726,
+      "normalized_levenshtein_similarity_min": 0.8722358722358723,
+      "normalized_levenshtein_similarity_max": 0.982725527831094,
+      "levenshtein_distance_mean": 80.42857142857143,
+      "levenshtein_distance_median": 62,
+      "levenshtein_distance_min": 27,
+      "levenshtein_distance_max": 208,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9556,
+      "total_output_tokens": 116220,
+      "total_tokens": 125776,
+      "total_cost": 0.0,
+      "total_latency_seconds": 578.237
+    },
+    "GPT-6 Luna (low)": {
+      "cer_mean": 0.9674913035455511,
+      "cer_median": 0.9852507374631269,
+      "cer_min": 0.8867041198501873,
+      "cer_max": 1.0,
+      "wer_mean": 0.9855289604256902,
+      "wer_median": 0.995,
+      "wer_min": 0.9285714285714286,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.03503714146076994,
+      "normalized_levenshtein_similarity_median": 0.02472527472527475,
+      "normalized_levenshtein_similarity_min": 0.0,
+      "normalized_levenshtein_similarity_max": 0.11329588014981273,
+      "levenshtein_distance_mean": 1314.142857142857,
+      "levenshtein_distance_median": 1420,
+      "levenshtein_distance_min": 947,
+      "levenshtein_distance_max": 1517,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 133719,
+      "total_output_tokens": 4070,
+      "total_tokens": 137789,
+      "total_cost": 0.012022,
+      "total_latency_seconds": 73.081
+    },
+    "Opus 5.5 (high)": {
+      "cer_mean": 0.050165605239430706,
+      "cer_median": 0.05427782888684453,
+      "cer_min": 0.006554307116104869,
+      "cer_max": 0.09821428571428571,
+      "wer_mean": 0.1554589248218725,
+      "wer_median": 0.1581196581196581,
+      "wer_min": 0.023809523809523808,
+      "wer_max": 0.32,
+      "normalized_levenshtein_similarity_mean": 0.9515970784783249,
+      "normalized_levenshtein_similarity_median": 0.9470377019748654,
+      "normalized_levenshtein_similarity_min": 0.909148665819568,
+      "normalized_levenshtein_similarity_max": 0.9934456928838952,
+      "levenshtein_distance_mean": 69.28571428571429,
+      "levenshtein_distance_median": 59,
+      "levenshtein_distance_min": 7,
+      "levenshtein_distance_max": 143,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33286,
+      "total_output_tokens": 30547,
+      "total_tokens": 63833,
+      "total_cost": 0.744084,
+      "total_latency_seconds": 285.179
+    },
+    "Gemini 4 Argon (high)": {
+      "cer_mean": 0.016001693748687033,
+      "cer_median": 0.005273566249176005,
+      "cer_min": 0.0013504388926401081,
+      "cer_max": 0.05825958702064897,
+      "wer_mean": 0.06154864965645851,
+      "wer_median": 0.02976190476190476,
+      "wer_min": 0.004761904761904762,
+      "wer_max": 0.245,
+      "normalized_levenshtein_similarity_mean": 0.9840884315576834,
+      "normalized_levenshtein_similarity_median": 0.994726433750824,
+      "normalized_levenshtein_similarity_min": 0.9417404129793511,
+      "normalized_levenshtein_similarity_max": 0.9986513823331086,
+      "levenshtein_distance_mean": 20.571428571428573,
+      "levenshtein_distance_median": 8,
+      "levenshtein_distance_min": 2,
+      "levenshtein_distance_max": 79,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9874,
+      "total_output_tokens": 54161,
+      "total_tokens": 64035,
+      "total_cost": 0.561358,
+      "total_latency_seconds": 734.537
+    },
+    "GPT-6.1 Sol (high)": {
+      "cer_mean": 0.21051989859707615,
+      "cer_median": 0.05207646671061305,
+      "cer_min": 0.01096067053513862,
+      "cer_max": 0.9054692775151925,
+      "wer_mean": 0.2724426085515027,
+      "wer_median": 0.09956709956709957,
+      "wer_min": 0.03614457831325301,
+      "wer_max": 0.9619047619047619,
+      "normalized_levenshtein_similarity_mean": 0.7904633945107025,
+      "normalized_levenshtein_similarity_median": 0.9501577287066246,
+      "normalized_levenshtein_similarity_min": 0.09453072248480754,
+      "normalized_levenshtein_similarity_max": 0.9890885750962772,
+      "levenshtein_distance_mean": 305.6,
+      "levenshtein_distance_median": 68,
+      "levenshtein_distance_min": 17,
+      "levenshtein_distance_max": 1341,
+      "samples_evaluated": 5,
+      "samples_failed": 2,
+      "total_input_tokens": 119827,
+      "total_output_tokens": 59974,
+      "total_tokens": 179801,
+      "total_cost": 0.749896,
+      "total_latency_seconds": 4979.332
+    },
+    "Opus 4.7": {
+      "cer_mean": 0.28318446255433716,
+      "cer_median": 0.07911683532658693,
+      "cer_min": 0.02241265655899802,
+      "cer_max": 0.7218406593406593,
+      "wer_mean": 0.5648547788116618,
+      "wer_median": 0.27388535031847133,
+      "wer_min": 0.06926406926406926,
+      "wer_max": 1.2809523809523808,
+      "normalized_levenshtein_similarity_mean": 0.734288406235809,
+      "normalized_levenshtein_similarity_median": 0.920883164673413,
+      "normalized_levenshtein_similarity_min": 0.3544226044226044,
+      "normalized_levenshtein_similarity_max": 0.977587343441002,
+      "levenshtein_distance_mean": 402.42857142857144,
+      "levenshtein_distance_median": 86,
+      "levenshtein_distance_min": 34,
+      "levenshtein_distance_max": 1051,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33307,
+      "total_output_tokens": 8182,
+      "total_tokens": 41489,
+      "total_cost": 0.371085,
+      "total_latency_seconds": 348.335
+    },
+    "GPT-5.2 (high)": {
+      "cer_mean": 0.48127586607213546,
+      "cer_median": 0.5066371681415929,
+      "cer_min": 0.035596572181938034,
+      "cer_max": 0.9648885887913572,
+      "wer_mean": 0.7258041190921027,
+      "wer_median": 0.95,
+      "wer_min": 0.22077922077922077,
+      "wer_max": 1.0382165605095541,
+      "normalized_levenshtein_similarity_mean": 0.5456842205216561,
+      "normalized_levenshtein_similarity_median": 0.543733681462141,
+      "normalized_levenshtein_similarity_min": 0.035111411208642807,
+      "normalized_levenshtein_similarity_max": 0.964403427818062,
+      "levenshtein_distance_mean": 651.5714285714286,
+      "levenshtein_distance_median": 687,
+      "levenshtein_distance_min": 54,
+      "levenshtein_distance_max": 1429,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 14244,
+      "total_output_tokens": 35705,
+      "total_tokens": 49949,
+      "total_cost": 0.522378,
+      "total_latency_seconds": 688.268
     },
     "Gemini 3.8 Flash (high)": {
       "cer_mean": 0.4167006353325904,
@@ -11500,6 +11014,881 @@
       "total_tokens": 121423,
       "total_cost": 0.426344,
       "total_latency_seconds": 892.257
+    },
+    "Kimi K2.6": {
+      "cer_mean": 0.36760879473652003,
+      "cer_median": 0.32425819486394586,
+      "cer_min": 0.04218852999340804,
+      "cer_max": 0.7197802197802198,
+      "wer_mean": 0.6136077180663168,
+      "wer_median": 0.694358507734304,
+      "wer_min": 0.1341991341991342,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.6327696391460091,
+      "normalized_levenshtein_similarity_median": 0.6764600293643188,
+      "normalized_levenshtein_similarity_min": 0.2802197802197802,
+      "normalized_levenshtein_similarity_max": 0.9581151832460733,
+      "levenshtein_distance_mean": 516.6666666666666,
+      "levenshtein_distance_median": 422.0,
+      "levenshtein_distance_min": 64,
+      "levenshtein_distance_max": 1057,
+      "samples_evaluated": 6,
+      "samples_failed": 1,
+      "total_input_tokens": 23920,
+      "total_output_tokens": 212949,
+      "total_tokens": 236869,
+      "total_cost": 0.763261,
+      "total_latency_seconds": 3180.381
+    },
+    "Haiku 4.5": {
+      "cer_mean": 0.6302422925381281,
+      "cer_median": 0.5646067415730337,
+      "cer_min": 0.5003295978905735,
+      "cer_max": 0.9203241053342336,
+      "wer_mean": 1.2312176033766307,
+      "wer_median": 1.1244979919678715,
+      "wer_min": 1.0,
+      "wer_max": 1.6923076923076923,
+      "normalized_levenshtein_similarity_mean": 0.36975770746187187,
+      "normalized_levenshtein_similarity_median": 0.4353932584269663,
+      "normalized_levenshtein_similarity_min": 0.07967589466576641,
+      "normalized_levenshtein_similarity_max": 0.4996704021094265,
+      "levenshtein_distance_mean": 859.4285714285714,
+      "levenshtein_distance_median": 759,
+      "levenshtein_distance_min": 603,
+      "levenshtein_distance_max": 1363,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 12944,
+      "total_output_tokens": 6668,
+      "total_tokens": 19612,
+      "total_cost": 0.046284,
+      "total_latency_seconds": 137.212
+    },
+    "Llama 4 Scout": {
+      "cer_mean": 0.7038641187262272,
+      "cer_median": 0.7053394858272907,
+      "cer_min": 0.5599250936329588,
+      "cer_max": 0.8987170830519919,
+      "wer_mean": 0.9660547115503428,
+      "wer_median": 0.9572649572649573,
+      "wer_min": 0.9357429718875502,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.3166721601345346,
+      "normalized_levenshtein_similarity_median": 0.29466051417270933,
+      "normalized_levenshtein_similarity_min": 0.24503686897334087,
+      "normalized_levenshtein_similarity_max": 0.44007490636704116,
+      "levenshtein_distance_mean": 964.5714285714286,
+      "levenshtein_distance_median": 1048,
+      "levenshtein_distance_min": 598,
+      "levenshtein_distance_max": 1331,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 18195,
+      "total_output_tokens": 5890,
+      "total_tokens": 24085,
+      "total_cost": 0.003223,
+      "total_latency_seconds": 153.001
+    },
+    "GPT-6.1 Sol (low)": {
+      "cer_mean": 0.30664154937607463,
+      "cer_median": 0.07359705611775529,
+      "cer_min": 0.013539651837524178,
+      "cer_max": 0.9345037137069547,
+      "wer_mean": 0.5250726983981202,
+      "wer_median": 0.2484076433121019,
+      "wer_min": 0.05622489959839357,
+      "wer_max": 1.3714285714285714,
+      "normalized_levenshtein_similarity_mean": 0.7379906248251499,
+      "normalized_levenshtein_similarity_median": 0.9281221922731356,
+      "normalized_levenshtein_similarity_min": 0.2880658436213992,
+      "normalized_levenshtein_similarity_max": 0.9864603481624759,
+      "levenshtein_distance_mean": 437.57142857142856,
+      "levenshtein_distance_median": 80,
+      "levenshtein_distance_min": 21,
+      "levenshtein_distance_max": 1384,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 127786,
+      "total_output_tokens": 5072,
+      "total_tokens": 132858,
+      "total_cost": 0.306292,
+      "total_latency_seconds": 203.486
+    },
+    "GPT-6 Astra (low)": {
+      "cer_mean": 0.6224319133125927,
+      "cer_median": 0.05273566249176005,
+      "cer_min": 0.013539651837524178,
+      "cer_max": 1.834478021978022,
+      "wer_mean": 0.8574242641820505,
+      "wer_median": 0.15286624203821655,
+      "wer_min": 0.047619047619047616,
+      "wer_max": 2.3974358974358974,
+      "normalized_levenshtein_similarity_mean": 0.6845083815542958,
+      "normalized_levenshtein_similarity_median": 0.9496221662468514,
+      "normalized_levenshtein_similarity_min": 0.25244892247411144,
+      "normalized_levenshtein_similarity_max": 0.9864951768488746,
+      "levenshtein_distance_mean": 888.8571428571429,
+      "levenshtein_distance_median": 80,
+      "levenshtein_distance_min": 21,
+      "levenshtein_distance_max": 2671,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 127786,
+      "total_output_tokens": 6891,
+      "total_tokens": 134677,
+      "total_cost": 1.62241,
+      "total_latency_seconds": 275.029
+    },
+    "GPT-6 Luna (high)": {
+      "cer_mean": 0.9866521729674486,
+      "cer_median": 0.9948377581120944,
+      "cer_min": 0.9443681318681318,
+      "cer_max": 1.0,
+      "wer_mean": 0.9943024321251516,
+      "wer_median": 1.0,
+      "wer_min": 0.9700854700854701,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.014525221067088296,
+      "normalized_levenshtein_similarity_median": 0.005162241887905594,
+      "normalized_levenshtein_similarity_min": 0.0,
+      "normalized_levenshtein_similarity_max": 0.06387362637362637,
+      "levenshtein_distance_mean": 1338.142857142857,
+      "levenshtein_distance_median": 1363,
+      "levenshtein_distance_min": 1065,
+      "levenshtein_distance_max": 1517,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 156282,
+      "total_output_tokens": 34817,
+      "total_tokens": 191099,
+      "total_cost": 0.024181,
+      "total_latency_seconds": 344.236
+    },
+    "Kimi K3": {
+      "cer_mean": 0.3580209770314731,
+      "cer_median": 0.28529465380663555,
+      "cer_min": 0.02109426499670402,
+      "cer_max": 0.8433490884537475,
+      "wer_mean": 0.6094203899625587,
+      "wer_median": 0.593347749974256,
+      "wer_min": 0.07792207792207792,
+      "wer_max": 1.13,
+      "normalized_levenshtein_similarity_mean": 0.6668385013203519,
+      "normalized_levenshtein_similarity_median": 0.7222372892650096,
+      "normalized_levenshtein_similarity_min": 0.29074389551391255,
+      "normalized_levenshtein_similarity_max": 0.978905735003296,
+      "levenshtein_distance_mean": 513.3333333333334,
+      "levenshtein_distance_median": 378.5,
+      "levenshtein_distance_min": 32,
+      "levenshtein_distance_max": 1249,
+      "samples_evaluated": 6,
+      "samples_failed": 1,
+      "total_input_tokens": 27057,
+      "total_output_tokens": 37694,
+      "total_tokens": 64751,
+      "total_cost": 0.621007,
+      "total_latency_seconds": 1011.711
+    },
+    "GPT-5.5 (low)": {
+      "cer_mean": 0.5316248858563725,
+      "cer_median": 0.49557522123893805,
+      "cer_min": 0.03295978905735003,
+      "cer_max": 1.0,
+      "wer_mean": 0.748252877911549,
+      "wer_median": 0.9076305220883534,
+      "wer_min": 0.12121212121212122,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.5168292562728514,
+      "normalized_levenshtein_similarity_median": 0.5354185832566698,
+      "normalized_levenshtein_similarity_min": 0.0,
+      "normalized_levenshtein_similarity_max": 0.9670402109426499,
+      "levenshtein_distance_mean": 715.4285714285714,
+      "levenshtein_distance_median": 672,
+      "levenshtein_distance_min": 50,
+      "levenshtein_distance_max": 1481,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 54395,
+      "total_output_tokens": 6099,
+      "total_tokens": 60494,
+      "total_cost": 0.454945,
+      "total_latency_seconds": 298.314
+    },
+    "Qwen 3.6 35B A3B": {
+      "cer_mean": 0.5515602201557009,
+      "cer_median": 0.5905867182462927,
+      "cer_min": 0.14700065919578115,
+      "cer_max": 0.7728613569321534,
+      "wer_mean": 1.1070643832635567,
+      "wer_median": 1.0063694267515924,
+      "wer_min": 0.4675324675324675,
+      "wer_max": 1.8835341365461848,
+      "normalized_levenshtein_similarity_mean": 0.47677759787858554,
+      "normalized_levenshtein_similarity_median": 0.5005452562704471,
+      "normalized_levenshtein_similarity_min": 0.26093088857545843,
+      "normalized_levenshtein_similarity_max": 0.8529993408042189,
+      "levenshtein_distance_mean": 755.7142857142857,
+      "levenshtein_distance_median": 916,
+      "levenshtein_distance_min": 223,
+      "levenshtein_distance_max": 1076,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 23061,
+      "total_output_tokens": 48172,
+      "total_tokens": 71233,
+      "total_cost": 0.051631,
+      "total_latency_seconds": 429.731
+    },
+    "Kimi K3 (no thinking)": {
+      "cer_mean": 0.3454812558579759,
+      "cer_median": 0.16835326586936522,
+      "cer_min": 0.02966381015161503,
+      "cer_max": 0.9844699527346388,
+      "wer_mean": 0.5977322884313906,
+      "wer_median": 0.5414012738853503,
+      "wer_min": 0.09523809523809523,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.6550892042555467,
+      "normalized_levenshtein_similarity_median": 0.8316467341306348,
+      "normalized_levenshtein_similarity_min": 0.015530047265361224,
+      "normalized_levenshtein_similarity_max": 0.9707602339181287,
+      "levenshtein_distance_mean": 487.42857142857144,
+      "levenshtein_distance_median": 183,
+      "levenshtein_distance_min": 45,
+      "levenshtein_distance_max": 1458,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 31315,
+      "total_output_tokens": 5843,
+      "total_tokens": 37158,
+      "total_cost": 0.18159,
+      "total_latency_seconds": 124.847
+    },
+    "Opus 4.6": {
+      "cer_mean": 0.29930141786463527,
+      "cer_median": 0.20975160993560257,
+      "cer_min": 0.04962546816479401,
+      "cer_max": 0.6765698852126941,
+      "wer_mean": 0.8926560301796278,
+      "wer_median": 0.7452229299363057,
+      "wer_min": 0.18452380952380953,
+      "wer_max": 1.9238095238095239,
+      "normalized_levenshtein_similarity_mean": 0.7213842259158408,
+      "normalized_levenshtein_similarity_median": 0.7902483900643974,
+      "normalized_levenshtein_similarity_min": 0.3952926976463488,
+      "normalized_levenshtein_similarity_max": 0.950374531835206,
+      "levenshtein_distance_mean": 421,
+      "levenshtein_distance_median": 228,
+      "levenshtein_distance_min": 53,
+      "levenshtein_distance_max": 1002,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 12951,
+      "total_output_tokens": 7474,
+      "total_tokens": 20425,
+      "total_cost": 0.251605,
+      "total_latency_seconds": 349.655
+    },
+    "Gemini 3 Pro (low)": {
+      "cer_mean": 0.05923597355630638,
+      "cer_median": 0.056043214044564485,
+      "cer_min": 0.009363295880149813,
+      "cer_max": 0.1504120879120879,
+      "wer_mean": 0.1573197599997429,
+      "wer_median": 0.13333333333333333,
+      "wer_min": 0.023809523809523808,
+      "wer_max": 0.34,
+      "normalized_levenshtein_similarity_mean": 0.9439565982128486,
+      "normalized_levenshtein_similarity_median": 0.9456806282722513,
+      "normalized_levenshtein_similarity_min": 0.8667883211678832,
+      "normalized_levenshtein_similarity_max": 0.9906367041198502,
+      "levenshtein_distance_mean": 81.28571428571429,
+      "levenshtein_distance_median": 76,
+      "levenshtein_distance_min": 10,
+      "levenshtein_distance_max": 219,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9549,
+      "total_output_tokens": 6078,
+      "total_tokens": 15627,
+      "total_cost": 0.092034,
+      "total_latency_seconds": 107.233
+    },
+    "Haiku 5.5 (high)": {
+      "cer_mean": 0.3844456407038239,
+      "cer_median": 0.19503219871205152,
+      "cer_min": 0.04878048780487805,
+      "cer_max": 0.8310439560439561,
+      "wer_mean": 0.6309723609297702,
+      "wer_median": 0.6305732484076433,
+      "wer_min": 0.22943722943722944,
+      "wer_max": 0.975,
+      "normalized_levenshtein_similarity_mean": 0.6190408761444354,
+      "normalized_levenshtein_similarity_median": 0.8188034188034188,
+      "normalized_levenshtein_similarity_min": 0.1689560439560439,
+      "normalized_levenshtein_similarity_max": 0.9514435695538058,
+      "levenshtein_distance_mean": 536,
+      "levenshtein_distance_median": 212,
+      "levenshtein_distance_min": 74,
+      "levenshtein_distance_max": 1210,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33286,
+      "total_output_tokens": 31654,
+      "total_tokens": 64940,
+      "total_cost": 0.019156,
+      "total_latency_seconds": 144.256
+    },
+    "Opus 4.7 (thinking)": {
+      "cer_mean": 0.2945871274862536,
+      "cer_median": 0.07911683532658693,
+      "cer_min": 0.019987105093488073,
+      "cer_max": 0.7657967032967034,
+      "wer_mean": 0.5846785696735267,
+      "wer_median": 0.2484076433121019,
+      "wer_min": 0.08433734939759036,
+      "wer_max": 1.5512820512820513,
+      "normalized_levenshtein_similarity_mean": 0.735265992298143,
+      "normalized_levenshtein_similarity_median": 0.9226618705035972,
+      "normalized_levenshtein_similarity_min": 0.3444165621079046,
+      "normalized_levenshtein_similarity_max": 0.9800128949065119,
+      "levenshtein_distance_mean": 418.14285714285717,
+      "levenshtein_distance_median": 86,
+      "levenshtein_distance_min": 31,
+      "levenshtein_distance_max": 1115,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33307,
+      "total_output_tokens": 7902,
+      "total_tokens": 41209,
+      "total_cost": 0.364085,
+      "total_latency_seconds": 330.147
+    },
+    "Llama 4 Maverick": {
+      "cer_mean": 0.8258718937048141,
+      "cer_median": 0.6879432624113475,
+      "cer_min": 0.5449438202247191,
+      "cer_max": 1.8666053357865686,
+      "wer_mean": 1.2678995655633782,
+      "wer_median": 0.961038961038961,
+      "wer_min": 0.9397590361445783,
+      "wer_max": 3.121019108280255,
+      "normalized_levenshtein_similarity_mean": 0.3321439038898832,
+      "normalized_levenshtein_similarity_median": 0.3120567375886525,
+      "normalized_levenshtein_similarity_min": 0.23950524737631185,
+      "normalized_levenshtein_similarity_max": 0.4550561797752809,
+      "levenshtein_distance_mean": 1082.2857142857142,
+      "levenshtein_distance_median": 1023,
+      "levenshtein_distance_min": 582,
+      "levenshtein_distance_max": 2029,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 18193,
+      "total_output_tokens": 5135,
+      "total_tokens": 23328,
+      "total_cost": 0.00581,
+      "total_latency_seconds": 270.816
+    },
+    "Muse Spark Open": {
+      "cer_mean": 0.2869868864261943,
+      "cer_median": 0.12327506899724011,
+      "cer_min": 0.016479894528675015,
+      "cer_max": 0.6538461538461539,
+      "wer_mean": 0.5452382355078125,
+      "wer_median": 0.39490445859872614,
+      "wer_min": 0.0735930735930736,
+      "wer_max": 1.0380952380952382,
+      "normalized_levenshtein_similarity_mean": 0.7189262321570995,
+      "normalized_levenshtein_similarity_median": 0.8767249310027598,
+      "normalized_levenshtein_similarity_min": 0.358922558922559,
+      "normalized_levenshtein_similarity_max": 0.9835309617918313,
+      "levenshtein_distance_mean": 402.42857142857144,
+      "levenshtein_distance_median": 134,
+      "levenshtein_distance_min": 25,
+      "levenshtein_distance_max": 952,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 28454,
+      "total_output_tokens": 25514,
+      "total_tokens": 53968,
+      "total_cost": 0.144002,
+      "total_latency_seconds": 279.432
+    },
+    "Gemini 3.8 Flash (low)": {
+      "cer_mean": 0.04598703431646782,
+      "cer_median": 0.054945054945054944,
+      "cer_min": 0.012250161186331399,
+      "cer_max": 0.09513274336283185,
+      "wer_mean": 0.13900569058922216,
+      "wer_median": 0.11965811965811966,
+      "wer_min": 0.05357142857142857,
+      "wer_max": 0.33,
+      "normalized_levenshtein_similarity_mean": 0.9549941665417757,
+      "normalized_levenshtein_similarity_median": 0.94750656167979,
+      "normalized_levenshtein_similarity_min": 0.9048672566371682,
+      "normalized_levenshtein_similarity_max": 0.9877498388136686,
+      "levenshtein_distance_mean": 62.285714285714285,
+      "levenshtein_distance_median": 66,
+      "levenshtein_distance_min": 14,
+      "levenshtein_distance_max": 129,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9664,
+      "total_output_tokens": 4613,
+      "total_tokens": 14277,
+      "total_cost": 0.024547,
+      "total_latency_seconds": 75.975
+    },
+    "Sonnet 5.5 (low)": {
+      "cer_mean": 0.24878268887714125,
+      "cer_median": 0.08187672493100276,
+      "cer_min": 0.020631850419084462,
+      "cer_max": 0.7690749493585415,
+      "wer_mean": 0.565776135332194,
+      "wer_median": 0.2484076433121019,
+      "wer_min": 0.08333333333333333,
+      "wer_max": 1.9102564102564104,
+      "normalized_levenshtein_similarity_mean": 0.7683793000153117,
+      "normalized_levenshtein_similarity_median": 0.9193109700815957,
+      "normalized_levenshtein_similarity_min": 0.23092505064145852,
+      "normalized_levenshtein_similarity_max": 0.9793681495809156,
+      "levenshtein_distance_mean": 356.57142857142856,
+      "levenshtein_distance_median": 89,
+      "levenshtein_distance_min": 32,
+      "levenshtein_distance_max": 1139,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33286,
+      "total_output_tokens": 6475,
+      "total_tokens": 39761,
+      "total_cost": 0.131322,
+      "total_latency_seconds": 86.089
+    },
+    "Gemini 3 Flash (high)": {
+      "cer_mean": 0.06766052721396514,
+      "cer_median": 0.07359705611775529,
+      "cer_min": 0.015473887814313346,
+      "cer_max": 0.13324175824175824,
+      "wer_mean": 0.19214518590978022,
+      "wer_median": 0.15584415584415584,
+      "wer_min": 0.05952380952380952,
+      "wer_max": 0.375,
+      "normalized_levenshtein_similarity_mean": 0.9357363685495964,
+      "normalized_levenshtein_similarity_median": 0.9304846938775511,
+      "normalized_levenshtein_similarity_min": 0.8811274509803921,
+      "normalized_levenshtein_similarity_max": 0.9845659163987138,
+      "levenshtein_distance_mean": 93,
+      "levenshtein_distance_median": 92,
+      "levenshtein_distance_min": 24,
+      "levenshtein_distance_max": 194,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9549,
+      "total_output_tokens": 97273,
+      "total_tokens": 106822,
+      "total_cost": 0.296593,
+      "total_latency_seconds": 579.726
+    },
+    "Haiku 4.5 (thinking)": {
+      "cer_mean": 0.6694640444423975,
+      "cer_median": 0.6642134314627415,
+      "cer_min": 0.4904416611733685,
+      "cer_max": 0.9345037137069547,
+      "wer_mean": 1.4211473335295648,
+      "wer_median": 1.1887550200803212,
+      "wer_min": 0.9567099567099567,
+      "wer_max": 3.0297619047619047,
+      "normalized_levenshtein_similarity_mean": 0.35483540911507067,
+      "normalized_levenshtein_similarity_median": 0.37207547169811317,
+      "normalized_levenshtein_similarity_min": 0.06549628629304527,
+      "normalized_levenshtein_similarity_max": 0.5095583388266315,
+      "levenshtein_distance_mean": 902.5714285714286,
+      "levenshtein_distance_median": 805,
+      "levenshtein_distance_min": 722,
+      "levenshtein_distance_max": 1384,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 13154,
+      "total_output_tokens": 18936,
+      "total_tokens": 32090,
+      "total_cost": 0.107834,
+      "total_latency_seconds": 203.97
+    },
+    "Gemini 4 Argon (low)": {
+      "cer_mean": 0.022273731740092884,
+      "cer_median": 0.011865524060646011,
+      "cer_min": 0.0038684719535783366,
+      "cer_max": 0.05457227138643068,
+      "wer_mean": 0.07500091248937407,
+      "wer_median": 0.03418803418803419,
+      "wer_min": 0.025974025974025976,
+      "wer_max": 0.24,
+      "normalized_levenshtein_similarity_mean": 0.9779276537746245,
+      "normalized_levenshtein_similarity_median": 0.9882121807465619,
+      "normalized_levenshtein_similarity_min": 0.9454277286135693,
+      "normalized_levenshtein_similarity_max": 0.9961315280464217,
+      "levenshtein_distance_mean": 29.571428571428573,
+      "levenshtein_distance_median": 18,
+      "levenshtein_distance_min": 6,
+      "levenshtein_distance_max": 74,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9874,
+      "total_output_tokens": 4244,
+      "total_tokens": 14118,
+      "total_cost": 0.062188,
+      "total_latency_seconds": 111.494
+    },
+    "Nemotron 3.5 Super VL (no thinking)": {
+      "cer_mean": 7.9975853579106335,
+      "cer_median": 9.911025145067699,
+      "cer_min": 0.6381015161502966,
+      "cer_max": 15.267790262172285,
+      "wer_mean": 12.658276430282525,
+      "wer_median": 11.269076305220883,
+      "wer_min": 0.9653679653679653,
+      "wer_max": 33.51709401709402,
+      "normalized_levenshtein_similarity_mean": 0.1053640272567601,
+      "normalized_levenshtein_similarity_median": 0.050817859013912337,
+      "normalized_levenshtein_similarity_min": 0.004051316677920358,
+      "normalized_levenshtein_similarity_max": 0.36189848384970336,
+      "levenshtein_distance_mean": 10690.142857142857,
+      "levenshtein_distance_median": 15372,
+      "levenshtein_distance_min": 968,
+      "levenshtein_distance_max": 21637,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 22610,
+      "total_output_tokens": 65369,
+      "total_tokens": 87979,
+      "total_cost": 0.036076,
+      "total_latency_seconds": 175.167
+    },
+    "DeepSeek V4.1 Flash 1017": {
+      "cer_mean": 0.4147585631357097,
+      "cer_median": 0.4737827715355805,
+      "cer_min": 0.04878048780487805,
+      "cer_max": 0.8771100607697502,
+      "wer_mean": 0.6211910160287107,
+      "wer_median": 0.9166666666666666,
+      "wer_min": 0.13852813852813853,
+      "wer_max": 0.9809523809523809,
+      "normalized_levenshtein_similarity_mean": 0.5989175802352203,
+      "normalized_levenshtein_similarity_median": 0.5561403508771929,
+      "normalized_levenshtein_similarity_min": 0.12288993923024982,
+      "normalized_levenshtein_similarity_max": 0.9517286366601435,
+      "levenshtein_distance_mean": 527.2,
+      "levenshtein_distance_median": 506,
+      "levenshtein_distance_min": 74,
+      "levenshtein_distance_max": 1299,
+      "samples_evaluated": 5,
+      "samples_failed": 2,
+      "total_input_tokens": 6427,
+      "total_output_tokens": 52767,
+      "total_tokens": 59194,
+      "total_cost": 0.032624,
+      "total_latency_seconds": 747.731
+    },
+    "Grok 4.3": {
+      "cer_mean": 0.7545450114276243,
+      "cer_median": 0.5068997240110396,
+      "cer_min": 0.1984179301252472,
+      "cer_max": 2.196488858879136,
+      "wer_mean": 1.4965999343800083,
+      "wer_median": 1.3975903614457832,
+      "wer_min": 0.5367965367965368,
+      "wer_max": 3.0428571428571427,
+      "normalized_levenshtein_similarity_mean": 0.4669710311004201,
+      "normalized_levenshtein_similarity_median": 0.49310027598896045,
+      "normalized_levenshtein_similarity_min": 0.17749683944374206,
+      "normalized_levenshtein_similarity_max": 0.8009228740936059,
+      "levenshtein_distance_mean": 1051.5714285714287,
+      "levenshtein_distance_median": 630,
+      "levenshtein_distance_min": 302,
+      "levenshtein_distance_max": 3253,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 18722,
+      "total_output_tokens": 11939,
+      "total_tokens": 30661,
+      "total_cost": 0.05325,
+      "total_latency_seconds": 257.607
+    },
+    "DeepSeek V4.1 Flash 1017 (no thinking)": {
+      "cer_mean": 0.6106825628080355,
+      "cer_median": 0.7376373626373627,
+      "cer_min": 0.06723796967699407,
+      "cer_max": 1.4929101958136395,
+      "wer_mean": 0.8472757038820382,
+      "wer_median": 0.9786324786324786,
+      "wer_min": 0.15584415584415584,
+      "wer_max": 2.038095238095238,
+      "normalized_levenshtein_similarity_mean": 0.537033487839831,
+      "normalized_levenshtein_similarity_median": 0.4101123595505618,
+      "normalized_levenshtein_similarity_min": 0.2623626373626373,
+      "normalized_levenshtein_similarity_max": 0.9337231968810916,
+      "levenshtein_distance_mean": 830.8571428571429,
+      "levenshtein_distance_median": 840,
+      "levenshtein_distance_min": 102,
+      "levenshtein_distance_max": 2211,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 8737,
+      "total_output_tokens": 6716,
+      "total_tokens": 15453,
+      "total_cost": 0.00534,
+      "total_latency_seconds": 77.928
+    },
+    "GPT-5 Mini (high)": {
+      "cer_mean": 0.6942940842484999,
+      "cer_median": 0.5722713864306784,
+      "cer_min": 0.46441947565543074,
+      "cer_max": 1.1201890614449697,
+      "wer_mean": 1.0859396353366775,
+      "wer_median": 0.9678714859437751,
+      "wer_min": 0.9166666666666666,
+      "wer_max": 1.4952380952380953,
+      "normalized_levenshtein_similarity_mean": 0.42310333611371903,
+      "normalized_levenshtein_similarity_median": 0.42772861356932157,
+      "normalized_levenshtein_similarity_min": 0.2928388746803069,
+      "normalized_levenshtein_similarity_max": 0.5355805243445693,
+      "levenshtein_distance_mean": 960.7142857142857,
+      "levenshtein_distance_median": 776,
+      "levenshtein_distance_min": 496,
+      "levenshtein_distance_max": 1659,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 14244,
+      "total_output_tokens": 27783,
+      "total_tokens": 42027,
+      "total_cost": 0.059127,
+      "total_latency_seconds": 496.078
+    },
+    "Gemini 3 Flash (low)": {
+      "cer_mean": 0.04823622336457775,
+      "cer_median": 0.024983119513842,
+      "cer_min": 0.008381689232753063,
+      "cer_max": 0.11744505494505494,
+      "wer_mean": 0.1382692497495111,
+      "wer_median": 0.05238095238095238,
+      "wer_min": 0.03463203463203463,
+      "wer_max": 0.355,
+      "normalized_levenshtein_similarity_mean": 0.9538181515224039,
+      "normalized_levenshtein_similarity_median": 0.97556142668428,
+      "normalized_levenshtein_similarity_min": 0.8932584269662921,
+      "normalized_levenshtein_similarity_max": 0.9916183107672469,
+      "levenshtein_distance_mean": 65,
+      "levenshtein_distance_median": 37,
+      "levenshtein_distance_min": 9,
+      "levenshtein_distance_max": 171,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9549,
+      "total_output_tokens": 4610,
+      "total_tokens": 14159,
+      "total_cost": 0.018604,
+      "total_latency_seconds": 50.245
+    },
+    "GPT-5 Mini (low)": {
+      "cer_mean": 0.6247299071558644,
+      "cer_median": 0.5707964601769911,
+      "cer_min": 0.47846441947565543,
+      "cer_max": 0.9682646860229575,
+      "wer_mean": 0.9536386691426322,
+      "wer_median": 0.9558232931726908,
+      "wer_min": 0.8869047619047619,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.37593830916707277,
+      "normalized_levenshtein_similarity_median": 0.42920353982300885,
+      "normalized_levenshtein_similarity_min": 0.03241053342336264,
+      "normalized_levenshtein_similarity_max": 0.5215355805243446,
+      "levenshtein_distance_mean": 863.7142857142857,
+      "levenshtein_distance_median": 774,
+      "levenshtein_distance_min": 511,
+      "levenshtein_distance_max": 1433,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 14244,
+      "total_output_tokens": 6347,
+      "total_tokens": 20591,
+      "total_cost": 0.016255,
+      "total_latency_seconds": 117.994
+    },
+    "GPT-4.1": {
+      "cer_mean": 0.5863067577733672,
+      "cer_median": 0.6563670411985019,
+      "cer_min": 0.05075807514831905,
+      "cer_max": 0.8568534773801485,
+      "wer_mean": 0.9077065491999112,
+      "wer_median": 0.9615384615384616,
+      "wer_min": 0.24675324675324675,
+      "wer_max": 1.3047619047619048,
+      "normalized_levenshtein_similarity_mean": 0.43333120255207674,
+      "normalized_levenshtein_similarity_median": 0.34363295880149813,
+      "normalized_levenshtein_similarity_min": 0.2692307692307693,
+      "normalized_levenshtein_similarity_max": 0.9492419248516809,
+      "levenshtein_distance_mean": 788.8571428571429,
+      "levenshtein_distance_median": 880,
+      "levenshtein_distance_min": 77,
+      "levenshtein_distance_max": 1269,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9688,
+      "total_output_tokens": 3820,
+      "total_tokens": 13508,
+      "total_cost": 0.049936,
+      "total_latency_seconds": 118.445
+    },
+    "GPT-5.4 Mini (high)": {
+      "cer_mean": 0.7608244870150597,
+      "cer_median": 0.9110486891385767,
+      "cer_min": 0.08108108108108109,
+      "cer_max": 0.9979743416610398,
+      "wer_mean": 0.8609418248682311,
+      "wer_median": 0.9829059829059829,
+      "wer_min": 0.3463203463203463,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.23919837419201204,
+      "normalized_levenshtein_similarity_median": 0.08895131086142327,
+      "normalized_levenshtein_similarity_min": 0.002025658338960179,
+      "normalized_levenshtein_similarity_max": 0.9190789473684211,
+      "levenshtein_distance_mean": 1011.5714285714286,
+      "levenshtein_distance_median": 973,
+      "levenshtein_distance_min": 123,
+      "levenshtein_distance_max": 1478,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 19985,
+      "total_output_tokens": 92482,
+      "total_tokens": 112467,
+      "total_cost": 0.427529,
+      "total_latency_seconds": 695.722
+    },
+    "Opus 5.5 (low)": {
+      "cer_mean": 0.09383806419184204,
+      "cer_median": 0.04783808647654094,
+      "cer_min": 0.006447453255963894,
+      "cer_max": 0.3484132343011479,
+      "wer_mean": 0.20983048747226477,
+      "wer_median": 0.16666666666666666,
+      "wer_min": 0.040160642570281124,
+      "wer_max": 0.6,
+      "normalized_levenshtein_similarity_mean": 0.9076327130345979,
+      "normalized_levenshtein_similarity_median": 0.952161913523459,
+      "normalized_levenshtein_similarity_min": 0.6515867656988521,
+      "normalized_levenshtein_similarity_max": 0.9935525467440361,
+      "levenshtein_distance_mean": 133,
+      "levenshtein_distance_median": 52,
+      "levenshtein_distance_min": 10,
+      "levenshtein_distance_max": 516,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33286,
+      "total_output_tokens": 6458,
+      "total_tokens": 39744,
+      "total_cost": 0.262304,
+      "total_latency_seconds": 90.913
+    },
+    "Sonnet 5.5 (high)": {
+      "cer_mean": 0.27951036962116627,
+      "cer_median": 0.08371665133394664,
+      "cer_min": 0.01845748187211602,
+      "cer_max": 0.8136394328156651,
+      "wer_mean": 0.42793283738940796,
+      "wer_median": 0.31210191082802546,
+      "wer_min": 0.07738095238095238,
+      "wer_max": 0.9619047619047619,
+      "normalized_levenshtein_similarity_mean": 0.7206829132368014,
+      "normalized_levenshtein_similarity_median": 0.9173478655767484,
+      "normalized_levenshtein_similarity_min": 0.1863605671843349,
+      "normalized_levenshtein_similarity_max": 0.981542518127884,
+      "levenshtein_distance_mean": 396.42857142857144,
+      "levenshtein_distance_median": 91,
+      "levenshtein_distance_min": 28,
+      "levenshtein_distance_max": 1205,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 33286,
+      "total_output_tokens": 5357,
+      "total_tokens": 38643,
+      "total_cost": 0.120142,
+      "total_latency_seconds": 73.697
+    },
+    "Gemini 3.1 Pro (high)": {
+      "cer_mean": 0.08962292329484489,
+      "cer_median": 0.05401755570560432,
+      "cer_min": 0.0046816479400749065,
+      "cer_max": 0.22566371681415928,
+      "wer_mean": 0.2540392302443784,
+      "wer_median": 0.14285714285714285,
+      "wer_min": 0.011904761904761904,
+      "wer_max": 0.995,
+      "normalized_levenshtein_similarity_mean": 0.9147802816780994,
+      "normalized_levenshtein_similarity_median": 0.9479843953185956,
+      "normalized_levenshtein_similarity_min": 0.7743362831858407,
+      "normalized_levenshtein_similarity_max": 0.9953183520599251,
+      "levenshtein_distance_mean": 124.14285714285714,
+      "levenshtein_distance_median": 80,
+      "levenshtein_distance_min": 5,
+      "levenshtein_distance_max": 306,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 9549,
+      "total_output_tokens": 111409,
+      "total_tokens": 120958,
+      "total_cost": 1.356006,
+      "total_latency_seconds": 1182.521
+    },
+    "Qwen 3.6 Plus": {
+      "cer_mean": 0.542954178730163,
+      "cer_median": 0.2529898804047838,
+      "cer_min": 0.047462096242584045,
+      "cer_max": 1.6504424778761062,
+      "wer_mean": 1.5901184055903022,
+      "wer_median": 0.7857142857142857,
+      "wer_min": 0.1341991341991342,
+      "wer_max": 6.0,
+      "normalized_levenshtein_similarity_mean": 0.5761246472809747,
+      "normalized_levenshtein_similarity_median": 0.7470101195952161,
+      "normalized_levenshtein_similarity_min": 0.09208924949290065,
+      "normalized_levenshtein_similarity_max": 0.9533678756476685,
+      "levenshtein_distance_mean": 745,
+      "levenshtein_distance_median": 275,
+      "levenshtein_distance_min": 72,
+      "levenshtein_distance_max": 2238,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 18487,
+      "total_output_tokens": 77237,
+      "total_tokens": 95724,
+      "total_cost": 0.15662,
+      "total_latency_seconds": 785.699
+    },
+    "GPT-5.2 (low)": {
+      "cer_mean": 0.4686387542045821,
+      "cer_median": 0.2999080036798528,
+      "cer_min": 0.01845748187211602,
+      "cer_max": 1.0,
+      "wer_mean": 0.6485951259275311,
+      "wer_median": 0.8152866242038217,
+      "wer_min": 0.09090909090909091,
+      "wer_max": 1.0,
+      "normalized_levenshtein_similarity_mean": 0.5313629828066989,
+      "normalized_levenshtein_similarity_median": 0.7000919963201472,
+      "normalized_levenshtein_similarity_min": 0.0,
+      "normalized_levenshtein_similarity_max": 0.9815546772068511,
+      "levenshtein_distance_mean": 653.7142857142857,
+      "levenshtein_distance_median": 326,
+      "levenshtein_distance_min": 28,
+      "levenshtein_distance_max": 1481,
+      "samples_evaluated": 7,
+      "samples_failed": 0,
+      "total_input_tokens": 14244,
+      "total_output_tokens": 7095,
+      "total_tokens": 21339,
+      "total_cost": 0.124257,
+      "total_latency_seconds": 168.818
     }
   },
   "group_summaries": {
@@ -12851,6 +13240,31 @@
         "total_tokens": 64940,
         "total_cost": 0.019156,
         "total_latency_seconds": 144.256
+      }
+    },
+    "Gemini 4 Argon (multi-step)": {
+      "Byzantine Greek": {
+        "cer_mean": 0.015090783021207036,
+        "cer_median": 0.008102633355840648,
+        "cer_min": 0.0038684719535783366,
+        "cer_max": 0.03982300884955752,
+        "wer_mean": 0.05858005299299137,
+        "wer_median": 0.030303030303030304,
+        "wer_min": 0.023809523809523808,
+        "wer_max": 0.185,
+        "normalized_levenshtein_similarity_mean": 0.9850149304947359,
+        "normalized_levenshtein_similarity_median": 0.991930060524546,
+        "normalized_levenshtein_similarity_min": 0.9601769911504425,
+        "normalized_levenshtein_similarity_max": 0.9961315280464217,
+        "levenshtein_distance_mean": 19.428571428571427,
+        "levenshtein_distance_median": 11,
+        "levenshtein_distance_min": 6,
+        "levenshtein_distance_max": 54,
+        "total_input_tokens": 107759,
+        "total_output_tokens": 7363,
+        "total_tokens": 115122,
+        "total_cost": 0.279618,
+        "total_latency_seconds": 269.056
       }
     }
   }

@@ -37,6 +37,39 @@ Do not transcribe diacritics like breathing marks, accents, or iota subscripts.
 """
 user = "Transcribe the handwritten text in this image exactly as written."
 
+[pipeline]
+continuous_notes = """
+Transcribe only the main text block. Do not transcribe chapter numbers or titles, marginal notes, lection notes or anything else written in the margins or outside the text block.
+Write only what is on the page. Never complete, continue or supply text from memory, even when you recognise the passage.
+The scribe's spelling often departs from the standard: ι, η, υ, ει and οι are often interchanged, as are ο and ω, and ε and αι. Keep the scribe's spelling.
+"""
+lectionary_notes = """
+Transcribe every line of the text block, including rubrics, lection titles and liturgical headings written within it.
+Lections often stop in mid-verse, followed directly by a rubric or the next lection's title. Write only the words on the page: never finish a verse, and never complete, continue or supply text from memory, even when you recognise the passage.
+Do not transcribe crosses, ekphonetic signs or other marks. Write the και abbreviation as και.
+The scribe's spelling often departs from the standard: ι, η, υ, ει and οι are often interchanged, as are ο and ω, and ε and αι. Keep the scribe's spelling.
+"""
+check_system = "You are an expert palaeographer of Byzantine Greek minuscule. Be exceedingly exact. Ignore accents, breathings, iota subscripts and punctuation."
+check_user = """
+Below is a draft transcription of the page in the image, as JSON. Each key is a word ID, L<line>.<position>, and each value is the draft's reading of that word.
+
+The draft was made by a reader who knows this text well. Such readers tend to restore the standard spelling where the scribe wrote something else, especially in familiar words. They also sometimes invent misspellings where the scribe wrote the standard form. Catch both.
+
+Work line by line. For each word, find it on the page and compare each vowel in the draft with the letter shape in the image:
+- ο (one small loop) or ω (two bowls side by side)
+- ι (single short stroke), η (h-shaped or Η-shaped), υ (u- or v-shaped), ει, οι
+- ε or αι
+Check consonants too, but most errors are in the vowels.
+
+Report a word only when the page clearly shows different letters from the draft. If the page is unclear, keep the draft's reading.
+For each correction, give the scribe's letters as text, and in "change" name the letters that differ, for example "ι→η".
+Correct letters only. Do not expand or contract abbreviations or nomina sacra, and do not change where words divide.
+If a draft word is not on the page at all, give an empty string as text.
+Return an empty list if every word is correct.
+
+Draft:
+"""
+
 [[models]]
 id = "anthropic:claude-opus-5-5"
 label = "Opus 5.5 (low)"
@@ -106,6 +139,14 @@ label = "Gemini 4 Argon (high)"
 max_tokens = 16000
 timeout = 600
 thinking = "high"
+
+[[models]]
+id = "google:gemini-4-argon"
+label = "Gemini 4 Argon (multi-step)"
+max_tokens = 16000
+timeout = 600
+thinking = "low"
+pipeline = { checks = 3, votes = 2, check_thinking = "medium" }
 
 [[models]]
 id = "anthropic:claude-sonnet-5-5"
@@ -228,16 +269,19 @@ ground_truth = "data/grk_byz/GA2523_195v.txt"
 label = "GA L60, 64r, Rom 12:9–19"
 image = "https://collections.csntm.org/image-service/iiif/MNTGRCL60/default/M_NT_GRC_L60_0139/M_NT_GRC_L60_0139/info.json"
 ground_truth = "data/grk_byz/GAL60_64r.txt"
+lectionary = true
 
 [[groups.samples]]
 label = "GA L587, p. 66, Rom 1:16–25"
 image = "https://collections.csntm.org/image-service/iiif/MNTGRCL587/default/M_NT_GRC_L587_0033b/M_NT_GRC_L587_0033b/info.json"
 ground_truth = "data/grk_byz/GAL587_p66.txt"
+lectionary = true
 
 [[groups.samples]]
 label = "GA L2010, 40v, Rom 14:17–18, 15:7–15"
 image = "https://collections.csntm.org/image-service/iiif/MNTGRCL2010/default/M_NT_GRC_L2010_0040b/M_NT_GRC_L2010_0040b/info.json"
 ground_truth = "data/grk_byz/GAL2010_40v.txt"
+lectionary = true
 
 [[groups.samples]]
 label = "GA 1, 72v, Rom 1:2–18"

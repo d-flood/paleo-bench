@@ -18,13 +18,14 @@
     scriptHash,
     store,
     who,
-    type Row
+    type Row,
+    type Sample
   } from '#lib/bench.js';
 
   let { data } = $props();
 
   const KEY = 'paleo-bench:results';
-  const st = $state({ q: '', prov: 'all', zero: false, sort: 'mark', dir: -1 });
+  const st = $state({ q: '', prov: 'all', kind: 'all', zero: false, sort: 'mark', dir: -1 });
   let restored = $state(false);
 
   onMount(() => {
@@ -36,9 +37,11 @@
     if (restored) store.set(KEY, $state.snapshot(st));
   });
 
-  const total = $derived(data.summary.samples.length);
+  const inKind = (s: Sample) => st.kind === 'all' || s.lectionary === (st.kind === 'lectionary');
+  const samples = $derived(data.summary.samples.filter(inKind));
+  const total = $derived(samples.length);
   const papers = (microfilm: boolean) =>
-    data.summary.samples.flatMap((s, p) => (s.microfilm === microfilm ? [p + 1] : []));
+    data.summary.samples.flatMap((s, p) => (inKind(s) && s.microfilm === microfilm ? [p + 1] : []));
 
   const ranges = (ns: number[]) =>
     ns
@@ -52,10 +55,11 @@
       .join(', ');
   const colourPapers = $derived(ranges(papers(false)));
   const microfilmPapers = $derived(ranges(papers(true)));
-  const rows = $derived(buildRows(data.summary));
+  const rows = $derived(buildRows({ ...data.summary, samples }));
   const ranking = $derived(rank(rows, st.zero));
   const v = (r: Row) => (st.zero ? r.zero : r.std);
-  const href = (r: Row) => resolve('transcriptions') + scriptHash(r, 0);
+  const firstPaper = $derived(Math.max(0, data.summary.samples.findIndex(inKind)));
+  const href = (r: Row) => resolve('transcriptions') + scriptHash(r, firstPaper);
   const costPerImage = (r: Row) =>
     r.m.cost > 0 && r.attempted > 0 ? r.m.cost / r.attempted : null;
 
@@ -156,6 +160,12 @@
   <select class="sel" id="prov" bind:value={st.prov}>
     <option value="all">All providers</option>
     {#each PROVIDERS as p (p)}<option>{p}</option>{/each}
+  </select>
+  <label class="vh" for="kind">Manuscripts</label>
+  <select class="sel" id="kind" bind:value={st.kind}>
+    <option value="all">All manuscripts</option>
+    <option value="continuous">Continuous text</option>
+    <option value="lectionary">Lectionaries</option>
   </select>
   <label class="check"
     ><input type="checkbox" bind:checked={st.zero} /> Count failed folios as 0</label
